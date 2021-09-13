@@ -1,12 +1,21 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <layout />
 </template>
+
+<script>
+import Layout from "@/layout/Layout";
+export default {
+  components: { Layout },
+  mounted() {
+    const clientWidth = document.body.clientWidth;
+    if (clientWidth < 1300) {
+      document.body.style.zoom = 0.67;
+    } else if (1300 < clientWidth < 2300) {
+      document.body.style.zoom = 0.826;
+    }
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
@@ -15,18 +24,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
