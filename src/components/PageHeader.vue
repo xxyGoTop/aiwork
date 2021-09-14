@@ -6,7 +6,7 @@
     </div>
     <div class="page-header-title">
       <span class="page-span-title">{{ title }}</span>
-      <span class="page-span-date">2021-09-09</span>
+      <span class="page-span-date">{{ time }} 星期{{ wwkMap[week] }}</span>
     </div>
     <div class="page-header-user">
       <span class="page-user-icon"></span>
@@ -20,13 +20,31 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 import { mapState, mapMutations } from "vuex";
+import { postAuthLogout } from "@/api/user";
 export default {
   props: {
     title: {
       type: String,
       default: "标题",
     },
+  },
+  data() {
+    return {
+      week: null,
+      wwkMap: {
+        0: "日",
+        1: "一",
+        2: "二",
+        3: "三",
+        4: "四",
+        5: "五",
+        6: "六",
+      },
+      time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      timer: null,
+    };
   },
   computed: {
     ...mapState(["userInfo"]),
@@ -40,8 +58,25 @@ export default {
       this.$router.go(-1);
     },
     handleOut() {
-      this.updateAccessToken("");
+      postAuthLogout({
+        memo: "退出登录",
+        platformTypeEnum: "PC",
+      }).then(() => {
+        this.updateAccessToken("");
+        location.href = "/login";
+      });
     },
+  },
+  mounted() {
+    this.week = dayjs().day();
+    this.timer = setInterval(() => {
+      this.time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+    }, 1000);
+  },
+  destroyed() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
 };
 </script>

@@ -23,10 +23,19 @@
           <div class="home-middle-name-wrap">
             <div class="home-middle-name"></div>
           </div>
-          <div class="home-middle-datetime">2021-09-08 00:00:00 星期一</div>
+          <div class="home-middle-datetime">
+            {{ time }} 星期{{ wwkMap[week] }}
+          </div>
         </div>
         <div class="home-header-right">
-          <div class="home-right-button">水利要闻</div>
+          <div
+            class="home-right-button"
+            @click="
+              toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
+            "
+          >
+            水利要闻
+          </div>
           <div class="home-right-button" @click="toLinkRouter('/user')">
             用户管理
           </div>
@@ -39,7 +48,7 @@
               userInfo.name
             }}</span>
             <span class="home-user-arrow"></span>
-            <div class="home-user-logout">退出登录</div>
+            <div class="home-user-logout" @click="handleOut()">退出登录</div>
           </div>
         </div>
       </div>
@@ -154,7 +163,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import dayjs from "dayjs";
+import { mapState, mapMutations } from "vuex";
+import { postAuthLogout } from "@/api/user";
 import { getAlarmList } from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
 import { getSensorType, getSensorData, setSensorChart } from "@/api/sensor";
@@ -205,13 +216,13 @@ export default {
         },
         RAINFALL: {
           label: "雨量",
-          icon: "1mm",
+          icon: "rainfall",
           color: ["rgba(0, 222, 255, 0.76)", "rgba(0, 222, 255, 0.11)"],
           unit: "度",
         },
         WATER_LEVEL: {
           label: "水位",
-          icon: "m",
+          icon: "level",
           color: ["rgba(255, 0, 78, 0.76)", "rgba(255, 0, 78, 0.12)"],
           unit: "度",
         },
@@ -281,9 +292,23 @@ export default {
         },
       ],
       sensors: [],
+      // 时间
+      week: null,
+      wwkMap: {
+        0: "日",
+        1: "一",
+        2: "二",
+        3: "三",
+        4: "四",
+        5: "五",
+        6: "六",
+      },
+      time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      timer: null,
     };
   },
   methods: {
+    ...mapMutations(["updateAccessToken"]),
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
@@ -419,6 +444,18 @@ export default {
       /* eslint-disable */
       this.loading = false;
     },
+    handleOut() {
+      postAuthLogout({
+        memo: "退出登录",
+        platformTypeEnum: "PC",
+      }).then(() => {
+        this.updateAccessToken("");
+        location.href = "/login";
+      });
+    },
+    toLink(path) {
+      window.open(path, "_blank");
+    },
     toLinkRouter(path) {
       this.$router.push(path);
     }
@@ -428,6 +465,17 @@ export default {
     this.getDeviceList().then(() => {
       this.readyMap();
     });
+  },
+  mounted() { 
+    this.week = dayjs().day();
+    this.timer = setInterval(() => {
+      this.time = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    }, 1000);
+  },
+  destroyed() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
 };
 </script>

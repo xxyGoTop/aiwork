@@ -4,14 +4,16 @@
     <div class="page-container">
       <div class="page-table-header">
         <div class="page-table-header-left">
-          <span class="normal"
-            >[拉萨河闸站光理所3号闸水流量检测站] 传感器数据</span
-          >
+          <span class="normal">[{{ deviceName }}] 传感器数据</span>
         </div>
       </div>
       <div class="page-table-chart">
         <div class="page-table-chart-select">
-          <el-select v-model="sensor" placeholder="传感器">
+          <el-select
+            v-model="sensor"
+            @change="handleChangeSensor"
+            placeholder="传感器"
+          >
             <el-option
               v-for="sensor in sensorsForm"
               :key="sensor.value"
@@ -22,7 +24,14 @@
           </el-select>
         </div>
         <div class="page-table-chart-content">
-          <line-chart :line-style="lineStyle"></line-chart>
+          <line-chart
+            :key="sensor"
+            :line-style="lineStyle"
+            :x-data="xData"
+            :y-data="yData"
+            :color="color"
+          >
+          </line-chart>
         </div>
       </div>
       <div class="page-table">
@@ -30,20 +39,25 @@
         <h3>近一天数据</h3>
         <div class="page-table-box">
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
-            <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
-              prop="name"
+              type="index"
+              label="序号"
+              width="80"
+              align="center"
+            />
+            <el-table-column
+              prop="reportTime"
               label="时间"
               align="center"
-              width="110"
+              width="260"
             />
-            <el-table-column prop="account" label="温度(℃)" align="center" />
+            <el-table-column prop="data" :label="label" align="center" />
           </el-table>
         </div>
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            :page-sizes="[10, 20, 30, 40]"
+            @current-change="getSensorData"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -61,7 +75,7 @@
 
 <script>
 import LineChart from "@/components/LineChart";
-import { getUserLog } from "@/api/user";
+import { getSensorData } from "@/api/sensor";
 export default {
   components: { LineChart },
   data() {
@@ -101,28 +115,98 @@ export default {
           value: "FLOW_VELOCITY",
         },
       ],
-      sensor: "TEMP",
+      sensor: null,
       // table相关
       loading: false,
+      xData: [],
+      yData: [],
+      color: ["rgba(255, 66, 0, 0.76)", "rgba(255, 66, 0, 0.11)"],
+      label: "温度(℃)",
+      chartColor: {
+        TEMP: {
+          label: "温度",
+          color: ["rgba(255, 66, 0, 0.76)", "rgba(255, 66, 0, 0.11)"],
+          unit: "°C",
+        },
+        HUMIDITY: {
+          label: "湿度",
+          color: ["rgba(255, 174, 0, 0.76)", "rgba(255, 174, 0, 0.11)"],
+          unit: "%",
+          data: [810, 232, 301, 934],
+        },
+        FLOW_RATE: {
+          label: "流速",
+          color: ["rgba(0, 255, 132, 0.76)", "rgba(0, 255, 132, 0.11)"],
+          unit: "m/s",
+        },
+        FLOW_VELOCITY: {
+          label: "流量",
+          color: ["rgba(0, 54, 255, 0.76)", "rgba(0, 54, 255, 0.11)"],
+          unit: "m³/s",
+        },
+        RAINFALL: {
+          label: "雨量",
+          color: ["rgba(0, 222, 255, 0.76)", "rgba(0, 222, 255, 0.11)"],
+          unit: "度",
+        },
+        WATER_LEVEL: {
+          label: "水位",
+          color: ["rgba(255, 0, 78, 0.76)", "rgba(255, 0, 78, 0.12)"],
+          unit: "度",
+        },
+        WIND_SPEED: {
+          label: "风速",
+          color: ["rgba(0, 168, 255, 0.76)", "rgba(0, 168, 255, 0.11)"],
+          unit: "m/s",
+        },
+        WIND_DIRECTION: {
+          label: "风向",
+          color: ["rgba(186, 0, 255, 0.76)", "rgba(186, 0, 255, 0.11)"],
+          unit: "度",
+        },
+      },
       list: [],
       total: 10,
       page: 1,
       pageSize: 10,
     };
   },
+  computed: {
+    deviceCode() {
+      return this.$route.params.code;
+    },
+    deviceName() {
+      return this.$route.query.name;
+    },
+  },
   methods: {
-    getUserLog(page = 1) {
-      getUserLog({
+    getSensorData(page = 1) {
+      getSensorData({
+        deviceCode: this.deviceCode,
+        sensorType: this.sensor || "TEMP",
         pageNum: page,
         pageSize: this.pageSize,
       }).then((data) => {
         this.list = data.data.records || [];
         this.total = +data.data.total || 0;
+        this.yData = data.data.records.map((x) => x.data);
+        this.xData = data.data.records.map((x) =>
+          x.reportTime ? x.reportTime.split(" ")[1] : ""
+        );
+        if (!this.sensor) {
+          this.sensor = "TEMP";
+        }
       });
     },
+    handleChangeSensor(key) {
+      console.log(this.chartColor[key].label);
+      this.color = this.chartColor[key].color;
+      this.label = `(${this.chartColor[key].label}${this.chartColor[key].unit})`;
+      this.getSensorData();
+    },
   },
-  created() {
-    this.getUserLog();
+  mounted() {
+    this.getSensorData();
   },
 };
 </script>

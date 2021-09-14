@@ -19,7 +19,7 @@
           <span class="page-table-header-right-export-icon"></span>
           <span>导出</span>
         </div>
-        <div class="page-table-header-right" v-else>
+        <div class="page-table-header-right" @click="handleAdd()" v-else>
           <span class="page-table-header-right-icon"></span>
           <span>新增报警</span>
         </div>
@@ -51,14 +51,26 @@
           </el-form-item>
           <el-form-item label="报警类型" prop="sensorType">
             <el-select v-model="formInline.sensorType" placeholder="报警类型">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="全部" value=""></el-option>
+              <el-option
+                v-for="sensor in sensorsType"
+                :key="sensor.value"
+                :label="sensor.key"
+                :value="sensor.value"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="报警设备" prop="deviceId">
             <el-select v-model="formInline.deviceId" placeholder="报警设备">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="全部" value=""></el-option>
+              <el-option
+                v-for="d in devices"
+                :key="d.deviceCode"
+                :label="d.deviceName"
+                :value="d.deviceCode"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 88px">
@@ -112,28 +124,30 @@
       <div class="page-table" v-else>
         <!-- 表格 -->
         <div class="page-table-box">
-          <div class="page-table-box-header">
-            <h3>设备：拉萨河闸站光理所3号闸水流量检测站</h3>
-            <div class="box-header-right">
-              <el-button type="text">编辑</el-button>
-              <el-button type="text">删除</el-button>
-            </div>
-          </div>
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+            <el-table-column prop="name" label="规则名称" align="center" />
             <el-table-column
-              prop="name"
+              prop="typeName"
               label="报警类型"
               width="180"
               align="center"
             />
             <el-table-column
-              prop="account"
-              label="平台报警警戒值"
+              prop="deviceId"
+              label="报警设备"
+              width="380"
               align="center"
             />
             <el-table-column
-              prop="action"
-              label="短信报警警戒值"
+              prop="platformThreshold"
+              label="平台报警值"
+              width="180"
+              align="center"
+            />
+            <el-table-column
+              prop="smsThreshold"
+              label="短信报警值"
+              width="180"
               align="center"
             ></el-table-column>
           </el-table>
@@ -141,6 +155,7 @@
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
+            @current-change="getAlarmPageAll"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -157,47 +172,54 @@
     <el-dialog
       :visible.sync="visible"
       custom-class="page-table-dialog"
-      title="添加用户"
+      title="添加规则"
       center
     >
       <el-form
-        :model="fromUserData"
+        :model="fromRuleData"
         status-icon
-        ref="fromUserData"
-        label-width="100px"
-        class="user-form"
+        ref="fromRuleData"
+        label-width="120px"
+        class="dialog-form"
       >
-        <el-form-item label="账号：" prop="account">
+        <el-form-item label="规则名称：" prop="alarmName">
           <el-input
-            v-model="fromUserData.account"
-            placeholder="请输入账号"
+            v-model="fromRuleData.alarmName"
+            placeholder="规则名称"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码：" prop="password">
-          <el-input
-            type="password"
-            v-model="fromUserData.password"
-            placeholder="请输入密码"
-          >
-            <i class="el-icon-edit el-input__icon" slot="suffix"> </i>
-          </el-input>
+        <el-form-item label="报警设备：" prop="deviceId">
+          <el-select v-model="fromRuleData.deviceId" placeholder="报警设备">
+            <el-option
+              v-for="d in devices"
+              :key="d.deviceCode"
+              :label="d.deviceName"
+              :value="d.deviceCode"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="姓名：" prop="name">
+        <el-form-item label="报警类型：" prop="sensorType">
+          <el-select v-model="fromRuleData.sensorType" placeholder="报警类型">
+            <el-option
+              v-for="sensor in sensorsType"
+              :key="sensor.value"
+              :label="sensor.key"
+              :value="sensor.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="平台报警值：" prop="platformThreshold">
           <el-input
-            v-model="fromUserData.name"
-            placeholder="请输入姓名"
+            v-model="fromRuleData.platformThreshold"
+            placeholder="请输入平台报警值"
           ></el-input>
         </el-form-item>
-        <el-form-item label="手机号：" prop="tel">
+        <el-form-item label="短信报警值：" prop="smsThreshold">
           <el-input
-            v-model="fromUserData.tel"
-            placeholder="请输入手机号"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="权限：" prop="roleId">
-          <el-input
-            v-model="fromUserData.roleId"
-            placeholder="请选择权限"
+            v-model="fromRuleData.smsThreshold"
+            placeholder="请输入短信报警值"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -207,60 +229,7 @@
       <div class="page-container_top_bottom page-container_bottom_right"></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取 消</el-button>
-        <el-button type="primary" @click="visible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="gVisible"
-      custom-class="page-table-dialog"
-      title="新增用户组"
-      center
-    >
-      <el-form
-        :model="fromGroupData"
-        status-icon
-        ref="fromGroupData"
-        label-width="100px"
-        class="user-form"
-      >
-        <el-form-item label="组名：" prop="account">
-          <el-input
-            v-model="fromGroupData.account"
-            placeholder="请输入组名"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="组员：" prop="group">
-          <div class="user-group-box">
-            <el-checkbox
-              :indeterminate="isIndeterminate"
-              v-model="checkAll"
-              @change="handleCheckAllChange"
-            >
-              全选
-            </el-checkbox>
-            <div style="margin: 0px 0 24px"></div>
-            <el-checkbox-group
-              v-model="checkedGroups"
-              @change="handleCheckedGroupsChange"
-            >
-              <el-checkbox
-                v-for="group in groups"
-                :label="group.id"
-                :key="group.id"
-              >
-                {{ group.label }}
-              </el-checkbox>
-            </el-checkbox-group>
-          </div>
-        </el-form-item>
-      </el-form>
-      <div class="page-container_top_bottom page-container_top_left"></div>
-      <div class="page-container_top_bottom page-container_top_right"></div>
-      <div class="page-container_top_bottom page-container_bottom_left"></div>
-      <div class="page-container_top_bottom page-container_bottom_right"></div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="gVisible = false">取 消</el-button>
-        <el-button type="primary" @click="gVisible = false">确 定</el-button>
+        <el-button type="primary" @click="postAddAlarm()">确 定</el-button>
       </span>
     </el-dialog>
   </section>
@@ -268,53 +237,62 @@
 
 <script>
 import { mapState } from "vuex";
-import { getUserPage } from "@/api/user";
-import { getAlarmList } from "@/api/alarm";
+import { getAlarmList, getAlarmPageAll, postAddAlarm } from "@/api/alarm";
+import { getDeviceList } from "@/api/device";
 
 export default {
   data() {
     return {
       visible: false,
-      gVisible: false,
       formInline: {
         startTime: "",
         endTime: "",
         sensorType: "",
         deviceId: "",
       },
-      fromUserData: {
-        account: "",
-        password: "",
-        checkPass: "",
-        name: "",
-        tel: "",
-        roleId: "",
+      fromRuleData: {
+        alarmName: "",
+        deviceId: "",
+        sensorType: "",
+        platformThreshold: "",
+        smsThreshold: "",
       },
-      fromGroupData: {
-        name: "",
-        group: [],
-      },
-      checkedGroups: [],
-      checkAll: false,
-      isIndeterminate: false,
-      groups: [
+      sensorsType: [
         {
-          label: "巴桑卓玛",
-          id: 1,
+          key: "温度告警",
+          value: "TEMP",
         },
         {
-          label: "布次仁",
-          id: 2,
+          key: "湿度告警",
+          value: "HUMIDITY",
         },
         {
-          label: "格桑旺久",
-          id: 3,
+          key: "风速告警",
+          value: "WIND_SPEED",
         },
         {
-          label: "格桑旺久2",
-          id: 4,
+          key: "风向告警",
+          value: "WIND_DIRECTION",
+        },
+        {
+          key: "雨量告警",
+          value: "RAINFALL",
+        },
+        {
+          key: "水位告警",
+          value: "WATER_LEVEL",
+        },
+        {
+          key: "流速告警",
+          value: "FLOW_RATE",
+        },
+        {
+          key: "流量告警",
+          value: "FLOW_VELOCITY",
         },
       ],
+      groups: [],
+      devices: [],
       // table相关
       tab: "user",
       loading: false,
@@ -332,8 +310,16 @@ export default {
     ...mapState(["roles"]),
   },
   methods: {
-    getUserPage(page = 1) {
-      getUserPage({
+    getDeviceList() {
+      getDeviceList({
+        pageNum: 1,
+        pageSize: 20,
+      }).then((data) => {
+        this.devices = data.data.records;
+      });
+    },
+    getAlarmPageAll(page = 1) {
+      getAlarmPageAll({
         ...this.formInline,
         pageNum: page,
         pageSize: this.pageSize,
@@ -342,13 +328,18 @@ export default {
         this.total = +data.data.total || 0;
       });
     },
-    getAlarmList() {
+    getAlarmList(page = 1) {
       this.loading = true;
-      getAlarmList({
-        ...this.formInline,
-        pageNum: this.alarmPage,
-        pageSize: this.alarmPageSize,
-      })
+      this.page = page;
+      getAlarmList(
+        {
+          pageNum: page,
+          pageSize: this.alarmPageSize,
+        },
+        {
+          ...this.formInline,
+        }
+      )
         .then((data) => {
           this.alarmList = data.data.records || [];
           this.alarmTotal = +data.data.total || 0;
@@ -357,9 +348,21 @@ export default {
           this.loading = false;
         });
     },
+    postAddAlarm() {
+      postAddAlarm({
+        ...this.fromRuleData,
+      }).then(() => {
+        this.$message.success("添加成功");
+        this.visible = false;
+        this.getAlarmPageAll();
+      });
+    },
     handleAlarm(page = 1) {
       this.alarmPage = page;
-      this.getAlarmList();
+      this.getAlarmList(page);
+    },
+    handleAdd() {
+      this.visible = true;
     },
     handleReset() {
       this.$refs.form.resetFields();
@@ -367,23 +370,14 @@ export default {
     handleChangeTab(tab) {
       this.tab = tab;
     },
-    handleCheckAllChange(val) {
-      this.checkedGroups = val ? this.groups.map((g) => g.id) : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedGroupsChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.groups.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.groups.length;
-    },
     toRouterLink(path) {
       this.$router.push(path);
     },
   },
   created() {
-    this.getUserPage();
+    this.getAlarmPageAll();
     this.getAlarmList();
+    this.getDeviceList();
   },
 };
 </script>
@@ -403,16 +397,5 @@ export default {
       rgba(0, 120, 255, 0.3)
     )
     1 1;
-}
-.page-table-box-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  color: #fff;
-  margin-bottom: 30px;
-  h3 {
-    font-size: 18px;
-  }
 }
 </style>

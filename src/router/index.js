@@ -38,6 +38,15 @@ const FrameRoutes = [
     },
   },
   {
+    path: "/check/way/:id",
+    name: "Way",
+    component: () => import("@/views/Way.vue"),
+    meta: {
+      auth: true,
+      title: "人员定位",
+    },
+  },
+  {
     path: "/check/way",
     name: "Way",
     component: () => import("@/views/Way.vue"),
@@ -83,7 +92,7 @@ const FrameRoutes = [
     },
   },
   {
-    path: "/user/log",
+    path: "/user/log/:userId",
     name: "UserLog",
     component: () => import("@/views/UserLog.vue"),
     meta: {

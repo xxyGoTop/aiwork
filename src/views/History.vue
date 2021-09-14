@@ -5,22 +5,33 @@
         <div class="page-table-header-left">
           <span class="normal">历史记录</span>
         </div>
-        <div class="page-table-header-right">
+        <div class="page-table-header-right" @click="postDeveiceExport()">
           <span class="page-table-header-right-export-icon"></span>
           <span>导出</span>
         </div>
       </div>
       <div class="page-table-form">
-        <el-form :inline="true" :model="formInline" class="page-form-inline">
+        <el-form
+          ref="form"
+          :inline="true"
+          :model="formInline"
+          class="page-form-inline"
+        >
           <el-form-item label="设备名称">
-            <el-input
-              v-model="formInline.name"
-              placeholder="设备名称"
-            ></el-input>
+            <el-select v-model="formInline.deviceCode" placeholder="设备名称">
+              <el-option
+                v-for="d in devices"
+                :key="d.deviceCode"
+                :label="d.deviceName"
+                :value="d.deviceCode"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="开始时间">
             <el-date-picker
               v-model="formInline.startDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
             >
@@ -29,20 +40,22 @@
           <el-form-item label="结束时间">
             <el-date-picker
               v-model="formInline.endDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
             >
             </el-date-picker>
           </el-form-item>
           <el-form-item label="设备参数">
-            <el-select v-model="formInline.status" placeholder="设备参数">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="formInline.sensorType" placeholder="设备参数">
+              <el-option label="全部" value=""></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 80px">
-            <el-button type="primary">查询</el-button>
-            <el-button>重置</el-button>
+            <el-button type="primary" @click="getDeviceHisroey()"
+              >查询</el-button
+            >
+            <el-button @click="handleReset()">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -53,8 +66,14 @@
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
-              prop="userId"
-              label="打卡人"
+              prop="deviceName"
+              label="设备名称"
+              align="center"
+              width="120"
+            />
+            <el-table-column
+              prop="deviceCode"
+              label="设备ID"
               align="center"
               width="120"
             />
@@ -70,30 +89,23 @@
               align="center"
               width="150"
             />
-            <el-table-column prop="location" label="类型" align="center" />
-            <el-table-column prop="record" label="状态" align="center">
-            </el-table-column>
             <el-table-column
-              prop="action"
-              label="操作"
-              width="180"
+              prop="location"
+              label="流量(m³/s)"
               align="center"
-            >
-              <template>
-                <el-row>
-                  <el-button type="text">详情</el-button>
-                  <el-button type="text" @click="toRouterLink('/user/log')"
-                    >轨迹</el-button
-                  >
-                </el-row>
-              </template>
-            </el-table-column>
+            />
+            <el-table-column prop="record" label="水位(m)" align="center" />
+            <el-table-column prop="record" label="风速(m/s)" align="center" />
+            <el-table-column prop="record" label="雨量(mm)" align="center" />
+            <el-table-column prop="record" label="温度(℃)" align="center" />
+            <el-table-column prop="record" label="风向(°)" align="center" />
+            <el-table-column prop="record" label="湿度(%)" align="center" />
           </el-table>
         </div>
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            :page-sizes="[10, 20, 30, 40]"
+            :current-change="getDeviceHisroey"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -111,16 +123,22 @@
 
 <script>
 import { mapState } from "vuex";
-import { getCheckListPage } from "@/api/record";
+import { downBlobFile } from "@/util";
+import {
+  getDeviceList,
+  getDeviceHisroey,
+  postDeveiceExport,
+} from "@/api/device";
 export default {
   data() {
     return {
       formInline: {
-        name: "",
+        deviceCode: "",
         startDate: "",
         endDate: "",
-        status: "",
+        sensorType: "",
       },
+      devices: [],
       // table相关
       loading: false,
       list: [],
@@ -133,21 +151,45 @@ export default {
     ...mapState(["roles"]),
   },
   methods: {
-    getCheckListPage(page = 1) {
-      getCheckListPage({
-        pageNum: page,
-        pageSize: this.pageSize,
-      }).then((data) => {
+    getDeviceHisroey(page = 1) {
+      getDeviceHisroey(
+        {
+          pageNum: page,
+          pageSize: this.pageSize,
+        },
+        {
+          ...this.formInline,
+        }
+      ).then((data) => {
         this.list = data.data.records || [];
         this.total = +data.data.total || 0;
       });
+    },
+    getDeviceList() {
+      getDeviceList({
+        pageNum: 1,
+        pageSize: 20,
+      }).then((data) => {
+        this.devices = data.data.records;
+      });
+    },
+    postDeveiceExport() {
+      postDeveiceExport({
+        ...this.formInline,
+      }).then((data) => {
+        downBlobFile(data, "历史记录.xlsx");
+      });
+    },
+    handleReset() {
+      this.$refs.form.resetFields();
     },
     toRouterLink(path) {
       this.$router.push(path);
     },
   },
   created() {
-    this.getCheckListPage();
+    this.getDeviceHisroey();
+    this.getDeviceList();
   },
 };
 </script>

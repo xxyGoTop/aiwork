@@ -49,17 +49,19 @@
           </el-form-item>
           <el-form-item label="权限级别" prop="roleId">
             <el-select v-model="formInline.roleId" placeholder="权限级别">
+              <el-option label="全部" value=""></el-option>
               <el-option
                 v-for="role in roles"
-                :key="role.id"
+                :key="role.roleCode"
                 :label="role.roleName"
-                :value="role.id"
+                :value="role.roleCode"
               >
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="用户状态" prop="status">
             <el-select v-model="formInline.status" placeholder="用户状态">
+              <el-option label="全部" value=""></el-option>
               <el-option label="正常" value="shanghai"></el-option>
               <el-option label="停用" value="beijing"></el-option>
             </el-select>
@@ -105,7 +107,13 @@
                   <el-button type="text" @click="handleEditUser(row)"
                     >编辑</el-button
                   >
-                  <el-button type="text" @click="toRouterLink('/user/log')"
+                  <el-button
+                    type="text"
+                    @click="
+                      toRouterLink(
+                        `/user/log/${row.id}?name=${row.name}&role=${row.roleName}`
+                      )
+                    "
                     >登录记录</el-button
                   >
                 </el-row>
@@ -171,6 +179,7 @@
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
+            @current-change="getUserGroup"
             :current-page="groupPage"
             :page-size="pageSize"
             :total="groupTotal"
@@ -228,9 +237,9 @@
           <el-select v-model="fromUserData.roleId" placeholder="权限级别">
             <el-option
               v-for="role in roles"
-              :key="role.id"
+              :key="role.roleCode"
               :label="role.roleName"
-              :value="role.id"
+              :value="role.roleCode"
             >
             </el-option>
           </el-select>
@@ -506,13 +515,13 @@ export default {
         password: "",
       };
     },
-    handleEditUser({ id, name, account, roleId, tel, password }) {
+    handleEditUser({ id, name, account, roleCode, tel, password }) {
       this.userId = id;
       this.visible = true;
       this.fromUserData = {
         name,
         account,
-        roleId,
+        roleId: roleCode,
         tel,
         password,
       };

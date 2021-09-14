@@ -5,50 +5,66 @@
         <div class="page-table-header-left">
           <span class="normal">打卡记录</span>
         </div>
-        <div class="page-table-header-right">
+        <div class="page-table-header-right" @click="postCheckExport()">
           <span class="page-table-header-right-export-icon"></span>
           <span>导出</span>
         </div>
       </div>
       <div class="page-table-form">
-        <el-form :inline="true" :model="formInline" class="page-form-inline">
-          <el-form-item label="人员名称">
-            <el-input
-              v-model="formInline.name"
-              placeholder="人员名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="开始时间">
-            <el-date-picker
-              v-model="formInline.startDate"
-              type="datetime"
-              placeholder="选择日期时间"
-            >
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="结束时间">
-            <el-date-picker
-              v-model="formInline.endDate"
-              type="datetime"
-              placeholder="选择日期时间"
-            >
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item label="作业类型">
-            <el-select v-model="formInline.status" placeholder="作业类型">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+        <el-form
+          ref="form"
+          :inline="true"
+          :model="formInline"
+          class="page-form-inline"
+        >
+          <el-form-item label="用户名" prop="userId">
+            <el-select v-model="formInline.userId" placeholder="用户名">
+              <el-option label="全部" value=""></el-option>
+              <el-option
+                v-for="user in users"
+                :key="user.id"
+                :label="user.name"
+                :value="user.id"
+              ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="作业状态">
-            <el-select v-model="formInline.status" placeholder="作业状态">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="开始时间" prop="startDate">
+            <el-date-picker
+              v-model="formInline.startDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              type="datetime"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间" prop="endDate">
+            <el-date-picker
+              v-model="formInline.endDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              type="datetime"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="作业类型" prop="workStatus">
+            <el-select v-model="formInline.workStatus" placeholder="作业类型">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="执行中" :value="0"></el-option>
+              <el-option label="已结束" :value="1"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="作业状态" prop="workType">
+            <el-select v-model="formInline.workType" placeholder="作业状态">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="值班打卡" :value="0"></el-option>
+              <el-option label="巡逻打卡" :value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 20px">
-            <el-button type="primary">查询</el-button>
-            <el-button>重置</el-button>
+            <el-button type="primary" @click="getCheckListPage()"
+              >查询</el-button
+            >
+            <el-button @click="handleReset()">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -59,36 +75,44 @@
           <el-table :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
-              prop="userId"
+              prop="userName"
               label="打卡人"
               align="center"
               width="120"
             />
+            <el-table-column prop="startTime" label="开始时间" align="center" />
+            <el-table-column prop="endTime" label="结束时间" align="center" />
             <el-table-column
-              prop="startTime"
-              label="开始时间"
-              align="center"
+              prop="workType"
+              label="类型"
               width="150"
+              align="center"
             />
             <el-table-column
-              prop="endTime"
-              label="结束时间"
-              align="center"
+              prop="workStatus"
+              label="状态"
               width="150"
-            />
-            <el-table-column prop="location" label="类型" align="center" />
-            <el-table-column prop="record" label="状态" align="center">
-            </el-table-column>
+              align="center"
+            ></el-table-column>
             <el-table-column
               prop="action"
               label="操作"
               width="180"
               align="center"
             >
-              <template>
+              <template #default="{ row }">
                 <el-row>
-                  <el-button type="text">详情</el-button>
-                  <el-button type="text" @click="toRouterLink('/user/log')">
+                  <el-button type="text" @click="handleDetail(row)"
+                    >详情</el-button
+                  >
+                  <el-button
+                    type="text"
+                    @click="
+                      toRouterLink(
+                        `/check/way/${row.id}?userId=${row.userId}&start=${row.startTime}&end=${row.endTime}`
+                      )
+                    "
+                  >
                     轨迹
                   </el-button>
                 </el-row>
@@ -99,7 +123,7 @@
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            :page-sizes="[10, 20, 30, 40]"
+            :current-change="getCheckListPage"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -112,22 +136,58 @@
       <div class="page-container_top_bottom page-container_bottom_left"></div>
       <div class="page-container_top_bottom page-container_bottom_right"></div>
     </div>
+    <!-- 详情 -->
+    <el-dialog
+      :visible.sync="visible"
+      custom-class="page-table-dialog"
+      title="打卡详情"
+      center
+    >
+      <el-form status-icon label-width="130px" class="user-form">
+        <el-form-item label="打卡人：">
+          <el-input v-model="detail.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="开始时间：">
+          <el-input v-model="detail.startTime"></el-input>
+        </el-form-item>
+        <el-form-item label="结束时间：">
+          <el-input v-model="detail.endTime"></el-input>
+        </el-form-item>
+        <el-form-item label="作业类型：">
+          <el-input v-model="detail.workType"></el-input>
+        </el-form-item>
+        <el-form-item label="作业状态：">
+          <el-input v-model="detail.workStatus"></el-input>
+        </el-form-item>
+        <el-form-item label="备注：">
+          <el-input v-model="detail.record"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="page-container_top_bottom page-container_top_left"></div>
+      <div class="page-container_top_bottom page-container_top_right"></div>
+      <div class="page-container_top_bottom page-container_bottom_left"></div>
+      <div class="page-container_top_bottom page-container_bottom_right"></div>
+    </el-dialog>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { getCheckListPage } from "@/api/record";
+import { getCheckListPage, postCheckExport } from "@/api/record";
+import { downBlobFile } from "@/util";
 export default {
   data() {
     return {
       formInline: {
-        name: "",
+        userId: "",
         startDate: "",
         endDate: "",
-        status: "",
+        workStatus: "",
+        workType: "",
       },
+      detail: {},
       // table相关
+      visible: false,
       loading: false,
       list: [],
       total: 10,
@@ -136,17 +196,36 @@ export default {
     };
   },
   computed: {
-    ...mapState(["roles"]),
+    ...mapState(["users"]),
   },
   methods: {
     getCheckListPage(page = 1) {
-      getCheckListPage({
-        pageNum: page,
-        pageSize: this.pageSize,
-      }).then((data) => {
+      getCheckListPage(
+        {
+          pageNum: page,
+          pageSize: this.pageSize,
+        },
+        {
+          ...this.formInline,
+        }
+      ).then((data) => {
         this.list = data.data.records || [];
         this.total = +data.data.total || 0;
       });
+    },
+    postCheckExport() {
+      postCheckExport({
+        ...this.formInline,
+      }).then((data) => {
+        downBlobFile(data, "打卡记录.xlsx");
+      });
+    },
+    handleReset() {
+      this.$refs.form.resetFields();
+    },
+    handleDetail(row) {
+      this.visible = true;
+      this.detail = row;
     },
     toRouterLink(path) {
       this.$router.push(path);

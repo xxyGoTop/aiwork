@@ -41,7 +41,7 @@ export const getUserPage = (params) =>
 
 export const getUserLog = (params) =>
   Fetch({
-    url: "/user-login-log/page",
+    url: `/user-login-log/page/${params.userId}`,
     params,
   });
 
@@ -69,6 +69,13 @@ export const postDeleteUser = (data) =>
 export const postAuthLogin = (data) =>
   Fetch({
     url: "/auth/login",
+    method: "post",
+    data,
+  });
+
+export const postAuthLogout = (data) =>
+  Fetch({
+    url: "/auth/logout",
     method: "post",
     data,
   });

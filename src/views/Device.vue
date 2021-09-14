@@ -12,23 +12,29 @@
         </div>
       </div>
       <div class="page-table-form">
-        <el-form :inline="true" :model="formInline" class="page-form-inline">
-          <el-form-item label="设备名称">
+        <el-form
+          ref="form"
+          :inline="true"
+          :model="formInline"
+          class="page-form-inline"
+        >
+          <el-form-item label="设备名称" prop="name">
             <el-input
-              v-model="formInline.deviceName"
+              v-model="formInline.name"
               placeholder="设备名称"
             ></el-input>
           </el-form-item>
-          <el-form-item label="设备状态">
+          <el-form-item label="设备状态" prop="status">
             <el-select v-model="formInline.status" placeholder="设备状态">
-              <el-option label="正常" :value="0"></el-option>
-              <el-option label="停用" :value="1"></el-option>
-              <el-option label="已删除" :value="-1"></el-option>
+              <el-option label="全部" value=""></el-option>
+              <el-option label="正常" value="ON_LINE"></el-option>
+              <el-option label="停用" value="OFF_LINE"></el-option>
+              <el-option label="已删除" value="DELETED"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 80px">
             <el-button type="primary" @click="handleDevice()">查询</el-button>
-            <el-button>重置</el-button>
+            <el-button @click="handleReset()">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -73,7 +79,9 @@
             <el-table-column prop="action" label="操作" width="280">
               <template #default="{ row }">
                 <el-row>
-                  <el-button type="text">停用</el-button>
+                  <el-button type="text" @click="handleStopDevice(row)"
+                    >停用</el-button
+                  >
                   <el-button type="text" @click="handleEdit(row)"
                     >编辑</el-button
                   >
@@ -82,7 +90,11 @@
                   >
                   <el-button
                     type="text"
-                    @click="toRouterLink(`/device/sensor/${row.deviceCode}`)"
+                    @click="
+                      toRouterLink(
+                        `/device/sensor/${row.deviceCode}?name=${row.deviceName}`
+                      )
+                    "
                     >数据记录</el-button
                   >
                 </el-row>
@@ -110,7 +122,7 @@
     <el-dialog
       :visible.sync="visible"
       custom-class="page-table-dialog"
-      title="添加设备"
+      :title="dTitle"
       center
     >
       <el-form
@@ -187,8 +199,9 @@ export default {
     return {
       visible: false,
       deleteVisible: false,
+      dTitle: "添加设备",
       formInline: {
-        deviceName: "",
+        name: "",
         status: "",
       },
       fromData: {
@@ -215,6 +228,7 @@ export default {
       getDeviceList({
         pageNum: 1,
         pageSize: 20,
+        ...this.formInline,
       })
         .then((data) => {
           this.devices = data.data.records;
@@ -235,11 +249,13 @@ export default {
       });
     },
     handleAdd() {
+      this.dTitle = "添加设备";
       this.visible = true;
       this.deviceCode = null;
       this.fromData.deviceCode = null;
     },
     handleEdit({ deviceCode }) {
+      this.dTitle = "编辑设备";
       this.visible = true;
       this.deviceCode = deviceCode;
       this.fromData.deviceCode = deviceCode;
@@ -273,6 +289,15 @@ export default {
           this.handleDevice();
         });
     },
+    handleStopDevice({ deviceCode, groupId }) {
+      postDeviceUpdate({
+        deviceCode,
+        groupId,
+        status: 1,
+      }).then(() => {
+        this.$message.success("停用成功");
+      });
+    },
     handleDelete({ deviceCode }) {
       this.deleteVisible = true;
       this.deviceCode = deviceCode;
@@ -287,6 +312,9 @@ export default {
         .finally(() => {
           this.handleDevice();
         });
+    },
+    handleReset() {
+      this.$refs.form.resetFields();
     },
     toRouterLink(path) {
       this.$router.push(path);

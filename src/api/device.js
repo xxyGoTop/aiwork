@@ -12,10 +12,20 @@ export const getDeviceRaw = (params) =>
     params,
   });
 
-export const getDeviceHisroey = (params) =>
+export const getDeviceHisroey = (params, data) =>
   Fetch({
     url: "/device/page/history",
+    method: "post",
     params,
+    data,
+  });
+
+export const postDeveiceExport = (data) =>
+  Fetch({
+    url: "/device/export/history",
+    method: "post",
+    responseType: "blob",
+    data,
   });
 
 export const postDeviceAdd = (data) =>
