@@ -6,6 +6,12 @@ export const getDeviceList = (params) =>
     params,
   });
 
+export const getDevicePage = (params) =>
+  Fetch({
+    url: "/device/page",
+    params,
+  });
+
 export const getDeviceRaw = (params) =>
   Fetch({
     url: "/device/raw/page",

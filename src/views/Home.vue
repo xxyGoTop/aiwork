@@ -84,8 +84,8 @@
       <div class="page-container_top_bottom page-container_bottom_right"></div>
     </div>
     <!-- 设备数据 -->
-    <div class="home-chart-wrap">
-      <div class="home-chart-wrap-container">
+    <div class="home-chart-wrap" :class="{ explan: !isShow }">
+      <div class="home-chart-wrap-container" v-if="isShow">
         <div class="home-chart-header">
           <div class="home-chart-header-left">
             <span class="chart-left-title">{{ deviceName }}</span>
@@ -118,11 +118,12 @@
           </div>
         </div>
       </div>
-      <div class="page-container_top_bottom page-container_top_left"></div>
-      <div class="page-container_top_bottom page-container_top_right"></div>
-      <div class="page-container_top_bottom page-container_bottom_left"></div>
-      <div class="page-container_top_bottom page-container_bottom_right"></div>
-      <div class="home-chart-buoy"></div>
+      <div v-if="isShow" class="page-container_top_bottom page-container_top_left"></div>
+      <div v-if="isShow" class="page-container_top_bottom page-container_top_right"></div>
+      <div v-if="isShow" class="page-container_top_bottom page-container_bottom_left"></div>
+      <div v-if="isShow" class="page-container_top_bottom page-container_bottom_right"></div>
+      <div v-if="isShow" class="home-chart-buoy" @click="isShow = !isShow"></div>
+      <div v-if="!isShow" class="home-chart-buoy explan" @click="isShow = !isShow"></div>
     </div>
     <div id="container" class="map"></div>
     <!-- 传感器设置 -->
@@ -187,6 +188,7 @@ export default {
       mapIconPress,
       map: null,
       preMarker: null,
+      isShow: true,
       // 图表
       chartMap: {
         TEMP: {
@@ -660,7 +662,7 @@ export default {
   }
   .home-chart-buoy.explan {
     position: absolute;
-    right: -24px;
+    left: 0px;
     top: 50%;
     transform: translate(0%, -50%);
     width: 24px;
@@ -764,6 +766,10 @@ export default {
     }
   }
 }
+.home-chart-wrap.explan {
+  width: 0px;
+  border: 0px;
+}
 .home-warn-wrap {
   position: absolute;
   top: 105px;
@@ -861,11 +867,14 @@ export default {
   &.el-form {
     width: 665px;
   }
+  .el-select {
+    width: 240px;
+  }
   .el-input {
     width: 240px;
   }
   .el-input__inner {
-    width: 240px;
+    width: 100%;
   }
 }
 </style>

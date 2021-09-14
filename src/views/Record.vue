@@ -72,7 +72,7 @@
       <div class="page-table">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
               prop="userName"
@@ -127,7 +127,7 @@
             :current-page="page"
             :page-size="pageSize"
             :total="total"
-            layout="prev, pager, next, total"
+            layout="total, prev, pager, next"
           />
         </el-row>
       </div>

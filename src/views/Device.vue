@@ -48,13 +48,13 @@
             style="width: 100%"
           >
             <el-table-column
-              prop="deviceNumber"
+              prop="id"
               label="序号"
               width="80"
               align="center"
             />
-            <el-table-column prop="deviceName" label="设备名称" />
-            <el-table-column prop="deviceCode" label="传感器" />
+            <el-table-column prop="name" label="设备名称" />
+            <el-table-column prop="code" label="设备ID" />
             <el-table-column prop="sensorType" label="传感器" />
             <el-table-column
               prop="used"
@@ -187,7 +187,7 @@
 import { mapState } from "vuex";
 import { getUserGroup } from "@/api/user";
 import {
-  getDeviceList,
+  getDevicePage,
   getDeviceRaw,
   postDeviceAdd,
   postDeviceUpdate,
@@ -223,15 +223,15 @@ export default {
     ...mapState(["roles"]),
   },
   methods: {
-    getDeviceList() {
+    getDevicePage() {
       this.loading = true;
-      getDeviceList({
+      getDevicePage({
         pageNum: 1,
         pageSize: 20,
         ...this.formInline,
       })
         .then((data) => {
-          this.devices = data.data.records;
+          this.devices = data.data.records || [];
           this.total = +data.data.total || 0;
         })
         .finally(() => {
@@ -254,15 +254,16 @@ export default {
       this.deviceCode = null;
       this.fromData.deviceCode = null;
     },
-    handleEdit({ deviceCode }) {
+    handleEdit({ code, groupId }) {
       this.dTitle = "编辑设备";
       this.visible = true;
-      this.deviceCode = deviceCode;
-      this.fromData.deviceCode = deviceCode;
+      this.deviceCode = code;
+      this.fromData.deviceCode = code;
+      this.fromData.groupId = groupId;
     },
     handleDevice(page = 1) {
       this.page = page;
-      this.getDeviceList();
+      this.getDevicePage();
     },
     handleAddOrUpdate() {
       if (!this.deviceCode) {
@@ -298,9 +299,9 @@ export default {
         this.$message.success("停用成功");
       });
     },
-    handleDelete({ deviceCode }) {
+    handleDelete({ code }) {
       this.deleteVisible = true;
-      this.deviceCode = deviceCode;
+      this.deviceCode = code;
     },
     postDelete() {
       postDeviceDelete({
@@ -323,7 +324,7 @@ export default {
   created() {
     this.getDeviceRaw();
     this.getUserGroup();
-    this.getDeviceList();
+    this.getDevicePage();
   },
 };
 </script>

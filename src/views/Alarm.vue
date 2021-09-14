@@ -79,7 +79,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="page-table" v-if="tab === 'user'">
+      <div class="page-table" v-show="tab === 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
           <el-table
@@ -121,10 +121,11 @@
           />
         </el-row>
       </div>
-      <div class="page-table" v-else>
+      <div class="page-table" v-show="tab !== 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+            <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column prop="name" label="规则名称" align="center" />
             <el-table-column
               prop="typeName"
