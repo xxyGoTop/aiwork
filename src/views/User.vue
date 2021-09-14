@@ -196,7 +196,7 @@
     <el-dialog
       :visible.sync="visible"
       custom-class="page-table-dialog"
-      title="添加用户"
+      :title="userTitle"
       center
     >
       <el-form
@@ -257,7 +257,7 @@
     <el-dialog
       :visible.sync="gVisible"
       custom-class="page-table-dialog"
-      title="新增用户组"
+      :title="groupTitle"
       center
     >
       <el-form
@@ -383,6 +383,8 @@ export default {
       userId: null,
       groudId: null,
       grouds: [],
+      userTitle: "新增用户",
+      groupTitle: "新增用户组",
       // table相关
       tab: "user",
       loading: false,
@@ -507,6 +509,7 @@ export default {
     handleAddUser() {
       this.userId = null;
       this.visible = true;
+      this.userTitle = "新增用户";
       this.fromUserData = {
         name: "",
         account: "",
@@ -518,6 +521,7 @@ export default {
     handleEditUser({ id, name, account, roleCode, tel, password }) {
       this.userId = id;
       this.visible = true;
+      this.userTitle = "编辑用户";
       this.fromUserData = {
         name,
         account,
@@ -534,6 +538,7 @@ export default {
       this.groudId = null;
       this.checkAll = false;
       this.isIndeterminate = false;
+      this.groupTitle = "新增用户组";
       this.fromGroupData.groupName = "";
       this.fromGroupData.userIds = [];
     },
@@ -542,6 +547,7 @@ export default {
       this.isIndeterminate = this.list.length !== users.length;
       this.gVisible = true;
       this.groupId = groupId;
+      this.groupTitle = "编辑用户组";
       this.fromGroupData = {
         groupName,
         userIds: users.map((u) => u.id),

@@ -89,11 +89,11 @@
             style="width: 100%"
           >
             <el-table-column prop="id" label="序号" width="80" align="center" />
-            <el-table-column
-              prop="sensorType"
-              label="报警类型"
-              align="center"
-            />
+            <el-table-column prop="sensorType" label="报警类型" align="center">
+              <template #default="{ row }">
+                <span class="alarm-status">{{ row.sensorType }}</span>
+              </template>
+            </el-table-column>
             <el-table-column
               prop="triggerTime"
               label="报警时间"
@@ -131,7 +131,11 @@
               label="报警类型"
               width="180"
               align="center"
-            />
+            >
+              <template #default="{ row }">
+                <span class="alarm-status">{{ row.typeName }}</span>
+              </template>
+            </el-table-column>
             <el-table-column
               prop="deviceId"
               label="报警设备"
@@ -172,7 +176,7 @@
     <el-dialog
       :visible.sync="visible"
       custom-class="page-table-dialog"
-      title="添加规则"
+      :title="dTitle"
       center
     >
       <el-form
@@ -291,6 +295,7 @@ export default {
           value: "FLOW_VELOCITY",
         },
       ],
+      dTitle: "添加规则",
       groups: [],
       devices: [],
       // table相关
@@ -362,6 +367,11 @@ export default {
       this.getAlarmList(page);
     },
     handleAdd() {
+      this.dTitle = "添加规则";
+      this.visible = true;
+    },
+    handleEdit() {
+      this.dTitle = "编辑规则";
       this.visible = true;
     },
     handleReset() {
@@ -397,5 +407,18 @@ export default {
       rgba(0, 120, 255, 0.3)
     )
     1 1;
+}
+.alarm-status {
+  display: inline-block;
+  width: 64px;
+  padding: 0px 3px;
+  height: 28px;
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+  color: #ff4d4f;
+  background: rgba(0, 255, 36, 0.1);
+  border: 1px solid #ff4d4f;
+  border-radius: 4px;
 }
 </style>
