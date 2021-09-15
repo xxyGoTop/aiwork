@@ -69,37 +69,32 @@
               prop="deviceName"
               label="设备名称"
               align="center"
-              width="120"
+              width="190"
             />
             <el-table-column
               prop="deviceCode"
               label="设备ID"
               align="center"
-              width="120"
+              width="180"
             />
             <el-table-column
-              prop="startTime"
-              label="开始时间"
+              prop="reportTime"
+              label="上报时间"
               align="center"
-              width="150"
+              width="180"
             />
             <el-table-column
-              prop="endTime"
-              label="结束时间"
-              align="center"
-              width="150"
-            />
-            <el-table-column
-              prop="location"
+              prop="flowVelocity"
               label="流量(m³/s)"
               align="center"
             />
-            <el-table-column prop="record" label="水位(m)" align="center" />
-            <el-table-column prop="record" label="风速(m/s)" align="center" />
-            <el-table-column prop="record" label="雨量(mm)" align="center" />
-            <el-table-column prop="record" label="温度(℃)" align="center" />
-            <el-table-column prop="record" label="风向(°)" align="center" />
-            <el-table-column prop="record" label="湿度(%)" align="center" />
+            <el-table-column prop="flowRate" label="流速(m/s)" align="center" />
+            <el-table-column prop="waterLevel" label="水位(m)" align="center" />
+            <el-table-column prop="windSpeed" label="风速(m/s)" align="center" />
+            <el-table-column prop="rainfall" label="雨量(mm)" align="center" />
+            <el-table-column prop="temp" label="温度(℃)" align="center" />
+            <el-table-column prop="windDirection" label="风向(°)" align="center" />
+            <el-table-column prop="humidity" label="湿度(%)" align="center" />
           </el-table>
         </div>
         <el-row style="margin-top: 16px" type="flex" justify="end">
@@ -109,7 +104,7 @@
             :current-page="page"
             :page-size="pageSize"
             :total="total"
-            layout="prev, pager, next, total"
+            layout="total, prev, pager, next"
           />
         </el-row>
       </div>
@@ -152,13 +147,22 @@ export default {
   },
   methods: {
     getDeviceHisroey(page = 1) {
+      let formObj = {};
+      Object.keys(this.formInline).forEach(key => {
+        if (this.formInline[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.formInline[key]
+          }
+        }
+      })
       getDeviceHisroey(
         {
           pageNum: page,
           pageSize: this.pageSize,
         },
         {
-          ...this.formInline,
+          ...formObj,
         }
       ).then((data) => {
         this.list = data.data.records || [];
@@ -174,8 +178,17 @@ export default {
       });
     },
     postDeveiceExport() {
+      let formObj = {};
+      Object.keys(this.formInline).forEach(key => {
+        if (this.formInline[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.formInline[key]
+          }
+        }
+      })
       postDeveiceExport({
-        ...this.formInline,
+        ...formObj,
       }).then((data) => {
         downBlobFile(data, "历史记录.xlsx");
       });

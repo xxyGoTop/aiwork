@@ -92,7 +92,7 @@
             v-loading="loading"
             style="width: 100%"
           >
-            <el-table-column prop="id" label="序号" width="80" align="center" />
+            <el-table-column type="index" label="序号" width="80" align="center" />
             <el-table-column prop="sensorType" label="报警类型" align="center">
               <template #default="{ row }">
                 <span class="alarm-status">{{ row.sensorType }}</span>
@@ -381,13 +381,22 @@ export default {
     getAlarmList(page = 1) {
       this.loading = true;
       this.page = page;
+      let formObj = {};
+      Object.keys(this.formInline).forEach(key => {
+        if (this.formInline[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.formInline[key]
+          }
+        }
+      })
       getAlarmList(
         {
           pageNum: page,
           pageSize: this.alarmPageSize,
         },
         {
-          ...this.formInline,
+          ...formObj,
         }
       )
         .then((data) => {
