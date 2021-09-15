@@ -15,7 +15,11 @@
             >报警设置</span
           >
         </div>
-        <div class="page-table-header-right" v-if="tab === 'user'">
+        <div
+          class="page-table-header-right"
+          @click="postAlarmExport()"
+          v-if="tab === 'user'"
+        >
           <span class="page-table-header-right-export-icon"></span>
           <span>导出</span>
         </div>
@@ -126,19 +130,21 @@
         <div class="page-table-box">
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
-            <el-table-column prop="name" label="规则名称" align="center" />
+            <el-table-column prop="alarmName" label="规则名称" align="center" />
             <el-table-column
-              prop="typeName"
+              prop="sensorType"
               label="报警类型"
               width="180"
               align="center"
             >
               <template #default="{ row }">
-                <span class="alarm-status">{{ row.typeName }}</span>
+                <span class="alarm-status">{{
+                  sensorsMap[row.sensorType]
+                }}</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="deviceId"
+              prop="deviceName"
               label="报警设备"
               width="380"
               align="center"
@@ -155,12 +161,24 @@
               width="180"
               align="center"
             ></el-table-column>
+            <el-table-column prop="action" label="操作" width="280">
+              <template #default="{ row }">
+                <el-row>
+                  <el-button type="text" @click="handleEdit(row)"
+                    >编辑</el-button
+                  >
+                  <el-button type="text" @click="handleDelete(row)"
+                    >删除</el-button
+                  >
+                </el-row>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            @current-change="getAlarmPageAll"
+            @current-change="getAlarmRulePage"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -237,17 +255,42 @@
         <el-button type="primary" @click="postAddAlarm()">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 删除 -->
+    <el-dialog
+      :visible.sync="deleteVisible"
+      custom-class="page-delete-dialog"
+      center
+    >
+      <div class="page-delete-title">确定要删除该规则吗？</div>
+      <div class="page-container_top_bottom page-container_top_left"></div>
+      <div class="page-container_top_bottom page-container_top_right"></div>
+      <div class="page-container_top_bottom page-container_bottom_left"></div>
+      <div class="page-container_top_bottom page-container_bottom_right"></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteVisible = false">取 消</el-button>
+        <el-button type="primary" @click="postDelete()">确 定</el-button>
+      </span>
+    </el-dialog>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { getAlarmList, getAlarmPageAll, postAddAlarm } from "@/api/alarm";
+import {
+  getAlarmList,
+  getAlarmRulePage,
+  postAddAlarm,
+  postAlarmExport,
+  postDeleteAlarm,
+  postEditAlarm,
+} from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
+import { downBlobFile } from "@/util";
 
 export default {
   data() {
     return {
+      deleteVisible: false,
       visible: false,
       formInline: {
         startTime: "",
@@ -262,6 +305,7 @@ export default {
         platformThreshold: "",
         smsThreshold: "",
       },
+      sensorsMap: {},
       sensorsType: [
         {
           key: "温度告警",
@@ -297,6 +341,7 @@ export default {
         },
       ],
       dTitle: "添加规则",
+      ruleId: null,
       groups: [],
       devices: [],
       // table相关
@@ -324,9 +369,8 @@ export default {
         this.devices = data.data.records;
       });
     },
-    getAlarmPageAll(page = 1) {
-      getAlarmPageAll({
-        ...this.formInline,
+    getAlarmRulePage(page = 1) {
+      getAlarmRulePage({
         pageNum: page,
         pageSize: this.pageSize,
       }).then((data) => {
@@ -354,26 +398,78 @@ export default {
           this.loading = false;
         });
     },
+    postAlarmExport() {
+      postAlarmExport({
+        ...this.formInline,
+      }).then((data) => {
+        downBlobFile(data, "报警记录.xlsx");
+      });
+    },
     postAddAlarm() {
       postAddAlarm({
         ...this.fromRuleData,
       }).then(() => {
         this.$message.success("添加成功");
         this.visible = false;
-        this.getAlarmPageAll();
+        this.getAlarmRulePage();
+      });
+    },
+    postEditAlarm() {
+      postEditAlarm({
+        ...this.fromRuleData,
+      }).then(() => {
+        this.$message.success("更新成功");
+        this.visible = false;
+        this.getAlarmRulePage();
       });
     },
     handleAlarm(page = 1) {
       this.alarmPage = page;
       this.getAlarmList(page);
     },
+    handleSubmit() {
+      const { deviceId } = this.fromRuleData;
+      deviceId ? this.postEditAlarm() : this.postAddAlarm();
+    },
     handleAdd() {
       this.dTitle = "添加规则";
       this.visible = true;
+      this.fromRuleData = {
+        alarmName: "",
+        deviceId: "",
+        sensorType: "",
+        platformThreshold: "",
+        smsThreshold: "",
+      };
     },
-    handleEdit() {
+    handleEdit({
+      alarmName,
+      deviceId,
+      sensorType,
+      platformThreshold,
+      smsThreshold,
+    }) {
       this.dTitle = "编辑规则";
       this.visible = true;
+      this.fromRuleData = {
+        alarmName,
+        deviceId,
+        sensorType,
+        platformThreshold,
+        smsThreshold,
+      };
+    },
+    handleDelete({ id }) {
+      this.deleteVisible = true;
+      this.ruleId = id;
+    },
+    postDelete() {
+      postDeleteAlarm({
+        ruleId: this.ruleId,
+      }).then(() => {
+        this.$message.success("删除成功");
+        this.getAlarmRulePage();
+      });
     },
     handleReset() {
       this.$refs.form.resetFields();
@@ -386,7 +482,10 @@ export default {
     },
   },
   created() {
-    this.getAlarmPageAll();
+    this.sensorsType.forEach((s) => {
+      this.sensorsMap[s.value] = s.key;
+    });
+    this.getAlarmRulePage();
     this.getAlarmList();
     this.getDeviceList();
   },

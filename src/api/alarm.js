@@ -8,16 +8,33 @@ export const getAlarmList = (params, data = {}) =>
     data,
   });
 
-export const getAlarmPageAll = (params) =>
+export const getAlarmRulePage = (params, data = {}) =>
   Fetch({
-    url: "/alarm/page/all",
+    url: "/alarm/rule/page",
+    method: "post",
     params,
+    data,
   });
 
 export const getAlarmType = (params) =>
   Fetch({
     url: "/alarm/alarm/type",
     params,
+  });
+
+export const postAlarmExport = (data) =>
+  Fetch({
+    url: "/alarm/export",
+    method: "post",
+    responseType: "blob",
+    data,
+  });
+
+export const postDeleteAlarm = (data = {}) =>
+  Fetch({
+    url: `/alarm/delete/${data.ruleId}`,
+    method: "delete",
+    data,
   });
 
 export const postAddAlarm = (data = {}) =>
@@ -29,7 +46,7 @@ export const postAddAlarm = (data = {}) =>
 
 export const postEditAlarm = (data = {}) =>
   Fetch({
-    url: "/alarm/edit/rule",
+    url: "/alarm/update",
     method: "post",
     data,
   });

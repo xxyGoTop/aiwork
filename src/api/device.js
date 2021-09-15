@@ -6,6 +6,12 @@ export const getDeviceList = (params) =>
     params,
   });
 
+export const getDeviceDetail = (params) =>
+  Fetch({
+    url: `/device/${params.deviceCode}/detail`,
+    params,
+  });
+
 export const getDevicePage = (params) =>
   Fetch({
     url: "/device/page",

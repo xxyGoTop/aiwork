@@ -47,12 +47,7 @@
             v-loading="loading"
             style="width: 100%"
           >
-            <el-table-column
-              prop="id"
-              label="序号"
-              width="80"
-              align="center"
-            />
+            <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column prop="name" label="设备名称" />
             <el-table-column prop="code" label="设备ID" />
             <el-table-column prop="sensorType" label="传感器" />
@@ -92,7 +87,7 @@
                     type="text"
                     @click="
                       toRouterLink(
-                        `/device/sensor/${row.deviceCode}?name=${row.deviceName}`
+                        `/device/sensor/${row.code}?name=${row.name}`
                       )
                     "
                     >数据记录</el-button
@@ -120,6 +115,7 @@
     </div>
     <!-- 编辑 -->
     <el-dialog
+      v-loading="detailLoading"
       :visible.sync="visible"
       custom-class="page-table-dialog"
       :title="dTitle"
@@ -180,6 +176,29 @@
         <el-button type="primary" @click="postDelete()">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 详情 -->
+    <el-dialog
+      :visible.sync="detailVisible"
+      custom-class="page-table-dialog"
+      title="设备详情"
+      center
+    >
+      <el-form status-icon label-width="130px" class="user-form">
+        <el-form-item label="设备名：">
+          <el-input v-model="detail.deviceName"></el-input>
+        </el-form-item>
+        <el-form-item label="设备ID：">
+          <el-input v-model="detail.deviceCode"></el-input>
+        </el-form-item>
+        <el-form-item label="传感器：">
+          <el-input v-model="detail.sensorTypes"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="page-container_top_bottom page-container_top_left"></div>
+      <div class="page-container_top_bottom page-container_top_right"></div>
+      <div class="page-container_top_bottom page-container_bottom_left"></div>
+      <div class="page-container_top_bottom page-container_bottom_right"></div>
+    </el-dialog>
   </section>
 </template>
 
@@ -189,6 +208,7 @@ import { getUserGroup } from "@/api/user";
 import {
   getDevicePage,
   getDeviceRaw,
+  getDeviceDetail,
   postDeviceAdd,
   postDeviceUpdate,
   postDeviceDelete,
@@ -199,6 +219,7 @@ export default {
     return {
       visible: false,
       deleteVisible: false,
+      detailVisible: false,
       dTitle: "添加设备",
       formInline: {
         name: "",
@@ -210,7 +231,9 @@ export default {
       },
       // table相关
       loading: false,
+      detailLoading: false,
       deviceCode: null,
+      detail: {},
       devices: [],
       rawDevices: [],
       groups: [],
@@ -243,6 +266,18 @@ export default {
         this.rawDevices = data.data.records;
       });
     },
+    getDeviceDetail(deviceCode) {
+      this.detailLoading = true;
+      getDeviceDetail(deviceCode)
+        .then((data) => {
+          this.detail = data.data;
+          this.fromData.deviceCode = data.data.deviceCode;
+          this.fromData.groupId = data.data.groupId;
+        })
+        .finally(() => {
+          this.detailLoading = false;
+        });
+    },
     getUserGroup() {
       getUserGroup().then((data) => {
         this.groups = data.data.records;
@@ -260,6 +295,7 @@ export default {
       this.deviceCode = code;
       this.fromData.deviceCode = code;
       this.fromData.groupId = groupId;
+      this.getDeviceDetail({ deviceCode: code });
     },
     handleDevice(page = 1) {
       this.page = page;
@@ -316,6 +352,10 @@ export default {
     },
     handleReset() {
       this.$refs.form.resetFields();
+    },
+    handleDetail({ code }) {
+      this.detailVisible = true;
+      this.getDeviceDetail({ deviceCode: code });
     },
     toRouterLink(path) {
       this.$router.push(path);

@@ -33,10 +33,12 @@ export const postUpdateUserGroup = (data) =>
     data,
   });
 
-export const getUserPage = (params) =>
+export const getUserPage = (params, data) =>
   Fetch({
     url: "/user/page",
+    method: "post",
     params,
+    data,
   });
 
 export const getUserLog = (params) =>

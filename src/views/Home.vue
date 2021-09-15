@@ -118,12 +118,32 @@
           </div>
         </div>
       </div>
-      <div v-if="isShow" class="page-container_top_bottom page-container_top_left"></div>
-      <div v-if="isShow" class="page-container_top_bottom page-container_top_right"></div>
-      <div v-if="isShow" class="page-container_top_bottom page-container_bottom_left"></div>
-      <div v-if="isShow" class="page-container_top_bottom page-container_bottom_right"></div>
-      <div v-if="isShow" class="home-chart-buoy" @click="isShow = !isShow"></div>
-      <div v-if="!isShow" class="home-chart-buoy explan" @click="isShow = !isShow"></div>
+      <div
+        v-if="isShow"
+        class="page-container_top_bottom page-container_top_left"
+      ></div>
+      <div
+        v-if="isShow"
+        class="page-container_top_bottom page-container_top_right"
+      ></div>
+      <div
+        v-if="isShow"
+        class="page-container_top_bottom page-container_bottom_left"
+      ></div>
+      <div
+        v-if="isShow"
+        class="page-container_top_bottom page-container_bottom_right"
+      ></div>
+      <div
+        v-if="isShow"
+        class="home-chart-buoy"
+        @click="isShow = !isShow"
+      ></div>
+      <div
+        v-if="!isShow"
+        class="home-chart-buoy explan"
+        @click="isShow = !isShow"
+      ></div>
     </div>
     <div id="container" class="map"></div>
     <!-- 传感器设置 -->

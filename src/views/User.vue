@@ -35,9 +35,9 @@
           :model="formInline"
           class="page-form-inline"
         >
-          <el-form-item label="用户姓名" prop="account">
+          <el-form-item label="用户姓名" prop="userName">
             <el-input
-              v-model="formInline.account"
+              v-model="formInline.userName"
               placeholder="用户姓名"
             ></el-input>
           </el-form-item>
@@ -47,8 +47,8 @@
               placeholder="手机号码"
             ></el-input>
           </el-form-item>
-          <el-form-item label="权限级别" prop="roleId">
-            <el-select v-model="formInline.roleId" placeholder="权限级别">
+          <el-form-item label="权限级别" prop="roleCode">
+            <el-select v-model="formInline.roleCode" placeholder="权限级别">
               <el-option label="全部" value=""></el-option>
               <el-option
                 v-for="role in roles"
@@ -360,9 +360,9 @@ export default {
       deleteVisible: false,
       deleteGroupVisible: false,
       formInline: {
-        account: "",
+        userName: "",
         tel: "",
-        roleId: "",
+        roleCode: "",
         status: "",
       },
       fromUserData: {
@@ -404,10 +404,15 @@ export default {
     getUserPage(page = 1) {
       this.userPage = page;
       this.loading = true;
-      getUserPage({
-        pageNum: page,
-        pageSize: this.pageSize,
-      })
+      getUserPage(
+        {
+          pageNum: page,
+          pageSize: this.pageSize,
+        },
+        {
+          ...this.formInline,
+        }
+      )
         .then((data) => {
           this.list = data.data.records || [];
           this.userTotal = +data.data.total || 0;
