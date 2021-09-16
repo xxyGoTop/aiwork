@@ -100,6 +100,12 @@ export default {
     endT() {
       return this.$route.query.end;
     },
+    workStatusId() {
+      return this.$route.query.workStatus;
+    },
+    workTypeId() {
+      return this.$route.query.workType;
+    },
   },
   methods: {
     getLocationPage() {
@@ -175,6 +181,8 @@ export default {
     if (this.recordId) {
       this.formInline.startDate = this.startT;
       this.formInline.endDate = this.endT;
+      this.formInline.workStatus = this.workStatusId ? +this.workStatusId : '';
+      this.formInline.workType = this.workTypeId ? +this.workTypeId : '';
       this.getLocationPage();
     }
   },

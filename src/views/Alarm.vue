@@ -129,7 +129,7 @@
         <!-- 表格 -->
         <div class="page-table-box">
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
-            <el-table-column prop="id" label="序号" width="80" align="center" />
+            <el-table-column prop="ruleId" label="序号" width="80" align="center" />
             <el-table-column prop="alarmName" label="规则名称" align="center" />
             <el-table-column
               prop="sensorType"
@@ -408,15 +408,33 @@ export default {
         });
     },
     postAlarmExport() {
+      let formObj = {};
+      Object.keys(this.formInline).forEach(key => {
+        if (this.formInline[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.formInline[key]
+          }
+        }
+      })
       postAlarmExport({
-        ...this.formInline,
+        ...formObj,
       }).then((data) => {
         downBlobFile(data, "报警记录.xlsx");
       });
     },
     postAddAlarm() {
+      let formObj = {};
+      Object.keys(this.fromRuleData).forEach(key => {
+        if (this.fromRuleData[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.fromRuleData[key]
+          }
+        }
+      });
       postAddAlarm({
-        ...this.fromRuleData,
+        ...formObj,
       }).then(() => {
         this.$message.success("添加成功");
         this.visible = false;
@@ -424,8 +442,17 @@ export default {
       });
     },
     postEditAlarm() {
+      let formObj = {};
+      Object.keys(this.fromRuleData).forEach(key => {
+        if (this.fromRuleData[key]) {
+          formObj = {
+            ...formObj,
+            [key]: this.fromRuleData[key]
+          }
+        }
+      });
       postEditAlarm({
-        ...this.fromRuleData,
+        ...formObj,
       }).then(() => {
         this.$message.success("更新成功");
         this.visible = false;
@@ -437,13 +464,14 @@ export default {
       this.getAlarmList(page);
     },
     handleSubmit() {
-      const { deviceId } = this.fromRuleData;
-      deviceId ? this.postEditAlarm() : this.postAddAlarm();
+      const { ruleId } = this.fromRuleData;
+      ruleId ? this.postEditAlarm() : this.postAddAlarm();
     },
     handleAdd() {
       this.dTitle = "添加规则";
       this.visible = true;
       this.fromRuleData = {
+        ruleId: "",
         alarmName: "",
         deviceId: "",
         sensorType: "",
@@ -452,6 +480,7 @@ export default {
       };
     },
     handleEdit({
+      ruleId,
       alarmName,
       deviceId,
       sensorType,
@@ -461,6 +490,7 @@ export default {
       this.dTitle = "编辑规则";
       this.visible = true;
       this.fromRuleData = {
+        ruleId,
         alarmName,
         deviceId,
         sensorType,

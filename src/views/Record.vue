@@ -75,7 +75,7 @@
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
-              prop="userName"
+              prop="name"
               label="打卡人"
               align="center"
               width="120"
@@ -109,7 +109,7 @@
                     type="text"
                     @click="
                       toRouterLink(
-                        `/check/way/${row.id}?userId=${row.userId}&start=${row.startTime}&end=${row.endTime}`
+                        `/check/way/${row.id}?userId=${row.userId}&start=${row.startTime}&end=${row.endTime}&workType=${row.workTypeId}&workStatus=${row.workStatusId}`
                       )
                     "
                   >
@@ -145,7 +145,7 @@
     >
       <el-form status-icon label-width="130px" class="user-form">
         <el-form-item label="打卡人：">
-          <el-input v-model="detail.userName"></el-input>
+          <el-input v-model="detail.name"></el-input>
         </el-form-item>
         <el-form-item label="开始时间：">
           <el-input v-model="detail.startTime"></el-input>
