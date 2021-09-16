@@ -119,7 +119,7 @@ export default {
         ...this.formInline,
       })
         .then((data) => {
-          this.list = data.data.filter((r) => r.longitude) || [];
+          this.list = data.data.filter((r) => (r.longitude && r.latitude)) || [];
           if (this.list.length) {
             this.readyMapPath();
           } else {
@@ -135,29 +135,29 @@ export default {
     },
     readyMapPath() {
       /* eslint-disable */
-      const list = [{
-        'longitude': 116.297611,
-        'latitude': 40.047363
-      }, {
-        'longitude': 116.302839,
-        'latitude': 40.048219
-      }, {
-        'longitude': 116.308301,
-        'latitude': 40.050566
-      }, {
-        'longitude': 116.305732,
-        'latitude': 40.054957
-      }, {
-        'longitude': 116.304754,
-        'latitude': 40.057953
-      }, {
-        'longitude': 116.306487,
-        'latitude': 40.058312
-      }, {
-        'longitude': 116.307223,
-        'latitude': 40.056379
-      }];
-      // const list = this.list;
+      // const list = [{
+      //   'longitude': 116.297611,
+      //   'latitude': 40.047363
+      // }, {
+      //   'longitude': 116.302839,
+      //   'latitude': 40.048219
+      // }, {
+      //   'longitude': 116.308301,
+      //   'latitude': 40.050566
+      // }, {
+      //   'longitude': 116.305732,
+      //   'latitude': 40.054957
+      // }, {
+      //   'longitude': 116.304754,
+      //   'latitude': 40.057953
+      // }, {
+      //   'longitude': 116.306487,
+      //   'latitude': 40.058312
+      // }, {
+      //   'longitude': 116.307223,
+      //   'latitude': 40.056379
+      // }];
+      const list = this.list;
       this.bmap.panTo(new BMapGL.Point(list[0].longitude, list[0].latitude));
       let pl = new BMapGL.Polyline(
         list.map(l => new BMapGL.Point(l.longitude, l.latitude)),
