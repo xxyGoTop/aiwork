@@ -200,6 +200,8 @@ export default {
   },
   methods: {
     getCheckListPage(page = 1) {
+      this.page = page;
+      this.loading = true;
       getCheckListPage(
         {
           pageNum: page,
@@ -211,6 +213,8 @@ export default {
       ).then((data) => {
         this.list = data.data.records || [];
         this.total = +data.data.total || 0;
+      }).finally(() => {
+        this.loading = false;
       });
     },
     postCheckExport() {
