@@ -181,6 +181,8 @@ export default {
   },
   methods: {
     getSensorData(page = 1) {
+      this.page = 1;
+      this.loading = true;
       getSensorData({
         deviceCode: this.deviceCode,
         sensorType: this.sensor || "TEMP",
@@ -196,10 +198,11 @@ export default {
         if (!this.sensor) {
           this.sensor = "TEMP";
         }
+      }).finally(() => {
+        this.loading = false;
       });
     },
     handleChangeSensor(key) {
-      console.log(this.chartColor[key].label);
       this.color = this.chartColor[key].color;
       this.label = `(${this.chartColor[key].label}${this.chartColor[key].unit})`;
       this.getSensorData();

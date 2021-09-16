@@ -370,6 +370,7 @@ export default {
       });
     },
     getAlarmRulePage(page = 1) {
+      this.page = page;
       getAlarmRulePage({
         pageNum: page,
         pageSize: this.pageSize,
@@ -380,7 +381,6 @@ export default {
     },
     getAlarmList(page = 1) {
       this.loading = true;
-      this.page = page;
       let formObj = {};
       Object.keys(this.formInline).forEach(key => {
         if (this.formInline[key]) {

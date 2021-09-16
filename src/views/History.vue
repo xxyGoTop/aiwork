@@ -100,7 +100,7 @@
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            :current-change="getDeviceHisroey"
+            @current-change="getDeviceHisroey"
             :current-page="page"
             :page-size="pageSize"
             :total="total"
@@ -156,6 +156,8 @@ export default {
           }
         }
       })
+      this.page = 1;
+      this.loading = true;
       getDeviceHisroey(
         {
           pageNum: page,
@@ -167,6 +169,8 @@ export default {
       ).then((data) => {
         this.list = data.data.records || [];
         this.total = +data.data.total || 0;
+      }).finally(() => {
+        this.loading = false;
       });
     },
     getDeviceList() {

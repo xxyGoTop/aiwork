@@ -123,7 +123,7 @@
         <el-row style="margin-top: 16px" type="flex" justify="end">
           <el-pagination
             background
-            :current-change="getCheckListPage"
+            @current-change="getCheckListPage"
             :current-page="page"
             :page-size="pageSize"
             :total="total"

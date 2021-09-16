@@ -91,6 +91,7 @@ export default {
   methods: {
     getUserLog(page = 1) {
       this.loading = true;
+      this.page = page;
       getUserLog({
         userId: this.userId,
         pageNum: page,
