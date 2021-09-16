@@ -100,6 +100,9 @@ export default {
     endT() {
       return this.$route.query.end;
     },
+    userId() {
+      return this.$route.query.userId;
+    },
     workStatusId() {
       return this.$route.query.workStatus;
     },
@@ -181,6 +184,7 @@ export default {
     if (this.recordId) {
       this.formInline.startDate = this.startT;
       this.formInline.endDate = this.endT;
+      this.formInline.userId = this.userId;
       this.formInline.workStatus = this.workStatusId ? +this.workStatusId : '';
       this.formInline.workType = this.workTypeId ? +this.workTypeId : '';
       this.getLocationPage();
