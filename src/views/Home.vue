@@ -70,9 +70,10 @@
           <div class="home-warn-item-right">
             <span
               class="home-warn-item-tag"
-              :style="{ backgroundColor: sensorColor[alarm.sensorType] }"
+              :title="alarm.alarmReason"
+              :style="{ backgroundColor: sensorColor[alarm.type] }"
             >
-              {{ alarm.alarmReason }}
+              {{ alarm.sensorType }}报警
             </span>
             <span class="home-warn-item-time">{{ alarm.triggerTime }}</span>
           </div>
@@ -334,7 +335,7 @@ export default {
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 8,
       }).then((data) => {
         this.alarms = data.data.records;
       });
