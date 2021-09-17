@@ -134,7 +134,7 @@
             <el-table-column
               prop="sensorType"
               label="报警类型"
-              width="180"
+              width="110"
               align="center"
             >
               <template #default="{ row }">
@@ -152,13 +152,25 @@
             <el-table-column
               prop="platformThreshold"
               label="平台报警值"
-              width="180"
+              width="130"
               align="center"
             />
             <el-table-column
+              prop="mobiles"
+              label="手机号"
+              width="280"
+              align="center"
+            >
+              <template #default="{ row }">
+                <div :title="row.mobiles" class="table-span-over">
+                  {{ row.mobiles }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="smsThreshold"
               label="短信报警值"
-              width="180"
+              width="130"
               align="center"
             ></el-table-column>
             <el-table-column prop="action" label="操作" width="280">
@@ -239,6 +251,12 @@
             placeholder="请输入平台报警值"
           ></el-input>
         </el-form-item>
+        <el-form-item label="报警手机号：" prop="mobiles">
+          <el-input
+            v-model="fromRuleData.mobiles"
+            placeholder="多个英文逗号隔开"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="短信报警值：" prop="smsThreshold">
           <el-input
             v-model="fromRuleData.smsThreshold"
@@ -302,6 +320,7 @@ export default {
         alarmName: "",
         deviceId: "",
         sensorType: "",
+        mobiles: "",
         platformThreshold: "",
         smsThreshold: "",
       },
@@ -475,6 +494,7 @@ export default {
         alarmName: "",
         deviceId: "",
         sensorType: "",
+        mobiles: "",
         platformThreshold: "",
         smsThreshold: "",
       };
@@ -484,6 +504,7 @@ export default {
       alarmName,
       deviceId,
       sensorType,
+      mobiles,
       platformThreshold,
       smsThreshold,
     }) {
@@ -494,6 +515,7 @@ export default {
         alarmName,
         deviceId,
         sensorType,
+        mobiles,
         platformThreshold,
         smsThreshold,
       };
@@ -559,5 +581,10 @@ export default {
   background: rgba(0, 255, 36, 0.1);
   border: 1px solid #ff4d4f;
   border-radius: 4px;
+}
+.table-span-over {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

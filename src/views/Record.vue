@@ -47,17 +47,17 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="作业类型" prop="workStatus">
-            <el-select v-model="formInline.workStatus" placeholder="作业类型">
-              <el-option label="全部" value=""></el-option>
-              <el-option label="执行中" :value="0"></el-option>
-              <el-option label="已结束" :value="1"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="作业状态" prop="workType">
             <el-select v-model="formInline.workType" placeholder="作业状态">
               <el-option label="全部" value=""></el-option>
               <el-option label="值班打卡" :value="0"></el-option>
               <el-option label="巡逻打卡" :value="1"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="作业状态" prop="workType">
+            <el-select v-model="formInline.workStatus" placeholder="作业类型">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="执行中" :value="0"></el-option>
+              <el-option label="已结束" :value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 20px">

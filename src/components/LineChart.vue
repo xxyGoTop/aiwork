@@ -73,6 +73,12 @@ export default {
           top: "8%",
           bottom: 40,
         },
+        tooltip: {
+          trigger: 'axis',
+          backgroudColor: "rgba(5, 23, 45, 0.95)",
+          borderColor: "#0B315F",
+          color: "#fff",
+        },
         xAxis: {
           type: "category",
           boundaryGap: false,

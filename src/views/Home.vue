@@ -78,6 +78,7 @@
             <span class="home-warn-item-time">{{ alarm.triggerTime }}</span>
           </div>
         </div>
+        <el-empty v-if="alarms.length === 0" :image="emptyIcon"></el-empty>
       </div>
       <div class="page-container_top_bottom page-container_top_left"></div>
       <div class="page-container_top_bottom page-container_top_right"></div>
@@ -196,6 +197,7 @@ import { mpStyle } from "@/assets/js/mpStyle";
 import mapIcon from "@/assets/imgs/map_ico_location_nor.png";
 import mapIconPress from "@/assets/imgs/map_ico_location_press.png";
 import mapLocationBg from "@/assets/imgs/map_img_location_bg.png";
+import emptyIcon from "@/assets/imgs/empty.png";
 export default {
   name: "Home",
   components: { LineChart },
@@ -206,6 +208,7 @@ export default {
     return {
       mapIcon,
       mapLocationBg,
+      emptyIcon,
       mapIconPress,
       map: null,
       preMarker: null,
@@ -337,7 +340,7 @@ export default {
         pageNum: 1,
         pageSize: 8,
       }).then((data) => {
-        this.alarms = data.data.records;
+        this.alarms = data.data.records || [];
       });
     },
     getDeviceList() {
