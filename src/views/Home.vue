@@ -30,11 +30,25 @@
         <div class="home-header-right">
           <div
             class="home-right-button"
-            @click="
-              toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
-            "
           >
             水利要闻
+            <div class="home-right-lasa-wrap">
+              <div
+                class="home-right-lasa"
+                @click="toLink('http://www.mwr.gov.cn/xw/slyw/')">
+                中国水利
+              </div>
+              <div
+                class="home-right-lasa"
+                @click="toLink('http://slt.xizang.gov.cn/slxw/slyw/')">
+                西藏水利
+              </div>
+              <div
+                class="home-right-lasa"
+                @click="toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')">
+                拉萨水利
+              </div>
+            </div>
           </div>
           <div class="home-right-button" @click="toLinkRouter('/user')">
             用户管理
@@ -66,11 +80,13 @@
       </div>
       <div class="home-warn-container">
         <div class="home-warn-item" v-for="alarm in alarms" :key="alarm.id">
-          <div class="home-warn-item-left">{{ alarm.deviceName }}</div>
+          <div class="home-warn-item-left">
+            <span :title="alarm.deviceName">{{ alarm.deviceName }}</span>
+            <span :title="alarm.alarmReason">{{ alarm.alarmReason }}</span>
+          </div>
           <div class="home-warn-item-right">
             <span
               class="home-warn-item-tag"
-              :title="alarm.alarmReason"
               :style="{ backgroundColor: sensorColor[alarm.type] }"
             >
               {{ alarm.sensorType }}报警
@@ -569,6 +585,33 @@ export default {
     display: flex;
     flex-direction: row;
     padding-top: 21px;
+    .home-right-button {
+      position: relative;
+      .home-right-lasa-wrap {
+        position: absolute;
+        left: 0px;
+        bottom: -33px;
+        width: 112px;
+        opacity: 0;
+      }
+      .home-right-lasa {
+        width: 112px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        background-color: #000FAB;
+        cursor: pointer;
+      }
+      .home-right-lasa:hover {
+        background-color: #4a55c8;
+      }
+      &:hover .home-right-lasa-wrap {
+        opacity: 1;
+        height: 33px;
+      }
+    }
     .home-right-user {
       position: relative;
       display: flex;
@@ -868,15 +911,17 @@ export default {
     justify-content: space-between;
     margin-bottom: 36px;
     &-left {
-      width: 196px;
+      width: 250px;
       height: 48px;
       line-height: 24px;
       font-size: 16px;
       overflow: hidden; 
-      text-overflow: ellipsis;
-      display: -webkit-box; 
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2; 
+      span {
+        display: block;
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     &-right {
       width: 130px;
