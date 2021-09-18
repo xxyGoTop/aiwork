@@ -210,12 +210,14 @@ export default {
         {
           ...this.formInline,
         }
-      ).then((data) => {
-        this.list = data.data.records || [];
-        this.total = +data.data.total || 0;
-      }).finally(() => {
-        this.loading = false;
-      });
+      )
+        .then((data) => {
+          this.list = data.data.records || [];
+          this.total = +data.data.total || 0;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     postCheckExport() {
       postCheckExport({

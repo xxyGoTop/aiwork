@@ -122,7 +122,7 @@ export default {
         ...this.formInline,
       })
         .then((data) => {
-          this.list = data.data.filter((r) => (r.longitude && r.latitude)) || [];
+          this.list = data.data.filter((r) => r.longitude && r.latitude) || [];
           if (this.list.length) {
             this.readyMapPath();
           } else {

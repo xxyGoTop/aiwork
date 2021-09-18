@@ -54,7 +54,7 @@ export default {
     },
     chartWind: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
   },
   computed: {
@@ -74,18 +74,29 @@ export default {
     loadChart() {
       const data = this.chartWind.map((wind, index) => {
         const [, time] = wind.reportTime.split(" ");
-        return [
-          time,
-          wind.data,
-          this.yData[index],
-        ]
+        return [time, wind.data, this.yData[index]];
       });
       const directionMap = {};
-      ['W', 'WSW', 'SW', 'SSW', 'S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N', 'NNW', 'NW', 'WNW'].forEach(
-        function (name, index) {
-          directionMap[name] = Math.PI / 8 * index;
-        }
-      );
+      [
+        "W",
+        "WSW",
+        "SW",
+        "SSW",
+        "S",
+        "SSE",
+        "SE",
+        "ESE",
+        "E",
+        "ENE",
+        "NE",
+        "NNE",
+        "N",
+        "NNW",
+        "NW",
+        "WNW",
+      ].forEach(function (name, index) {
+        directionMap[name] = (Math.PI / 8) * index;
+      });
       const dims = {
         time: 0,
         windSpeed: 1,
@@ -96,23 +107,23 @@ export default {
       function renderArrow(_, api) {
         const point = api.coord([
           api.value(dims.time),
-          api.value(dims.windSpeed)
+          api.value(dims.windSpeed),
         ]);
         return {
-          type: 'path',
+          type: "path",
           shape: {
-              pathData: 'M31 16l-15-15v9h-26v12h26v9z',
-              x: -arrowSize / 2,
-              y: -arrowSize / 2,
-              width: arrowSize,
-              height: arrowSize
+            pathData: "M31 16l-15-15v9h-26v12h26v9z",
+            x: -arrowSize / 2,
+            y: -arrowSize / 2,
+            width: arrowSize,
+            height: arrowSize,
           },
           rotation: (api.value(dims.R) * Math.PI) / 180,
           position: point,
           style: api.style({
-            stroke: '#555',
-            lineWidth: 1
-          })
+            stroke: "#555",
+            lineWidth: 1,
+          }),
         };
       }
 
@@ -125,67 +136,74 @@ export default {
           bottom: 40,
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           backgroudColor: "rgba(5, 23, 45, 0.95)",
           borderColor: "#0B315F",
           color: "#fff",
           formatter: function (params) {
             return [
               params[0].value[dims.time],
-              '风速：' + params[0].value[dims.windSpeed],
-              '风向：' + params[0].value[dims.R],
-            ].join('<br>');
-          }
+              "风速：" + params[0].value[dims.windSpeed],
+              "风向：" + params[0].value[dims.R],
+            ].join("<br>");
+          },
         },
         xAxis: {
-          type: 'category',
-          boundaryGap: false
+          type: "category",
+          boundaryGap: false,
         },
-        yAxis: [{
-          nameLocation: 'middle',
-          splitLine: {
-            show: false,
+        yAxis: [
+          {
+            nameLocation: "middle",
+            splitLine: {
+              show: false,
+            },
           },
-        }, {
-          axisLine: {
-            show: false
+          {
+            axisLine: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            splitLine: {
+              show: false,
+            },
           },
-          axisTick: {
-            show: false
-          },
-          axisLabel: {
-            show: false
-          },
-          splitLine: {
-            show: false,
-          },
-        }],
+        ],
         visualMap: {
-          type: 'piecewise',
+          type: "piecewise",
           show: false,
-          orient: 'horizontal',
-          left: 'center',
+          orient: "horizontal",
+          left: "center",
           bottom: 10,
-          pieces: [{
-            gte: 17,
-            color: '#18BF12',
-            label: '大风（>=17节）'
-          }, {
-            gte: 11,
-            lt: 17,
-            color: '#f4e9a3',
-            label: '中风（11  ~ 17 节）'
-          }, {
-            lt: 11,
-            color: '#D33C3E',
-            label: '微风（小于 11 节）'
-          }],
+          pieces: [
+            {
+              gte: 17,
+              color: "#18BF12",
+              label: "大风（>=17节）",
+            },
+            {
+              gte: 11,
+              lt: 17,
+              color: "#f4e9a3",
+              label: "中风（11  ~ 17 节）",
+            },
+            {
+              lt: 11,
+              color: "#D33C3E",
+              label: "微风（小于 11 节）",
+            },
+          ],
           seriesIndex: 1,
-          dimension: 1
+          dimension: 1,
         },
         series: [
           {
-            type: 'line',
+            type: "line",
             yAxisIndex: 1,
             showSymbol: false,
             hoverAnimation: false,
@@ -208,36 +226,38 @@ export default {
             },
             itemStyle: {
               normal: {
-                color: 'rgba(88,160,253,1)'
-              }
+                color: "rgba(88,160,253,1)",
+              },
             },
             data: data,
-            z: 2
-          }, {
-            type: 'custom',
+            z: 2,
+          },
+          {
+            type: "custom",
             renderItem: renderArrow,
             encode: {
               x: dims.time,
-              y: dims.windSpeed
+              y: dims.windSpeed,
             },
             data: data,
-            z: 10
-          }, {
-            type: 'line',
-            symbol: 'none',
+            z: 10,
+          },
+          {
+            type: "line",
+            symbol: "none",
             encode: {
               x: dims.time,
-              y: dims.windSpeed
+              y: dims.windSpeed,
             },
             lineStyle: {
               normal: {
-                color: '#aaa',
-                type: 'dotted'
-              }
+                color: "#aaa",
+                type: "dotted",
+              },
             },
             data: data,
-            z: 1
-          }
+            z: 1,
+          },
         ],
       };
     },

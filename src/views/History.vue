@@ -90,10 +90,18 @@
             />
             <el-table-column prop="flowRate" label="流速(m/s)" align="center" />
             <el-table-column prop="waterLevel" label="水位(m)" align="center" />
-            <el-table-column prop="windSpeed" label="风速(m/s)" align="center" />
+            <el-table-column
+              prop="windSpeed"
+              label="风速(m/s)"
+              align="center"
+            />
             <el-table-column prop="rainfall" label="雨量(mm)" align="center" />
             <el-table-column prop="temp" label="温度(℃)" align="center" />
-            <el-table-column prop="windDirection" label="风向(°)" align="center" />
+            <el-table-column
+              prop="windDirection"
+              label="风向(°)"
+              align="center"
+            />
             <el-table-column prop="humidity" label="湿度(%)" align="center" />
           </el-table>
         </div>
@@ -148,14 +156,14 @@ export default {
   methods: {
     getDeviceHisroey(page = 1) {
       let formObj = {};
-      Object.keys(this.formInline).forEach(key => {
+      Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
-            [key]: this.formInline[key]
-          }
+            [key]: this.formInline[key],
+          };
         }
-      })
+      });
       this.page = 1;
       this.loading = true;
       getDeviceHisroey(
@@ -166,12 +174,14 @@ export default {
         {
           ...formObj,
         }
-      ).then((data) => {
-        this.list = data.data.records || [];
-        this.total = +data.data.total || 0;
-      }).finally(() => {
-        this.loading = false;
-      });
+      )
+        .then((data) => {
+          this.list = data.data.records || [];
+          this.total = +data.data.total || 0;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     getDeviceList() {
       getDeviceList({
@@ -183,14 +193,14 @@ export default {
     },
     postDeveiceExport() {
       let formObj = {};
-      Object.keys(this.formInline).forEach(key => {
+      Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
-            [key]: this.formInline[key]
-          }
+            [key]: this.formInline[key],
+          };
         }
-      })
+      });
       postDeveiceExport({
         ...formObj,
       }).then((data) => {

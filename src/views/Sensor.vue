@@ -201,7 +201,7 @@ export default {
         pageSize: this.pageSize,
       }).then((data) => {
         this.chartWind = data.data.records || [];
-      });    
+      });
     },
     getSensorData(page = 1) {
       this.page = 1;
@@ -212,19 +212,21 @@ export default {
         sensorType: this.sensor || "TEMP",
         pageNum: page,
         pageSize: this.pageSize,
-      }).then((data) => {
-        this.list = data.data.records || [];
-        this.total = +data.data.total || 0;
-        this.yData = data.data.records.map((x) => x.data);
-        this.xData = data.data.records.map((x) =>
-          x.reportTime ? x.reportTime.split(" ")[1] : ""
-        );
-        if (!this.sensor) {
-          this.sensor = "TEMP";
-        }
-      }).finally(() => {
-        this.loading = false;
-      });
+      })
+        .then((data) => {
+          this.list = data.data.records || [];
+          this.total = +data.data.total || 0;
+          this.yData = data.data.records.map((x) => x.data);
+          this.xData = data.data.records.map((x) =>
+            x.reportTime ? x.reportTime.split(" ")[1] : ""
+          );
+          if (!this.sensor) {
+            this.sensor = "TEMP";
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     handleChangeSensor(key) {
       this.color = this.chartColor[key].color;

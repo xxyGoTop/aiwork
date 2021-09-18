@@ -74,7 +74,7 @@ export default {
           bottom: 40,
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           backgroudColor: "rgba(5, 23, 45, 0.95)",
           borderColor: "#0B315F",
           color: "#fff",

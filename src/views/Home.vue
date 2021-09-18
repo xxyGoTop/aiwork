@@ -385,7 +385,7 @@ export default {
         deviceCode,
         sensorType,
       }).then((data) => {
-        if (sensorType === 'WIND_SPEED') {
+        if (sensorType === "WIND_SPEED") {
           this.chartWind = data.data.records;
         }
         const xdata = data.data.records.map(

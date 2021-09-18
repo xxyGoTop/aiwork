@@ -92,7 +92,12 @@
             v-loading="loading"
             style="width: 100%"
           >
-            <el-table-column type="index" label="序号" width="80" align="center" />
+            <el-table-column
+              type="index"
+              label="序号"
+              width="80"
+              align="center"
+            />
             <el-table-column prop="sensorType" label="报警类型" align="center">
               <template #default="{ row }">
                 <span class="alarm-status">{{ row.sensorType }}</span>
@@ -129,7 +134,12 @@
         <!-- 表格 -->
         <div class="page-table-box">
           <el-table stripe :data="list" v-loading="loading" style="width: 100%">
-            <el-table-column prop="ruleId" label="序号" width="80" align="center" />
+            <el-table-column
+              prop="ruleId"
+              label="序号"
+              width="80"
+              align="center"
+            />
             <el-table-column prop="alarmName" label="规则名称" align="center" />
             <el-table-column
               prop="sensorType"
@@ -401,14 +411,14 @@ export default {
     getAlarmList(page = 1) {
       this.loading = true;
       let formObj = {};
-      Object.keys(this.formInline).forEach(key => {
+      Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
-            [key]: this.formInline[key]
-          }
+            [key]: this.formInline[key],
+          };
         }
-      })
+      });
       getAlarmList(
         {
           pageNum: page,
@@ -428,14 +438,14 @@ export default {
     },
     postAlarmExport() {
       let formObj = {};
-      Object.keys(this.formInline).forEach(key => {
+      Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
-            [key]: this.formInline[key]
-          }
+            [key]: this.formInline[key],
+          };
         }
-      })
+      });
       postAlarmExport({
         ...formObj,
       }).then((data) => {
@@ -444,12 +454,12 @@ export default {
     },
     postAddAlarm() {
       let formObj = {};
-      Object.keys(this.fromRuleData).forEach(key => {
+      Object.keys(this.fromRuleData).forEach((key) => {
         if (this.fromRuleData[key]) {
           formObj = {
             ...formObj,
-            [key]: this.fromRuleData[key]
-          }
+            [key]: this.fromRuleData[key],
+          };
         }
       });
       postAddAlarm({
@@ -462,12 +472,12 @@ export default {
     },
     postEditAlarm() {
       let formObj = {};
-      Object.keys(this.fromRuleData).forEach(key => {
+      Object.keys(this.fromRuleData).forEach((key) => {
         if (this.fromRuleData[key]) {
           formObj = {
             ...formObj,
-            [key]: this.fromRuleData[key]
-          }
+            [key]: this.fromRuleData[key],
+          };
         }
       });
       postEditAlarm({
