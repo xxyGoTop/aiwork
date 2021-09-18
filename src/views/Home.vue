@@ -110,7 +110,17 @@
               </div>
               <div class="chart-header-right">{{ chart.unit }}</div>
             </el-row>
+            <wind-chart
+              v-if="chart.icon === 'windir'"
+              :key="chart.icon"
+              :color="chart.color"
+              :chart-wind="chartWind"
+              :x-data="chart.xdata"
+              :y-data="chart.ydata"
+            >
+            </wind-chart>
             <line-chart
+              v-else
               :key="chart.icon"
               :x-data="chart.xdata"
               :y-data="chart.ydata"
@@ -193,6 +203,7 @@ import { getAlarmList } from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
 import { getSensorType, getSensorData, setSensorChart } from "@/api/sensor";
 import LineChart from "@/components/LineChart";
+import WindChart from "@/components/WindChart";
 import { mpStyle } from "@/assets/js/mpStyle";
 import mapIcon from "@/assets/imgs/map_ico_location_nor.png";
 import mapIconPress from "@/assets/imgs/map_ico_location_press.png";
@@ -200,7 +211,7 @@ import mapLocationBg from "@/assets/imgs/map_img_location_bg.png";
 import emptyIcon from "@/assets/imgs/empty.png";
 export default {
   name: "Home",
-  components: { LineChart },
+  components: { LineChart, WindChart },
   computed: {
     ...mapState(["userInfo", "sensorColor"]),
   },
@@ -214,6 +225,7 @@ export default {
       preMarker: null,
       isShow: true,
       // 图表
+      chartWind: [],
       chartMap: {
         TEMP: {
           label: "温度",
@@ -357,6 +369,7 @@ export default {
         deviceCode,
       }).then((data) => {
         this.chartData = [];
+        this.chartWind = [];
         let sensorType = data.data || [];
         sensorType.forEach((sensor) => {
           this.getSensorData(deviceCode, sensor);
@@ -372,11 +385,15 @@ export default {
         deviceCode,
         sensorType,
       }).then((data) => {
+        if (sensorType === 'WIND_SPEED') {
+          this.chartWind = data.data.records;
+        }
         const xdata = data.data.records.map(
           (rd) => rd.reportTime.split(" ")[1]
         );
         const ydata = data.data.records.map((rd) => rd.data);
         const chartOptions = this.chartMap[sensorType];
+
         this.chartData.push({
           ...chartOptions,
           xdata,

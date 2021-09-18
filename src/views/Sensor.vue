@@ -25,6 +25,7 @@
         </div>
         <div class="page-table-chart-content">
           <line-chart
+            v-if="sensor !== 'WIND_DIRECTION'"
             :key="sensor"
             :line-style="lineStyle"
             :x-data="xData"
@@ -32,6 +33,16 @@
             :color="color"
           >
           </line-chart>
+          <wind-chart
+            v-else
+            :key="sensor"
+            :line-style="lineStyle"
+            :color="color"
+            :chart-wind="chartWind"
+            :x-data="xData"
+            :y-data="yData"
+          >
+          </wind-chart>
         </div>
       </div>
       <div class="page-table">
@@ -75,9 +86,10 @@
 
 <script>
 import LineChart from "@/components/LineChart";
+import WindChart from "@/components/WindChart";
 import { getSensorData } from "@/api/sensor";
 export default {
-  components: { LineChart },
+  components: { LineChart, WindChart },
   data() {
     return {
       lineStyle: { width: "100%", height: "300px" },
@@ -118,6 +130,7 @@ export default {
       sensor: null,
       // table相关
       loading: false,
+      chartWind: [],
       xData: [],
       yData: [],
       color: ["rgba(255, 66, 0, 0.76)", "rgba(255, 66, 0, 0.11)"],
@@ -180,9 +193,20 @@ export default {
     },
   },
   methods: {
+    getSensorWind(page) {
+      getSensorData({
+        deviceCode: this.deviceCode,
+        sensorType: "WIND_DIRECTION",
+        pageNum: page,
+        pageSize: this.pageSize,
+      }).then((data) => {
+        this.chartWind = data.data.records || [];
+      });    
+    },
     getSensorData(page = 1) {
       this.page = 1;
       this.loading = true;
+      this.getSensorWind(page);
       getSensorData({
         deviceCode: this.deviceCode,
         sensorType: this.sensor || "TEMP",
