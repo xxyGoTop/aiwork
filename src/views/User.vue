@@ -237,9 +237,9 @@
           <el-select v-model="fromUserData.roleId" placeholder="权限级别">
             <el-option
               v-for="role in roles"
-              :key="role.roleCode"
+              :key="role.id"
               :label="role.roleName"
-              :value="role.roleCode"
+              :value="+role.id"
             >
             </el-option>
           </el-select>
