@@ -60,11 +60,11 @@
               <template #default="{ row }">
                 <span
                   class="device-status"
-                  :class="{ error: row.used !== 1 }"
+                  :class="{ error: row.status !== 0 }"
                   >{{
-                    row.used === 1
+                    row.status === 0
                       ? "正常"
-                      : row.used === -1
+                      : row.status === -1
                       ? "已删除"
                       : "停用"
                   }}</span
@@ -74,8 +74,8 @@
             <el-table-column prop="action" label="操作" width="280">
               <template #default="{ row }">
                 <el-row>
-                  <el-button type="text" @click="handleStopDevice(row)"
-                    >停用</el-button
+                  <el-button v-if="row.status !== -1" type="text" @click="handleStopDevice(row)"
+                    >{{ row.status === 0 ? "停用" : "启用" }}</el-button
                   >
                   <el-button type="text" @click="handleEdit(row)"
                     >编辑</el-button
@@ -249,7 +249,7 @@ export default {
     getDevicePage() {
       this.loading = true;
       getDevicePage({
-        pageNum: 1,
+        pageNum: this.page,
         pageSize: 20,
         ...this.formInline,
       })
@@ -326,13 +326,13 @@ export default {
           this.handleDevice();
         });
     },
-    handleStopDevice({ deviceCode, groupId }) {
+    handleStopDevice({ deviceCode, status, groupId }) {
       postDeviceUpdate({
         deviceCode,
         groupId,
-        status: 1,
+        status: status === 0 ? 1 : 0,
       }).then(() => {
-        this.$message.success("停用成功");
+        this.$message.success("操作成功");
       });
     },
     handleDelete({ code }) {

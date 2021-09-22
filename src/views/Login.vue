@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { cMd5 } from "@/util";
 import { mapState, mapMutations } from "vuex";
 import { postAuthLogin, getUserPage, getUserRole } from "@/api/user";
 export default {
@@ -86,8 +87,10 @@ export default {
       this.updateUser(user.data.records);
     },
     submitForm() {
+      const { password } = this.formData;
       postAuthLogin({
         ...this.formData,
+        password: cMd5(password)
       }).then((data) => {
         this.updateAccessToken(data.data.token);
         this.updateUserInfo({ ...data.data });

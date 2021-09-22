@@ -214,11 +214,17 @@
         </el-form-item>
         <el-form-item label="密码：" prop="password">
           <el-input
-            type="password"
+            :type="showpass ? 'text' : 'password'"
             v-model="fromUserData.password"
             placeholder="请输入密码"
           >
-            <i class="form-eye-icon close" slot="suffix"> </i>
+            <i
+              class="form-eye-icon"
+              :class="{ close: !showpass }"
+              slot="suffix"
+              @click="handleIconClick"
+            >
+            </i>
           </el-input>
         </el-form-item>
         <el-form-item label="姓名：" prop="name">
@@ -340,6 +346,7 @@
 </template>
 
 <script>
+import { cMd5 } from "@/util";
 import { mapState } from "vuex";
 import {
   getUserPage,
@@ -355,6 +362,7 @@ import {
 export default {
   data() {
     return {
+      showpass: false,
       visible: false,
       gVisible: false,
       deleteVisible: false,
@@ -437,8 +445,10 @@ export default {
         });
     },
     postAddUser() {
+      const { password } = this.fromUserData;
       postAddUser({
         ...this.fromUserData,
+        password: cMd5(password)
       }).then(() => {
         this.visible = false;
         this.$message.success("添加成功");
@@ -446,9 +456,11 @@ export default {
       });
     },
     postUpdateUser() {
+      const { password } = this.fromUserData;
       postUpdateUser({
         userId: this.userId,
         ...this.fromUserData,
+        password: cMd5(password)
       }).then(() => {
         this.visible = false;
         this.$message.success("編輯成功");
@@ -565,6 +577,9 @@ export default {
     handleDeleteGroup({ groupId }) {
       this.groupId = groupId;
       this.deleteGroupVisible = true;
+    },
+    handleIconClick() {
+      this.showpass = !this.showpass;
     },
     toRouterLink(path) {
       this.$router.push(path);
