@@ -233,13 +233,13 @@
             placeholder="请输入手机号"
           ></el-input>
         </el-form-item>
-        <el-form-item label="权限：" prop="roleId">
-          <el-select v-model="fromUserData.roleId" placeholder="权限级别">
+        <el-form-item label="权限：" prop="roleCode">
+          <el-select v-model="fromUserData.roleCode" placeholder="权限级别">
             <el-option
               v-for="role in roles"
-              :key="role.id"
+              :key="role.roleCode"
               :label="role.roleName"
-              :value="+role.id"
+              :value="role.roleCode"
             >
             </el-option>
           </el-select>
@@ -370,7 +370,7 @@ export default {
         password: "",
         name: "",
         tel: "",
-        roleId: "",
+        roleCode: "",
       },
       fromGroupData: {
         groupName: "",
@@ -518,7 +518,7 @@ export default {
       this.fromUserData = {
         name: "",
         account: "",
-        roleId: "",
+        roleCode: "",
         tel: "",
         password: "",
       };
@@ -530,7 +530,7 @@ export default {
       this.fromUserData = {
         name,
         account,
-        roleId: roleCode,
+        roleCode,
         tel,
         password,
       };
@@ -540,7 +540,7 @@ export default {
     },
     handleAddGroup() {
       this.gVisible = true;
-      this.groudId = null;
+      this.groupId = null;
       this.checkAll = false;
       this.isIndeterminate = false;
       this.groupTitle = "新增用户组";
