@@ -6,6 +6,12 @@ export const getSensorType = (params) =>
     params,
   });
 
+export const getSensorChart = (params) => 
+  Fetch({
+    url: `/device/${params.deviceCode}/chart/sensorType`,
+    params,
+  });
+
 export const getSensorData = (params) =>
   Fetch({
     url: `/device/${params.deviceCode}/sensor/${params.sensorType}/query`,

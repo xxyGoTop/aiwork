@@ -106,7 +106,7 @@
     </div>
     <!-- 设备数据 -->
     <div class="home-chart-wrap" :class="{ explan: !isShow }">
-      <div class="home-chart-wrap-container" v-if="isShow">
+      <div class="home-chart-wrap-container" v-loading="chartLoading" element-loading-text="拼命加载中..." v-if="isShow">
         <div class="home-chart-header">
           <div class="home-chart-header-left">
             <span class="chart-left-title">{{ deviceName }}</span>
@@ -148,6 +148,7 @@
             </line-chart>
           </div>
         </div>
+        <el-empty v-if="chartData.length === 0" :image="emptyIcon"></el-empty>
       </div>
       <div
         v-if="isShow"
@@ -220,7 +221,7 @@ import { mapState, mapMutations } from "vuex";
 import { postAuthLogout } from "@/api/user";
 import { getAlarmList } from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
-import { getSensorType, getSensorData, setSensorChart } from "@/api/sensor";
+import { getSensorChart, getSensorData, setSensorChart } from "@/api/sensor";
 import LineChart from "@/components/LineChart";
 import WindChart from "@/components/WindChart";
 import { mpStyle } from "@/assets/js/mpStyle";
@@ -297,6 +298,7 @@ export default {
         },
       },
       chartData: [],
+      chartLoading: false,
       loading: false,
       // 警告列表
       alarms: [],
@@ -384,19 +386,25 @@ export default {
       });
     },
     getSensorType(deviceCode) {
-      return getSensorType({
+      this.chartLoading = true;
+      return getSensorChart({
         deviceCode,
       }).then((data) => {
         this.chartData = [];
         this.chartWind = [];
         let sensorType = data.data || [];
         sensorType.forEach((sensor) => {
+          if (!sensorType.includes('WIND_SPEED') && sensor === 'WIND_DIRECTION') return
           this.getSensorData(deviceCode, sensor);
         });
         this.sensorsForm = this.sensorsForm.map((s) => {
-          const sensor = sensorType.filter((t) => s.value === t);
+          let sensor = sensorType.filter((t) => s.value === t);
+          if (!sensorType.includes('WIND_SPEED') && s.value === 'WIND_DIRECTION') {
+            sensor = []
+          }
           return { ...s, sensor: sensor.length ? s.value : "" };
         });
+        this.chartLoading = false;
       });
     },
     getSensorData(deviceCode, sensorType) {
@@ -717,6 +725,7 @@ export default {
 .home-chart-wrap-container {
   position: relative;
   width: 824px;
+  min-height: 450px;
   max-height: 939px;
   background: rgba(5, 23, 45, 0.65);
   padding: 10px 30px;

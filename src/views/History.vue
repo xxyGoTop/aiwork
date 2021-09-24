@@ -17,7 +17,7 @@
           :model="formInline"
           class="page-form-inline"
         >
-          <el-form-item label="设备名称">
+          <el-form-item label="设备名称" prop="deviceCode">
             <el-select v-model="formInline.deviceCode" placeholder="设备名称">
               <el-option
                 v-for="d in devices"
@@ -28,25 +28,25 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="开始时间">
+          <el-form-item label="开始时间" prop="startDate">
             <el-date-picker
-              v-model="formInline.startTime"
+              v-model="formInline.startDate"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间">
+          <el-form-item label="结束时间" prop="endDate">
             <el-date-picker
-              v-model="formInline.endTime"
+              v-model="formInline.endDate"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="设备参数">
+          <el-form-item label="设备参数" prop="sensorType">
             <el-select v-model="formInline.sensorType" placeholder="设备参数">
               <el-option label="全部" value=""></el-option>
             </el-select>
@@ -137,8 +137,8 @@ export default {
     return {
       formInline: {
         deviceCode: "",
-        startTime: "",
-        endTime: "",
+        startDate: "",
+        endDate: "",
         sensorType: "",
       },
       devices: [],

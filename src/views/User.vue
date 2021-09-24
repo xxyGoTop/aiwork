@@ -62,8 +62,8 @@
           <el-form-item label="用户状态" prop="status">
             <el-select v-model="formInline.status" placeholder="用户状态">
               <el-option label="全部" value=""></el-option>
-              <el-option label="正常" value="shanghai"></el-option>
-              <el-option label="停用" value="beijing"></el-option>
+              <el-option label="正常" :value="0"></el-option>
+              <el-option label="已删除" :value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-left: 80px">
@@ -294,7 +294,7 @@
               v-model="fromGroupData.userIds"
               @change="handleCheckedGroupsChange"
             >
-              <el-checkbox v-for="l in list" :label="l.id" :key="l.id">
+              <el-checkbox v-for="l in allList" :label="l.id" :key="l.id">
                 {{ l.name }}
               </el-checkbox>
             </el-checkbox-group>
@@ -418,6 +418,7 @@ export default {
       tab: "user",
       loading: false,
       list: [],
+      allList: [],
       groupList: [],
       userTotal: 0,
       groupTotal: 0,
@@ -448,6 +449,14 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+        });
+    },
+    getAllUserPage() {
+      getUserPage({
+        pageSize: 3000,
+      })
+        .then((data) => {
+          this.allList = data.data.records || [];
         });
     },
     getUserGroup(page = 1) {
@@ -521,7 +530,7 @@ export default {
         groupId: this.groupId,
       }).then(() => {
         this.$message.success("刪除成功");
-        this.getUserPage();
+        this.getUserGroup();
         this.deleteGroupVisible = false;
       });
     },
@@ -610,6 +619,7 @@ export default {
   },
   created() {
     this.getUserPage();
+    this.getAllUserPage();
     this.getUserGroup();
   },
 };

@@ -183,7 +183,7 @@ export default {
     this.readyMap();
     if (this.recordId) {
       this.formInline.startTime = this.startT;
-      this.formInline.endTime = this.endT;
+      this.formInline.endTime = (this.endT === 'null' || !this.endT) ? '' : this.endT ;
       this.formInline.userId = this.userId;
       this.formInline.workStatus = this.workStatusId ? +this.workStatusId : '';
       this.formInline.workType = this.workTypeId ? +this.workTypeId : '';

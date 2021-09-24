@@ -1,6 +1,6 @@
 <template>
   <div :style="lineStyle">
-    <v-chart class="chart" :option="option" />
+    <v-chart ref="chart" class="chart" :option="option" />
   </div>
 </template>
 
@@ -57,6 +57,14 @@ export default {
     color2: function () {
       return this.color[1];
     },
+  },
+  watch: {
+    yData: {
+      handler() {
+        this.loadChart();
+      },
+      deep: true
+    }
   },
   data() {
     return {
