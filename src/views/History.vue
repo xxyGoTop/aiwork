@@ -30,7 +30,7 @@
           </el-form-item>
           <el-form-item label="开始时间">
             <el-date-picker
-              v-model="formInline.startDate"
+              v-model="formInline.startTime"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
@@ -39,7 +39,7 @@
           </el-form-item>
           <el-form-item label="结束时间">
             <el-date-picker
-              v-model="formInline.endDate"
+              v-model="formInline.endTime"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
@@ -137,8 +137,8 @@ export default {
     return {
       formInline: {
         deviceCode: "",
-        startDate: "",
-        endDate: "",
+        startTime: "",
+        endTime: "",
         sensorType: "",
       },
       devices: [],

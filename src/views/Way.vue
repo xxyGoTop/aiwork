@@ -18,18 +18,18 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="开始时间" prop="startDate">
+          <el-form-item label="开始时间" prop="startTime">
             <el-date-picker
-              v-model="formInline.startDate"
+              v-model="formInline.startTime"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间" prop="endDate">
+          <el-form-item label="结束时间" prop="endTime">
             <el-date-picker
-              v-model="formInline.endDate"
+              v-model="formInline.endTime"
               value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               placeholder="选择日期时间"
@@ -78,8 +78,8 @@ export default {
     return {
       formInline: {
         userId: "",
-        startDate: "",
-        endDate: "",
+        endTime: "",
+        startTime: "",
         workStatus: "",
         workType: "",
       },
@@ -182,8 +182,8 @@ export default {
   mounted() {
     this.readyMap();
     if (this.recordId) {
-      this.formInline.startDate = this.startT;
-      this.formInline.endDate = this.endT;
+      this.formInline.startTime = this.startT;
+      this.formInline.endTime = this.endT;
       this.formInline.userId = this.userId;
       this.formInline.workStatus = this.workStatusId ? +this.workStatusId : '';
       this.formInline.workType = this.workTypeId ? +this.workTypeId : '';
