@@ -222,6 +222,7 @@
     >
       <el-form
         :model="fromRuleData"
+        :rules="rules"
         status-icon
         ref="fromRuleData"
         label-width="120px"
@@ -280,7 +281,7 @@
       <div class="page-container_top_bottom page-container_bottom_right"></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="visible = false">取 消</el-button>
-        <el-button type="primary" @click="postAddAlarm()">确 定</el-button>
+        <el-button type="primary" @click="handleSubmit()">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 删除 -->
@@ -317,6 +318,32 @@ import { downBlobFile } from "@/util";
 
 export default {
   data() {
+    const validateBlank = (_, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择设备'));
+      }
+      callback();
+    }
+    const validateMobiles = (_, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入正确的手机号'));
+      } 
+      const isMoble = value.split(',').filter(v => v).every(v => /^1[3-9]\d{9}$/.test(v))
+      if (!isMoble) {
+        callback(new Error('请输入正确的手机号'));
+      } 
+      callback();
+    }
+    const validateShold = (_, value, callback) => {
+      const reg = /^([1-9][\d]*|0)(\.[\d]+)?$/
+      if (!value) {
+        callback(new Error('请输入正确的数值'));
+      }
+      if (!reg.test(value)) {
+        callback(new Error('请输入正确的数值'));
+      }
+      callback();
+    }
     return {
       deleteVisible: false,
       visible: false,
@@ -333,6 +360,20 @@ export default {
         mobiles: "",
         platformThreshold: "",
         smsThreshold: "",
+      },
+      rules: {
+        deviceId: [
+          { validator: validateBlank, trigger: 'change' }
+        ],
+        mobiles: [
+          { validator: validateMobiles, trigger: 'blur' }
+        ],
+        platformThreshold: [
+          { validator: validateShold, trigger: 'blur' }
+        ],
+        smsThreshold: [
+          { validator: validateShold, trigger: 'blur' }
+        ],
       },
       sensorsMap: {},
       sensorsType: [
@@ -494,7 +535,9 @@ export default {
     },
     handleSubmit() {
       const { ruleId } = this.fromRuleData;
-      ruleId ? this.postEditAlarm() : this.postAddAlarm();
+      this.$refs.fromRuleData.validate().then(() => {
+        ruleId ? this.postEditAlarm() : this.postAddAlarm();
+      });
     },
     handleAdd() {
       this.dTitle = "添加规则";
@@ -530,15 +573,16 @@ export default {
         smsThreshold,
       };
     },
-    handleDelete({ id }) {
+    handleDelete({ ruleId }) {
       this.deleteVisible = true;
-      this.ruleId = id;
+      this.ruleId = ruleId;
     },
     postDelete() {
       postDeleteAlarm({
         ruleId: this.ruleId,
       }).then(() => {
         this.$message.success("删除成功");
+        this.deleteVisible = false;
         this.getAlarmRulePage();
       });
     },
