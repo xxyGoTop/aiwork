@@ -112,8 +112,8 @@ export default {
   },
   methods: {
     getLocationPage() {
-      const { userId, startDate } = this.formInline;
-      if (!userId || !startDate) {
+      const { userId, startTime } = this.formInline;
+      if (!userId || !startTime) {
         this.$message.error("请先选择人员和时间段");
         return;
       }
