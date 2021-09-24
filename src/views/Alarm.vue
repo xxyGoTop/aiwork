@@ -320,30 +320,33 @@ export default {
   data() {
     const validateBlank = (_, value, callback) => {
       if (!value) {
-        callback(new Error('请选择设备'));
+        callback(new Error("请选择设备"));
       }
       callback();
-    }
+    };
     const validateMobiles = (_, value, callback) => {
       if (!value) {
-        callback(new Error('请输入正确的手机号'));
-      } 
-      const isMoble = value.split(',').filter(v => v).every(v => /^1[3-9]\d{9}$/.test(v))
+        callback(new Error("请输入正确的手机号"));
+      }
+      const isMoble = value
+        .split(",")
+        .filter((v) => v)
+        .every((v) => /^1[3-9]\d{9}$/.test(v));
       if (!isMoble) {
-        callback(new Error('请输入正确的手机号'));
-      } 
+        callback(new Error("请输入正确的手机号"));
+      }
       callback();
-    }
+    };
     const validateShold = (_, value, callback) => {
-      const reg = /^([1-9][\d]*|0)(\.[\d]+)?$/
+      const reg = /^([1-9][\d]*|0)(\.[\d]+)?$/;
       if (!value) {
-        callback(new Error('请输入正确的数值'));
+        callback(new Error("请输入正确的数值"));
       }
       if (!reg.test(value)) {
-        callback(new Error('请输入正确的数值'));
+        callback(new Error("请输入正确的数值"));
       }
       callback();
-    }
+    };
     return {
       deleteVisible: false,
       visible: false,
@@ -362,18 +365,10 @@ export default {
         smsThreshold: "",
       },
       rules: {
-        deviceId: [
-          { validator: validateBlank, trigger: 'change' }
-        ],
-        mobiles: [
-          { validator: validateMobiles, trigger: 'blur' }
-        ],
-        platformThreshold: [
-          { validator: validateShold, trigger: 'blur' }
-        ],
-        smsThreshold: [
-          { validator: validateShold, trigger: 'blur' }
-        ],
+        deviceId: [{ validator: validateBlank, trigger: "change" }],
+        mobiles: [{ validator: validateMobiles, trigger: "blur" }],
+        platformThreshold: [{ validator: validateShold, trigger: "blur" }],
+        smsThreshold: [{ validator: validateShold, trigger: "blur" }],
       },
       sensorsMap: {},
       sensorsType: [

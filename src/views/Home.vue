@@ -28,24 +28,27 @@
           </div>
         </div>
         <div class="home-header-right">
-          <div
-            class="home-right-button"
-          >
+          <div class="home-right-button">
             水利要闻
             <div class="home-right-lasa-wrap">
               <div
                 class="home-right-lasa"
-                @click="toLink('http://www.mwr.gov.cn/xw/slyw/')">
+                @click="toLink('http://www.mwr.gov.cn/xw/slyw/')"
+              >
                 中国水利
               </div>
               <div
                 class="home-right-lasa"
-                @click="toLink('http://slt.xizang.gov.cn/slxw/slyw/')">
+                @click="toLink('http://slt.xizang.gov.cn/slxw/slyw/')"
+              >
                 西藏水利
               </div>
               <div
                 class="home-right-lasa"
-                @click="toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')">
+                @click="
+                  toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
+                "
+              >
                 拉萨水利
               </div>
             </div>

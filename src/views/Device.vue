@@ -74,7 +74,10 @@
             <el-table-column prop="action" label="操作" width="280">
               <template #default="{ row }">
                 <el-row>
-                  <el-button v-if="row.status !== -1" type="text" @click="handleStopDevice(row)"
+                  <el-button
+                    v-if="row.status !== -1"
+                    type="text"
+                    @click="handleStopDevice(row)"
                     >{{ row.status === 0 ? "停用" : "启用" }}</el-button
                   >
                   <el-button type="text" @click="handleEdit(row)"

@@ -90,7 +90,7 @@ export default {
       const { password } = this.formData;
       postAuthLogin({
         ...this.formData,
-        password: cMd5(password)
+        password: cMd5(password),
       }).then((data) => {
         this.updateAccessToken(data.data.token);
         this.updateUserInfo({ ...data.data });

@@ -201,6 +201,7 @@
     >
       <el-form
         :model="fromUserData"
+        :rules="rules"
         status-icon
         ref="fromUserData"
         label-width="100px"
@@ -361,6 +362,21 @@ import {
 
 export default {
   data() {
+    const validateBlank = (_, value, callback) => {
+      if (!value) {
+        callback(new Error("不能为空"));
+      }
+      callback();
+    };
+    const validateMobiles = (_, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入正确的手机号"));
+      }
+      if (!/^1[3-9]\d{9}$/.test(value)) {
+        callback(new Error("请输入正确的手机号"));
+      }
+      callback();
+    };
     return {
       showpass: false,
       visible: false,
@@ -379,6 +395,11 @@ export default {
         name: "",
         tel: "",
         roleCode: "",
+      },
+      rules: {
+        account: [{ validator: validateBlank, trigger: "blur" }],
+        name: [{ validator: validateBlank, trigger: "blur" }],
+        tel: [{ validator: validateMobiles, trigger: "blur" }],
       },
       fromGroupData: {
         groupName: "",
@@ -448,7 +469,7 @@ export default {
       const { password } = this.fromUserData;
       postAddUser({
         ...this.fromUserData,
-        password: cMd5(password)
+        password: cMd5(password),
       }).then(() => {
         this.visible = false;
         this.$message.success("添加成功");
@@ -460,7 +481,7 @@ export default {
       postUpdateUser({
         userId: this.userId,
         ...this.fromUserData,
-        password: cMd5(password)
+        password: cMd5(password),
       }).then(() => {
         this.visible = false;
         this.$message.success("編輯成功");
@@ -521,7 +542,9 @@ export default {
       this.$refs.formInline.resetFields();
     },
     handleSubmitUser() {
-      !this.userId ? this.postAddUser() : this.postUpdateUser();
+      this.$refs.fromUserData.validate().then(() => {
+        !this.userId ? this.postAddUser() : this.postUpdateUser();
+      });
     },
     handleAddUser() {
       this.userId = null;
