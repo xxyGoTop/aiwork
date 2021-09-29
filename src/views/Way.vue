@@ -177,10 +177,9 @@ export default {
     },
     readyMap() {
       /* eslint-disable */
-      const bmap = new BMapGL.Map("way");
+      const bmap = new BMapGL.Map("way", { mapType: BMAP_EARTH_MAP });
       bmap.centerAndZoom(new BMapGL.Point(91.09634224, 29.64599583), 16);
       bmap.enableScrollWheelZoom(true);
-      bmap.setMapType(BMAP_EARTH_MAP);
       bmap.setMapStyleV2({ styleJson: mpStyle });
       this.bmap = bmap;
       /* eslint-disable */

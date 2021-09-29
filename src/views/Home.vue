@@ -486,13 +486,12 @@ export default {
       this.deviceCode = deviceCode;
       this.deviceName = deviceName;
       this.getSensorType(deviceCode);
-      this.map = new BMapGL.Map("container");
+      this.map = new BMapGL.Map("container", { mapType: BMAP_EARTH_MAP });
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
       map.centerAndZoom(point, 16);
       map.enableScrollWheelZoom(true);
-      map.setMapType(BMAP_EARTH_MAP)
       map.setMapStyleV2({ styleJson: mpStyle });
       map.addControl(scaleCtrl);
       // 创建图标
