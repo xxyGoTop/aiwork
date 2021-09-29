@@ -28,7 +28,6 @@ export default {
       }
       return {
         width: "1920px",
-        paddingBottom: "20px",
         minHeight: "100%",
       };
     },

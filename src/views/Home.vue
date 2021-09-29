@@ -377,7 +377,7 @@ export default {
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 7,
       }).then((data) => {
         this.alarms = data.data.records || [];
       });
@@ -461,11 +461,11 @@ export default {
         fontSize: '17px',
         fontWeight: "bold",
         width: "300px",
-        height: '42px',
+        height: '48px',
         overflow: "hidden",
         textAlign: "center",
         lineHeight: '42px',
-        fontFamily: 'font-size: 16px;',
+        fontFamily: 'Microsoft Yahei',
         transform: 'translateX(-50%)',
         border: "0px",
         background: `url(${this.mapLocationBg}) center no-repeat`
@@ -490,7 +490,7 @@ export default {
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
-      map.centerAndZoom(point, 17);
+      map.centerAndZoom(point, 16);
       map.enableScrollWheelZoom(true);
       map.setMapType(BMAP_EARTH_MAP)
       map.setMapStyleV2({ styleJson: mpStyle });
@@ -574,7 +574,7 @@ export default {
 .home,
 .map {
   width: 100%;
-  height: 1073px;
+  height: 1080px;
   min-height: 100%;
   position: relative;
 }
@@ -753,7 +753,7 @@ export default {
       color: #fff;
       font-size: 14px;
       text-align: center;
-      font-family: "OPPOSans";
+      font-family: "Microsoft Yahei";
     }
   }
 }
@@ -769,7 +769,7 @@ export default {
   position: relative;
   width: 824px;
   min-height: 450px;
-  max-height: 939px;
+  max-height: 760px;
   background: rgba(5, 23, 45, 0.65);
   padding: 10px 30px;
   box-sizing: border-box;

@@ -94,6 +94,7 @@ export default {
   padding: 0px 20px;
   box-sizing: border-box;
   .page-header-title {
+    font-family: "Microsoft Yahei";
     span {
       display: block;
       color: #ffffff;
@@ -102,7 +103,7 @@ export default {
     .page-span-title {
       height: 58px;
       font-size: 33px;
-      font-family: "FZZhengHeiS-EB-GB";
+      font-family: "Microsoft Yahei";
     }
   }
   .page-header-back {
