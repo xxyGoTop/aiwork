@@ -247,7 +247,7 @@ export default {
       emptyIcon,
       mapIconPress,
       map: null,
-      mapType: "BMAP_NORMAL_MAP",
+      mapType: "BMAP_EARTH_MAP",
       preMarker: null,
       isShow: true,
       // 图表
@@ -488,10 +488,13 @@ export default {
       this.getSensorType(deviceCode);
       this.map = new BMapGL.Map("container");
       const map = this.map;   
-      const point = new BMapGL.Point(longitude, latitude);    
-      map.centerAndZoom(point, 18);
+      const point = new BMapGL.Point(longitude, latitude);   
+      const scaleCtrl = new BMapGL.ScaleControl(); 
+      map.centerAndZoom(point, 17);
       map.enableScrollWheelZoom(true);
+      map.setMapType(BMAP_EARTH_MAP)
       map.setMapStyleV2({ styleJson: mpStyle });
+      map.addControl(scaleCtrl);
       // 创建图标
       this.setMapLabel(deviceName, longitude, latitude);
       this.devices.forEach((device, index) => {

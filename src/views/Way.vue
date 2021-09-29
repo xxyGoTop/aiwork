@@ -92,7 +92,7 @@ export default {
       loading: false,
       list: [],
       bmap: null,
-      mapType: "BMAP_NORMAL_MAP",
+      mapType: "BMAP_EARTH_MAP",
     };
   },
   computed: {
@@ -178,8 +178,9 @@ export default {
     readyMap() {
       /* eslint-disable */
       const bmap = new BMapGL.Map("way");
-      bmap.centerAndZoom(new BMapGL.Point(91.09634224, 29.64599583), 18);
+      bmap.centerAndZoom(new BMapGL.Point(91.09634224, 29.64599583), 17);
       bmap.enableScrollWheelZoom(true);
+      map.setMapType(BMAP_EARTH_MAP)
       bmap.setMapStyleV2({ styleJson: mpStyle });
       this.bmap = bmap;
       /* eslint-disable */
