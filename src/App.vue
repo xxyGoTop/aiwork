@@ -10,8 +10,12 @@ export default {
     const clientWidth = document.body.clientWidth;
     if (clientWidth < 1300) {
       document.body.style.zoom = 0.67;
-    } else if (1300 < clientWidth < 2300) {
-      document.body.style.zoom = 0.826;
+    } else if (1400 < clientWidth < 1800) {
+      document.body.style.zoom = 0.83;
+    } else if (1800 < clientWidth < 2000) {
+      document.body.style.zoom = 1;
+    } else {
+      document.body.style.zoom = 1.2;
     }
   },
 };

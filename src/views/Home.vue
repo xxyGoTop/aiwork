@@ -177,6 +177,11 @@
         @click="isShow = !isShow"
       ></div>
     </div>
+    <!-- 地图切换 -->
+    <div class="home-map-control">
+      <span :class="{'active': mapType === 'BMAP_NORMAL_MAP'}" @click="handleChangeMap('BMAP_NORMAL_MAP')">地图</span>
+      <span :class="{'active': mapType === 'BMAP_EARTH_MAP'}" @click="handleChangeMap('BMAP_EARTH_MAP')">卫星</span>
+    </div>
     <div id="container" class="map"></div>
     <!-- 传感器设置 -->
     <el-dialog
@@ -242,6 +247,7 @@ export default {
       emptyIcon,
       mapIconPress,
       map: null,
+      mapType: "BMAP_NORMAL_MAP",
       preMarker: null,
       isShow: true,
       // 图表
@@ -483,7 +489,7 @@ export default {
       this.map = new BMapGL.Map("container");
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);    
-      map.centerAndZoom(point, 15);
+      map.centerAndZoom(point, 18);
       map.enableScrollWheelZoom(true);
       map.setMapStyleV2({ styleJson: mpStyle });
       // 创建图标
@@ -523,6 +529,17 @@ export default {
         location.href = "/login";
       });
     },
+    handleChangeMap(type) {
+      /* eslint-disable */
+      if (type === 'BMAP_NORMAL_MAP') {
+        this.mapType = "BMAP_NORMAL_MAP";
+        this.map.setMapType(BMAP_NORMAL_MAP);
+      } else {
+        this.mapType = "BMAP_EARTH_MAP";
+        this.map.setMapType(BMAP_EARTH_MAP);
+      }
+      /* eslint-disable */
+    },
     toLink(path) {
       window.open(path, "_blank");
     },
@@ -557,6 +574,29 @@ export default {
   height: 1073px;
   min-height: 100%;
   position: relative;
+}
+.home-map-control {
+  position: absolute;
+  bottom: 4px;
+  left: 74px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1002;
+  background: rgba(5, 23, 45, 0.65);
+  span {
+    width: 71px;
+    text-align: center;
+    display: block;
+    padding: 6px;
+    color: #909399;
+    border: 1px solid #025a96;
+  }
+  span.active {
+    background-color: #122ac0;
+    color: #fff;
+  }
 }
 .home-header {
   position: absolute;

@@ -48,7 +48,8 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="login-left-copyright">© 2021 西藏智启权所有</div>
+      <!-- © 2021 西藏智启权所有 -->
+      <div class="login-left-copyright"></div>
     </div>
     <div class="login-right"></div>
   </div>
@@ -82,7 +83,7 @@ export default {
     async getUser() {
       if (!this.authToken) return;
       const role = await getUserRole();
-      const user = await getUserPage();
+      const user = await getUserPage({ pageSize: 3000 });
       this.updateRoles(role.data.records);
       this.updateUser(user.data.records);
     },
@@ -149,7 +150,7 @@ export default {
     &-logo {
       width: 193px;
       height: 64px;
-      background: url(~@/assets/imgs/login_img_logo.png) center no-repeat;
+      // background: url(~@/assets/imgs/login_img_logo.png) center no-repeat;
       background-size: 100%;
     }
     &-copyright {

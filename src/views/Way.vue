@@ -65,6 +65,11 @@
         ></div>
       </div>
     </div>
+    <!-- 地图切换 -->
+    <div class="page-map-control">
+      <span :class="{'active': mapType === 'BMAP_NORMAL_MAP'}" @click="handleChangeMap('BMAP_NORMAL_MAP')">地图</span>
+      <span :class="{'active': mapType === 'BMAP_EARTH_MAP'}" @click="handleChangeMap('BMAP_EARTH_MAP')">卫星</span>
+    </div>
     <div v-loading="loading" id="way" class="map"></div>
   </section>
 </template>
@@ -87,6 +92,7 @@ export default {
       loading: false,
       list: [],
       bmap: null,
+      mapType: "BMAP_NORMAL_MAP",
     };
   },
   computed: {
@@ -172,10 +178,21 @@ export default {
     readyMap() {
       /* eslint-disable */
       const bmap = new BMapGL.Map("way");
-      bmap.centerAndZoom(new BMapGL.Point(91.09634224, 29.64599583), 17);
+      bmap.centerAndZoom(new BMapGL.Point(91.09634224, 29.64599583), 18);
       bmap.enableScrollWheelZoom(true);
       bmap.setMapStyleV2({ styleJson: mpStyle });
       this.bmap = bmap;
+      /* eslint-disable */
+    },
+    handleChangeMap(type) {
+      /* eslint-disable */
+      if (type === 'BMAP_NORMAL_MAP') {
+        this.mapType = "BMAP_NORMAL_MAP";
+        this.bmap.setMapType(BMAP_NORMAL_MAP);
+      } else {
+        this.mapType = "BMAP_EARTH_MAP";
+        this.bmap.setMapType(BMAP_EARTH_MAP);
+      }
       /* eslint-disable */
     },
   },
@@ -201,6 +218,29 @@ export default {
 }
 .page-form-wrapper {
   position: relative;
+}
+.page-map-control {
+  position: absolute;
+  bottom: 40px;
+  left: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1002;
+  background: rgba(5, 23, 45, 0.65);
+  span {
+    width: 71px;
+    text-align: center;
+    display: block;
+    padding: 6px;
+    color: #909399;
+    border: 1px solid #025a96;
+  }
+  span.active {
+    background-color: #122ac0;
+    color: #fff;
+  }
 }
 .page-form-wrap {
   position: absolute;

@@ -193,6 +193,11 @@ export default {
     },
     postDeveiceExport() {
       let formObj = {};
+      const { startDate, endDate } = this.formInline;
+      if (!startDate && !endDate) {
+        this.$message.error("请选择时间范围");
+        return
+      }
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
