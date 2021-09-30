@@ -214,7 +214,7 @@ export default {
 .page-form-wrapper,
 .map {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
 }
 .page-form-wrapper {
   position: relative;

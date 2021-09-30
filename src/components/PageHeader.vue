@@ -89,21 +89,34 @@ export default {
   width: 100%;
   height: 91px;
   margin-bottom: 26px;
-  background: url(~@/assets/imgs/nav_page_header_bg.png) center 0 no-repeat;
   background-size: 100%;
   padding: 0px 20px;
   box-sizing: border-box;
+  border-top: 10px solid #263fed;
   .page-header-title {
-    font-family: "Microsoft Yahei";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 500px;
+    height: 91px;
+    font-family: "ALiHeiTi-2";
+    transform: translate(-50%, 0);
+    background: url(~@/assets/imgs/nav_page_header_bg.png) center 0 no-repeat;
     span {
       display: block;
       color: #ffffff;
       text-align: center;
+      font-weight: 600;
     }
     .page-span-title {
-      height: 58px;
+      width: 500px;
+      height: 70px;
+      line-height: 70px;
       font-size: 33px;
-      font-family: "Microsoft Yahei";
+      font-family: "ALiHeiTi-2";
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 1px;
     }
   }
   .page-header-back {
@@ -198,8 +211,7 @@ export default {
 .page-header-wrap.fixed {
   position: absolute;
   top: 0;
-  left: 0;
   z-index: 1000;
-  width: 1920px;
+  width: 100%;
 }
 </style>

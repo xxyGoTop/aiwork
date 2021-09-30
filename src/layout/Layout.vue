@@ -20,6 +20,7 @@ export default {
       return this.$route.name !== "Home" && this.$route.name !== "Login";
     },
     pageStyle() {
+      const clientWidth = document.body.clientWidth;
       if (this.$route.name === "Login") {
         return {
           width: "100%",
@@ -27,8 +28,9 @@ export default {
         };
       }
       return {
-        width: "1920px",
-        minHeight: "100%",
+        width: "100%",
+        minWidth: clientWidth < 700 ? "1920px" : '100%',
+        height: "100%",
       };
     },
   },

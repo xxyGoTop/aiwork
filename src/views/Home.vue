@@ -21,7 +21,9 @@
         </div>
         <div class="home-header-middle">
           <div class="home-middle-name-wrap">
-            <div class="home-middle-name"></div>
+            <div class="home-middle-name">
+              拉萨智慧水利管理系统
+            </div>
           </div>
           <div class="home-middle-datetime">
             {{ time }} 星期{{ wwkMap[week] }}
@@ -377,7 +379,7 @@ export default {
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
-        pageSize: 7,
+        pageSize: 6,
       }).then((data) => {
         this.alarms = data.data.records || [];
       });
@@ -473,6 +475,38 @@ export default {
       this.map.addOverlay(label);
       /* eslint-disable */
     },
+    setScrollZoom() {
+      /* eslint-disable */
+      if (window.addEventListener) {
+        //FF,火狐浏览器会识别该方法
+        window.addEventListener(
+          "DOMMouseScroll",
+          this.wheel,
+          false
+        );
+      }
+      window.onmousewheel = document.onmousewheel = this.wheel; //W3C
+      /* eslint-disable */
+    },
+    wheel(event) {
+      let delta = 0;
+      if (!event) event = window.event;
+      if (event.wheelDelta) {
+        //IE、chrome浏览器使用的是wheelDelta，并且值为“正负120”
+        delta = event.wheelDelta / 120;
+        if (window.opera) delta = -delta; //因为IE、chrome等向下滚动是负值，FF是正值，为了处理一致性，在此取反处理
+      } else if (event.detail) {
+        //FF浏览器使用的是detail,其值为“正负3”
+        delta = -event.detail / 3;
+      }
+      if (delta) {
+        if (delta < 0) {
+          this.map.setZoom(this.map.getZoom() - 2);
+        } else {
+          this.map.setZoom(this.map.getZoom() + 2);
+        }
+      }
+    },
     readyMap() {
       /* eslint-disable */
       // 更换图标
@@ -521,6 +555,7 @@ export default {
       });
       /* eslint-disable */
       this.loading = false;
+      this.setScrollZoom();
     },
     handleOut() {
       postAuthLogout({
@@ -561,7 +596,8 @@ export default {
       this.time = dayjs().format('YYYY-MM-DD HH:mm:ss');
     }, 1000);
   },
-  destroyed() {
+  beforeDestroy() {
+    document.onmousemove = null;
     if (this.timer) {
       clearInterval(this.timer);
     }
@@ -573,9 +609,9 @@ export default {
 .home,
 .map {
   width: 100%;
-  height: 1080px;
-  min-height: 100%;
+  height: 100%;
   position: relative;
+  overflow: hidden;
 }
 .home-map-control {
   position: absolute;
@@ -603,14 +639,14 @@ export default {
 .home-header {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
   z-index: 1002;
   width: 100%;
   height: 91px;
-  background: url(~@/assets/imgs/nav_bg.png) center 0 no-repeat;
-  background-size: 100%;
   padding: 0px 20px;
   box-sizing: border-box;
+  transform: translate(-50%, 0);
+  border-top: 10px solid #263fed;
   &-left {
     display: flex;
     flex-direction: row;
@@ -732,27 +768,38 @@ export default {
     }
   }
   &-middle {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 500px;
     height: 91px;
+    transform: translate(-50%, 0);
+    background: url(~@/assets/imgs/nav_bg.png) center 0 no-repeat;
     .home-middle-name-wrap {
-      height: 61px;
+      height: 70px;
+      line-height: 70px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
     }
     .home-middle-name {
-      width: 392px;
-      height: 29px;
-      background: url(~@/assets/imgs/nav_title.png) center no-repeat;
-      background-size: 100%;
+      height: 70px;
+      line-height: 70px;
+      font-size: 33px;
+      font-family: ALiHeiTi-2;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 1px;
     }
     .home-middle-datetime {
       height: 14px;
       line-height: 14px;
       color: #fff;
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
       font-family: "Microsoft Yahei";
+      font-weight: 600;
     }
   }
 }
@@ -780,7 +827,7 @@ export default {
 .home-chart-wrap {
   position: absolute;
   top: 105px;
-  right: 25px;
+  right: 20px;
   width: 824px;
   min-height: 450px;
   max-height: 939px;
@@ -911,7 +958,7 @@ export default {
 .home-warn-wrap {
   position: absolute;
   top: 105px;
-  left: 25px;
+  left: 20px;
   width: 425px;
   min-height: 216px;
   background: rgba(5, 23, 45, 0.65);

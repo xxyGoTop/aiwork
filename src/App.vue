@@ -8,12 +8,10 @@ export default {
   components: { Layout },
   mounted() {
     const clientWidth = document.body.clientWidth;
-    if (clientWidth < 1300) {
-      document.body.style.zoom = 0.67;
-    } else if (1300 < clientWidth < 3000) {
-      document.body.style.zoom = 1;
+    if (800 < clientWidth < 1610) {
+      document.body.style.zoom = 0.7;
     } else {
-      document.body.style.zoom = 2;
+      document.body.style.zoom = 1;
     }
   },
 };
