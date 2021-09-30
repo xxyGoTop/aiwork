@@ -97,8 +97,8 @@ export default {
     position: absolute;
     top: -10px;
     left: 50%;
-    width: 500px;
-    height: 91px;
+    width: 1640px;
+    height: 93px;
     font-family: "ALiHeiTi-2";
     transform: translate(-50%, 0);
     background: url(~@/assets/imgs/nav_page_header_bg.png) center 0 no-repeat;
@@ -109,9 +109,7 @@ export default {
       font-weight: 600;
     }
     .page-span-title {
-      width: 500px;
-      height: 70px;
-      line-height: 70px;
+      line-height: 71px;
       font-size: 33px;
       font-family: "ALiHeiTi-2";
       font-weight: 600;
@@ -128,7 +126,7 @@ export default {
     color: #fff;
     font-size: 16px;
     text-align: center;
-    margin-top: 21px;
+    margin-top: 8px;
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -154,7 +152,7 @@ export default {
     color: #fff;
     font-size: 15px;
     text-align: center;
-    margin-top: 21px;
+    margin-top: 8px;
     cursor: pointer;
   }
   .page-header-user:hover {

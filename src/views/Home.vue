@@ -555,7 +555,7 @@ export default {
       });
       /* eslint-disable */
       this.loading = false;
-      this.setScrollZoom();
+      // this.setScrollZoom();
     },
     handleOut() {
       postAuthLogout({
@@ -771,8 +771,8 @@ export default {
     position: absolute;
     top: -10px;
     left: 50%;
-    width: 500px;
-    height: 91px;
+    width: 907px;
+    height: 97px;
     transform: translate(-50%, 0);
     background: url(~@/assets/imgs/nav_bg.png) center 0 no-repeat;
     .home-middle-name-wrap {
@@ -790,11 +790,11 @@ export default {
       font-family: ALiHeiTi-2;
       font-weight: 600;
       color: #fff;
-      letter-spacing: 4px;
+      letter-spacing: 7px;
     }
     .home-middle-datetime {
-      height: 14px;
-      line-height: 14px;
+      height: 24px;
+      line-height: 24px;
       color: #fff;
       font-size: 16px;
       text-align: center;
