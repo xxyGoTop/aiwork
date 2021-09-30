@@ -790,7 +790,7 @@ export default {
       font-family: ALiHeiTi-2;
       font-weight: 600;
       color: #fff;
-      letter-spacing: 1px;
+      letter-spacing: 4px;
     }
     .home-middle-datetime {
       height: 14px;
