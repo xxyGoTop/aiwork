@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 import { mapState } from "vuex";
 import { getLocationPage } from "@/api/record";
 import { mpStyle } from "@/assets/js/mpStyle";
@@ -167,12 +168,29 @@ export default {
       //   'latitude': 40.056379
       // }];
       const list = this.list;
+      let polyLine = [];
       this.bmap.panTo(new BMapGL.Point(list[0].longitude, list[0].latitude));
-      let pl = new BMapGL.Polyline(
-        list.map(l => new BMapGL.Point(l.longitude, l.latitude)),
-        { strokeColor: "#00FF00", strokeWeight: 6 }
-      );
-      this.bmap.addOverlay(pl);
+      list.forEach((l, index) => {
+        if (list[index + 1]) {
+          let minutes = dayjs(new Date(l.createTime)).diff(dayjs(new Date(list[index + 1].createTime)), 'minutes');
+          if (minutes > 5) {
+            polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
+            if (polyLine.length) {
+              let pl = new BMapGL.Polyline(polyLine, { strokeColor: "#00FF00", strokeWeight: 7 })
+              this.bmap.addOverlay(pl);
+            }
+            polyLine = []
+          } else {
+            polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
+          }
+        } else {
+          polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
+          if (polyLine.length) {
+            let pl = new BMapGL.Polyline(polyLine, { strokeColor: "#00FF00", strokeWeight: 7 })
+            this.bmap.addOverlay(pl);
+          }
+        }
+      });
       /* eslint-disable */
     },
     readyMap() {
