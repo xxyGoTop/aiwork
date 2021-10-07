@@ -3,20 +3,24 @@
     <div class="home-header">
       <div class="home-row">
         <div class="home-header-left">
-          <div class="home-left-button" @click="toLinkRouter('/device/alarm')">
-            报警记录
-          </div>
-          <div class="home-left-button" @click="toLinkRouter('/check/record')">
-            打卡记录
-          </div>
-          <div class="home-left-button" @click="toLinkRouter('/check/way')">
-            人员定位
-          </div>
-          <div
-            class="home-left-button"
-            @click="toLinkRouter('/device/history')"
-          >
-            历史记录
+          <div class="home-header-left-l_bg"></div>
+          <div class="home-header-left-r_bg"></div>
+          <div class="home-header-left-c">
+            <div class="home-left-button" @click="toLinkRouter('/device/alarm')">
+              报警记录
+            </div>
+            <div class="home-left-button" @click="toLinkRouter('/check/record')">
+              打卡记录
+            </div>
+            <div class="home-left-button" @click="toLinkRouter('/check/way')">
+              人员定位
+            </div>
+            <div
+              class="home-left-button"
+              @click="toLinkRouter('/device/history')"
+            >
+              历史记录
+            </div>
           </div>
         </div>
         <div class="home-header-middle">
@@ -30,47 +34,58 @@
           </div>
         </div>
         <div class="home-header-right">
-          <div class="home-right-button">
-            水利要闻
-            <div class="home-right-lasa-wrap">
-              <div
-                class="home-right-lasa"
-                @click="toLink('http://www.mwr.gov.cn/xw/slyw/')"
-              >
-                中国水利
-              </div>
-              <div
-                class="home-right-lasa"
-                @click="toLink('http://slt.xizang.gov.cn/slxw/slyw/')"
-              >
-                西藏水利
-              </div>
-              <div
-                class="home-right-lasa"
-                @click="
-                  toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
-                "
-              >
-                拉萨水利
+          <div class="home-header-right-l_bg"></div>
+          <div class="home-header-right-r_bg"></div>
+          <div class="home-header-right-c">
+            <div class="home-right-button">
+              水利要闻
+              <div class="home-right-lasa-wrap">
+                <div
+                  class="home-right-lasa"
+                  @click="toLink('http://www.mwr.gov.cn/xw/slyw/')"
+                >
+                  中国水利
+                </div>
+                <div
+                  class="home-right-lasa"
+                  @click="toLink('http://slt.xizang.gov.cn/slxw/slyw/')"
+                >
+                  西藏水利
+                </div>
+                <div
+                  class="home-right-lasa"
+                  @click="
+                    toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
+                  "
+                >
+                  拉萨水利
+                </div>
               </div>
             </div>
-          </div>
-          <div class="home-right-button" @click="toLinkRouter('/user')">
-            用户管理
-          </div>
-          <div class="home-right-button" @click="toLinkRouter('/device')">
-            设备管理
-          </div>
-          <div class="home-right-user">
-            <span class="home-user-icon"></span>
-            <span class="home-user-name" :title="userInfo.name">{{
-              userInfo.name
-            }}</span>
-            <span class="home-user-arrow"></span>
-            <div class="home-user-logout" @click="handleOut()">退出登录</div>
+            <div class="home-right-button" @click="toLinkRouter('/user')">
+              用户管理
+            </div>
+            <div class="home-right-button" @click="toLinkRouter('/device')">
+              设备管理
+            </div>
+            <div class="home-right-user">
+              <span class="home-user-icon"></span>
+              <span class="home-user-name" :title="userInfo.name">{{
+                userInfo.name
+              }}</span>
+              <span class="home-user-arrow"></span>
+              <div class="home-user-logout" @click="handleOut()">退出登录</div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <!-- 背景色 -->
+    <div class="home-left-bg"></div>
+    <div class="home-right-bg"></div>
+    <div class="home-bottom-bg">
+      <div class="home-bottom-left"></div>
+      <div class="home-bottom-right"></div>
     </div>
     <!-- 警告 -->
     <div class="home-warn-wrap">
@@ -80,7 +95,6 @@
           class="home-warn-header-right"
           @click="toLinkRouter('/device/alarm')"
         >
-          查看全部
         </div>
       </div>
       <div class="home-warn-container">
@@ -101,24 +115,18 @@
         </div>
         <el-empty v-if="alarms.length === 0" :image="emptyIcon"></el-empty>
       </div>
-      <div class="page-container_top_bottom page-container_top_left"></div>
-      <div class="page-container_top_bottom page-container_top_right"></div>
-      <div class="page-container_top_bottom page-container_bottom_left"></div>
-      <div class="page-container_top_bottom page-container_bottom_right"></div>
     </div>
     <!-- 设备数据 -->
     <div class="home-chart-wrap" :class="{ explan: !isShow }">
       <div class="home-chart-wrap-container" v-loading="chartLoading" element-loading-text="拼命加载中..." v-if="isShow">
         <div class="home-chart-header">
           <div class="home-chart-header-left">
-            <span class="chart-left-title">{{ deviceName }}</span>
             <span class="chart-left-icon"></span>
+            <span class="chart-left-title">{{ deviceName }}</span>
           </div>
-          <div class="home-chart-header-right" @click="visible = true">
-            数据设置
-          </div>
+          <div class="home-chart-header-right" @click="visible = true"></div>
         </div>
-        <div class="home-chart-container box-grid">
+        <div class="home-chart-container">
           <div class="chart-wrap" v-for="chart in chartData" :key="chart.icon">
             <el-row
               type="flex"
@@ -152,22 +160,6 @@
         </div>
         <el-empty v-if="chartData.length === 0" :image="emptyIcon"></el-empty>
       </div>
-      <div
-        v-if="isShow"
-        class="page-container_top_bottom page-container_top_left"
-      ></div>
-      <div
-        v-if="isShow"
-        class="page-container_top_bottom page-container_top_right"
-      ></div>
-      <div
-        v-if="isShow"
-        class="page-container_top_bottom page-container_bottom_left"
-      ></div>
-      <div
-        v-if="isShow"
-        class="page-container_top_bottom page-container_bottom_right"
-      ></div>
       <div
         v-if="isShow"
         class="home-chart-buoy"
@@ -458,16 +450,16 @@ export default {
       };
       const label = new BMapGL.Label(deviceName, opts);
       label.setStyle({
-        color: '#FF0000',
+        color: '#FDB616',
         padding: '10px',
-        fontSize: '17px',
+        fontSize: '16px',
         fontWeight: "bold",
         width: "300px",
-        height: '48px',
+        height: '40px',
         overflow: "hidden",
         textAlign: "center",
-        lineHeight: '42px',
-        fontFamily: 'Microsoft Yahei',
+        lineHeight: '38px',
+        fontFamily: 'OPPOSans',
         transform: 'translateX(-50%)',
         border: "0px",
         background: `url(${this.mapLocationBg}) center no-repeat`
@@ -590,7 +582,7 @@ export default {
       this.readyMap();
     });
   },
-  mounted() { 
+  mounted() {
     this.week = dayjs().day();
     this.timer = setInterval(() => {
       this.time = dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -642,15 +634,32 @@ export default {
   left: 50%;
   z-index: 1002;
   width: 100%;
-  height: 91px;
-  padding: 0px 20px;
+  height: 120px;
+  background:linear-gradient(0deg, rgba(21, 23, 209, 0), #050771);
   box-sizing: border-box;
   transform: translate(-50%, 0);
-  border-top: 10px solid #263fed;
   &-left {
+    flex: 1;
+    position: relative;
     display: flex;
     flex-direction: row;
-    padding-top: 21px;
+    &-l_bg {
+      width: 370px;
+      height: 152px;
+      background: url(~@/assets/imgs/nv_img_bg_left.png) center no-repeat;
+    }
+    &-r_bg {
+      flex: 1;
+      height: 152px;
+      background: url(~@/assets/imgs/nv_img_bg_middle_l.png) center repeat;
+    }
+    &-c {
+      position: absolute;
+      top: 20px;
+      left: 16px;
+      display: flex;
+      flex-direction: row;
+    }
     .home-left-button {
       font-size: 16px;
       font-weight: bold;
@@ -671,9 +680,27 @@ export default {
     }
   }
   &-right {
+    flex: 1;
+    position: relative;
     display: flex;
     flex-direction: row;
-    padding-top: 21px;
+    &-l_bg {
+      width: 370px;
+      height: 152px;
+      background: url(~@/assets/imgs/nv_img_bg_right.png) center no-repeat;
+    }
+    &-r_bg {
+      flex: 1;
+      height: 152px;
+      background: url(~@/assets/imgs/nv_img_bg_middle_l.png) center repeat;
+    }
+    &-c {
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      display: flex;
+      flex-direction: row;
+    }
     .home-right-button {
       position: relative;
       .home-right-lasa-wrap {
@@ -768,26 +795,22 @@ export default {
     }
   }
   &-middle {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    width: 907px;
-    height: 97px;
-    transform: translate(-50%, 0);
-    background: url(~@/assets/imgs/nav_bg.png) center 0 no-repeat;
+    width: 870px;
+    height: 152px;
+    background: url(~@/assets/imgs/nv_img_bg_middle.png) center 0 no-repeat;
     .home-middle-name-wrap {
-      height: 70px;
-      line-height: 70px;
+      height: 100px;
+      line-height: 100px;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
     }
     .home-middle-name {
-      height: 70px;
-      line-height: 70px;
-      font-size: 33px;
-      font-family: ALiHeiTi-2;
+      height: 66px;
+      line-height: 66px;
+      font-size: 50px;
+      font-family: "ALiHeiTi-2";
       font-weight: 600;
       color: #fff;
       letter-spacing: 7px;
@@ -813,10 +836,10 @@ export default {
 }
 .home-chart-wrap-container {
   position: relative;
-  width: 824px;
+  width: 459px;
   min-height: 450px;
-  max-height: 760px;
-  background: rgba(5, 23, 45, 0.65);
+  max-height: 900px;
+  background: rgba(3, 14, 131, 0.8);
   padding: 10px 30px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -828,7 +851,7 @@ export default {
   position: absolute;
   top: 105px;
   right: 20px;
-  width: 824px;
+  width: 459px;
   min-height: 450px;
   max-height: 939px;
   border: 1px solid #003B7A;
@@ -878,31 +901,17 @@ export default {
     border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
   }
   .home-chart-header-right {
-    position: relative;
-    font-size: 14px;
-    font-family: OPPOSans;
-    font-weight: 500;
-    color: #FFFFFF;
-    opacity: 0.5;
-    padding-right: 20px;
+    width: 44px;
+    height: 44px;
+    background: url(~@/assets/imgs/data_ico_setting.png) center no-repeat;
     cursor: pointer;
-  }
-  .home-chart-header-right::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 0px;
-    width: 6px;
-    height: 10px;
-    background: url(~@/assets/imgs/back.png) center no-repeat;
-    transform: translate(0%, -50%);
   }
   span.chart-left-title {
     display: block;
-    font-size: 30px;
+    font-size: 24px;
     font-family: OPPOSans;
     font-weight: bold;
-    color: #fff;
+    color: #80B5FC;
     margin-bottom: 8px;
   }
   span.chart-left-icon {
@@ -914,8 +923,8 @@ export default {
   .home-chart-container {
     padding: 0px 0px;
     .chart-header {
-      color: #fff;
-      margin-bottom: 18px;
+      color: #80B5FC;
+      margin-bottom: 13px;
     }
     .chart-header-left {
       position: relative;
@@ -961,8 +970,9 @@ export default {
   left: 20px;
   width: 425px;
   min-height: 216px;
-  background: rgba(5, 23, 45, 0.65);
-  border: 1px solid #003B7A;
+  background: rgba(3, 14, 131, 0.8);
+  border: 12px solid transparent;
+  border-image: url(~@/assets/imgs/data_img_line_left.png) 30;
   z-index: 1000;
   padding: 28px;
   .home-warn-header {
@@ -981,25 +991,10 @@ export default {
     background: url(~@/assets/imgs/warn.png) 0 center no-repeat;
   }
   .home-warn-header-right {
-    position: relative;
-    font-size: 14px;
-    font-family: OPPOSans;
-    font-weight: 500;
-    color: #FFFFFF;
-    opacity: 0.5;
-    padding-right: 20px;
+    width: 44px;
+    height: 44px;
+    background: url(~@/assets/imgs/data_ico_history.png) center no-repeat;
     cursor: pointer;
-  }
-  .home-warn-header-right::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 0px;
-    width: 6px;
-    height: 10px;
-    opacity: 0.6;
-    background: url(~@/assets/imgs/back.png) center no-repeat;
-    transform: translate(0%, -50%);
   }
   .home-warn-container {
     padding-top: 50px;
@@ -1062,6 +1057,49 @@ export default {
   }
   .el-input__inner {
     width: 100%;
+  }
+}
+.home-left-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(-90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
+}
+.home-right-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
+}
+.home-bottom-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 91px;
+  background: linear-gradient(180deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 51px 19px 0px;
+  box-sizing: border-box;
+  .home-bottom-left {
+    width: 821px;
+    height: 18px;
+    background: url(~@/assets/imgs/data_img_line_foot_left.png) 0 center no-repeat;
+  }
+  .home-bottom-right {
+    width: 821px;
+    height: 18px;
+    background: url(~@/assets/imgs/data_img_line_foot_right.png) 0 center no-repeat;
   }
 }
 </style>

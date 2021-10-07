@@ -26,22 +26,22 @@
   background-color: #031c38;
 }
 .el-table .cell {
-  color: #FFFFFF;
+  color: #80B5FC;
 }
 .el-table thead th, .el-table thead tr {
-  background-color: #013063;
+  background-color: #1214C2;
 }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
-  background-color: #013063;
+  background-color: #1214C2;
 }
 .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: #013063;
+  background-color: #1214C2;
 }
 
 .el-table--enable-row-hover .el-table__body tr:hover>td,
 .el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell {
-  background-color: #0257af;
+    background: #2E4CFF;
 }
 
 .el-table--border::after,
@@ -75,16 +75,17 @@
 }
 
 .el-button--primary {
-  background: #009CFF;
+  background: #004EFF;
   border: 1px solid;
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(0, 120, 255, 0.3)) 1 1;
+  border-radius: 4px;
 }
 
 .el-button--text {
   min-width: auto;
   border: 0;
   background: 0;
-  color: #004EFF;
+  color: #80B5FC;
 }
 
 .el-select {
@@ -99,7 +100,7 @@
   width: 184px;
   font-size: 16px;
   color: #fff;
-  background: #0B315F;
+  background: #1214C2;
   border: 1px solid rgba(0, 120, 255, 0.8);
   border-radius: 4px;
 }
@@ -107,8 +108,8 @@
 .el-select-dropdown {
   font-size: 16px;
   color: #fff;
-  background: #0B315F;
-  border: 1px solid #0B315F;
+  background: #1214C2;
+  border: 1px solid rgba(0, 120, 255, 0.8);
   box-shadow: 0 2px 12px 0 rgba(39, 48, 59, 0.8);
 }
 
@@ -117,28 +118,28 @@
 }
 
 .el-popper[x-placement^=top] .popper__arrow {
-  border-bottom-color: #0B315F;
+  border-bottom-color: #1214C2;
 }
 
 .el-popper[x-placement^=bottom] .popper__arrow {
-  border-bottom-color: #0B315F;
+  border-bottom-color: #1214C2;
 }
 
 .el-popper[x-placement^=top] .popper__arrow:after {
-  border-bottom-color: #0B315F;
+  border-bottom-color: #0078FF;
 }
 
 .el-popper[x-placement^=bottom] .popper__arrow:after {
-  border-bottom-color: #0B315F;
+  border-bottom-color: #0078FF;
 }
 
 .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
-  background-color: #0257af;
+  background-color: #0078FF;
 }
 
 .el-dialog {
   width: 723px;
-  background: rgba(5, 23, 45, 0.95);
+  background: #050769;
   border: 2px solid;
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
 }
@@ -158,7 +159,7 @@
 .el-dialog__title {
   font-size: 30px;
   font-weight: bold;
-  color: #fff;
+  color: #80B5FC;
 }
 
 .el-dialog__headerbtn {
@@ -186,7 +187,7 @@
 }
 
 .el-picker-panel {
-  background: #0B315F;
+  background: #1214C2;
   color: #fff;
   border: 1px solid #0B315F;
   .el-input__inner {
@@ -195,7 +196,7 @@
 }
 
 .el-picker-panel__footer {
-  background: #0B315F;
+  background: #1214C2;
   color: #fff;
   border-top: 1px solid;
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
@@ -205,7 +206,7 @@
 }
 
 .el-message-box {
-  background-color: #0B315F;
+  background-color: #1214C2;
   border: 2px solid;
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
   .el-message-box__title {
@@ -248,12 +249,12 @@
 
 .page-table-dialog .el-input {
   width: 406px;
-  background: #0B315F;
+  background: #1214C2;
 }
 
 .page-table-dialog .el-input__inner {
   width: 406px;
-  background: #0B315F;
+  background: #1214C2;
   border: 1px solid;
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(0, 120, 255, 0.3)) 1 1;
   border-radius: 4px;

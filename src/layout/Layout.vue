@@ -39,7 +39,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-wrapper {
-  background-color: #022248;
+  background-color: #061369;
   margin: 0 auto;
 }
 </style>

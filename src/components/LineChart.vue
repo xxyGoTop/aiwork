@@ -47,7 +47,7 @@ export default {
     },
     lineStyle: {
       type: Object,
-      default: () => ({ width: "370px", height: "235px" }),
+      default: () => ({ width: "400px", height: "180px" }),
     },
   },
   computed: {
@@ -77,7 +77,7 @@ export default {
         backgroudColor: "",
         grid: {
           left: "35",
-          right: "20",
+          right: "0",
           top: "8%",
           bottom: 40,
         },
@@ -90,10 +90,20 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: '#80B5FC'
+            }
+          },
           data: this.xData,
         },
         yAxis: {
           type: "value",
+          axisLine: {
+            lineStyle: {
+              color: '#80B5FC'
+            }
+          },
           splitLine: {
             show: false,
           },
