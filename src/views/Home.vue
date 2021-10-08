@@ -542,7 +542,7 @@ export default {
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
-      map.centerAndZoom(point, 16);
+      map.centerAndZoom(point, 15);
       map.enableScrollWheelZoom(true);
       map.setMapStyleV2({ styleJson: mpStyle });
       map.addControl(scaleCtrl);
@@ -866,7 +866,7 @@ export default {
   width: 369px;
   margin: 20px auto;
   min-height: 509px;
-  max-height: 900px;
+  max-height: 780px;
   box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
@@ -879,7 +879,7 @@ export default {
   right: 20px;
   width: 459px;
   min-height: 509px;
-  max-height: 900px;
+  max-height: 780px;
   box-sizing: border-box;
   z-index: 1000;
   background: url(~@/assets/imgs/data_img_line_right_top.png) center top no-repeat,
