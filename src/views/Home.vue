@@ -835,7 +835,7 @@ export default {
     .home-middle-name {
       height: 66px;
       line-height: 66px;
-      font-size: 50px;
+      font-size: 47px;
       font-family: HYGangYiTi;
       font-weight: 600;
       text-shadow: 0px 8px 15px rgba(0, 0, 0, 0.45);
@@ -1048,7 +1048,7 @@ export default {
     cursor: pointer;
   }
   .home-warn-container {
-    padding-top: 50px;
+    padding-top: 40px;
   }
   .home-warn-item {
     color: #A4CAFD;

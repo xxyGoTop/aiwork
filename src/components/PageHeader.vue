@@ -109,12 +109,14 @@ export default {
       font-weight: 600;
     }
     .page-span-title {
-      line-height: 71px;
-      font-size: 33px;
-      font-family: "ALiHeiTi-2";
+      height: 66px;
+      line-height: 66px;
+      font-size: 47px;
+      font-family: HYGangYiTi;
       font-weight: 600;
+      text-shadow: 0px 8px 15px rgba(0, 0, 0, 0.45);
       color: #fff;
-      letter-spacing: 4px;
+      letter-spacing: 7px;
     }
   }
   .page-header-back {
