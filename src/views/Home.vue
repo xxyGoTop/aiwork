@@ -91,6 +91,7 @@
     <div class="home-right-bg"></div>
     <div class="home-bottom-bg">
       <div class="home-bottom-left"></div>
+      <div class="home-bottom-mid">藏ICP备2021000258号</div>
       <div class="home-bottom-right"></div>
     </div>
     <!-- 警告 -->
@@ -632,8 +633,8 @@ export default {
 }
 .home-map-control {
   position: absolute;
-  bottom: 4px;
-  left: 74px;
+  bottom: 56px;
+  left: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1148,6 +1149,12 @@ export default {
     width: 821px;
     height: 18px;
     background: url(~@/assets/imgs/data_img_line_foot_left.png) 0 center no-repeat;
+  }
+  .home-bottom-mid {
+    font-size: 16px;
+    height: 16px;
+    line-height: 16px;
+    color: #80B5FC;
   }
   .home-bottom-right {
     width: 821px;
