@@ -49,7 +49,7 @@
         </el-form>
       </div>
       <!-- © 2021 西藏智启权所有 -->
-      <div class="login-left-copyright"></div>
+      <div class="login-left-copyright">藏ICP备2021000258号</div>
     </div>
     <div class="login-right"></div>
   </div>

@@ -26,3 +26,10 @@ export default {
   color: #2c3e50;
 }
 </style>
+
+<style>
+@font-face {
+  font-family: HYGangYiTi;
+  src: url("./assets/css/HYGangYiTi-85W.ttf");
+}
+</style>

@@ -63,8 +63,8 @@ export default {
       handler() {
         this.loadChart();
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   data() {
     return {
@@ -92,8 +92,8 @@ export default {
           boundaryGap: false,
           axisLine: {
             lineStyle: {
-              color: '#80B5FC'
-            }
+              color: "#80B5FC",
+            },
           },
           data: this.xData,
         },
@@ -101,8 +101,8 @@ export default {
           type: "value",
           axisLine: {
             lineStyle: {
-              color: '#80B5FC'
-            }
+              color: "#80B5FC",
+            },
           },
           splitLine: {
             show: false,

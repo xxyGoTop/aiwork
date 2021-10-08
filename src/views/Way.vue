@@ -67,8 +67,16 @@
     </div>
     <!-- 地图切换 -->
     <div class="page-map-control">
-      <span :class="{'active': mapType === 'BMAP_NORMAL_MAP'}" @click="handleChangeMap('BMAP_NORMAL_MAP')">地图</span>
-      <span :class="{'active': mapType === 'BMAP_EARTH_MAP'}" @click="handleChangeMap('BMAP_EARTH_MAP')">卫星</span>
+      <span
+        :class="{ active: mapType === 'BMAP_NORMAL_MAP' }"
+        @click="handleChangeMap('BMAP_NORMAL_MAP')"
+        >地图</span
+      >
+      <span
+        :class="{ active: mapType === 'BMAP_EARTH_MAP' }"
+        @click="handleChangeMap('BMAP_EARTH_MAP')"
+        >卫星</span
+      >
     </div>
     <div v-loading="loading" id="way" class="map"></div>
   </section>

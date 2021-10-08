@@ -29,7 +29,7 @@ export default {
       }
       return {
         width: "100%",
-        minWidth: clientWidth < 700 ? "1920px" : '100%',
+        minWidth: clientWidth < 700 ? "1920px" : "100%",
         height: "100%",
       };
     },

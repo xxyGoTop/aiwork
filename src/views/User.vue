@@ -454,10 +454,9 @@ export default {
     getAllUserPage() {
       getUserPage({
         pageSize: 3000,
-      })
-        .then((data) => {
-          this.allList = data.data.records || [];
-        });
+      }).then((data) => {
+        this.allList = data.data.records || [];
+      });
     },
     getUserGroup(page = 1) {
       this.groupPage = page;

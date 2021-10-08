@@ -196,7 +196,7 @@ export default {
       const { startDate, endDate } = this.formInline;
       if (!startDate && !endDate) {
         this.$message.error("请选择时间范围");
-        return
+        return;
       }
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {

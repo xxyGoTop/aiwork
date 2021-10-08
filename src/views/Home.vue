@@ -6,10 +6,16 @@
           <div class="home-header-left-l_bg"></div>
           <div class="home-header-left-r_bg"></div>
           <div class="home-header-left-c">
-            <div class="home-left-button" @click="toLinkRouter('/device/alarm')">
+            <div
+              class="home-left-button"
+              @click="toLinkRouter('/device/alarm')"
+            >
               报警记录
             </div>
-            <div class="home-left-button" @click="toLinkRouter('/check/record')">
+            <div
+              class="home-left-button"
+              @click="toLinkRouter('/check/record')"
+            >
               打卡记录
             </div>
             <div class="home-left-button" @click="toLinkRouter('/check/way')">
@@ -25,9 +31,7 @@
         </div>
         <div class="home-header-middle">
           <div class="home-middle-name-wrap">
-            <div class="home-middle-name">
-              拉萨智慧水利管理系统
-            </div>
+            <div class="home-middle-name">拉萨智慧水利管理系统</div>
           </div>
           <div class="home-middle-datetime">
             {{ time }} 星期{{ wwkMap[week] }}
@@ -55,7 +59,9 @@
                 <div
                   class="home-right-lasa"
                   @click="
-                    toLink('http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml')
+                    toLink(
+                      'http://slj.lasa.gov.cn/lsslj/xxyw/common_list.shtml'
+                    )
                   "
                 >
                   拉萨水利
@@ -90,12 +96,14 @@
     <!-- 警告 -->
     <div class="home-warn-wrap">
       <div class="home-warn-header">
-        <div class="home-warn-header-left"></div>
+        <div class="home-warn-header-left">
+          <span class="warn-left-icon"></span>
+          <span class="warn-left-title">报警通知</span>
+        </div>
         <div
           class="home-warn-header-right"
           @click="toLinkRouter('/device/alarm')"
-        >
-        </div>
+        ></div>
       </div>
       <div class="home-warn-container">
         <div class="home-warn-item" v-for="alarm in alarms" :key="alarm.id">
@@ -118,7 +126,12 @@
     </div>
     <!-- 设备数据 -->
     <div class="home-chart-wrap" :class="{ explan: !isShow }">
-      <div class="home-chart-wrap-container" v-loading="chartLoading" element-loading-text="拼命加载中..." v-if="isShow">
+      <div
+        class="home-chart-wrap-container"
+        v-loading="chartLoading"
+        element-loading-text="拼命加载中..."
+        v-if="isShow"
+      >
         <div class="home-chart-header">
           <div class="home-chart-header-left">
             <span class="chart-left-icon"></span>
@@ -173,8 +186,16 @@
     </div>
     <!-- 地图切换 -->
     <div class="home-map-control">
-      <span :class="{'active': mapType === 'BMAP_NORMAL_MAP'}" @click="handleChangeMap('BMAP_NORMAL_MAP')">地图</span>
-      <span :class="{'active': mapType === 'BMAP_EARTH_MAP'}" @click="handleChangeMap('BMAP_EARTH_MAP')">卫星</span>
+      <span
+        :class="{ active: mapType === 'BMAP_NORMAL_MAP' }"
+        @click="handleChangeMap('BMAP_NORMAL_MAP')"
+        >地图</span
+      >
+      <span
+        :class="{ active: mapType === 'BMAP_EARTH_MAP' }"
+        @click="handleChangeMap('BMAP_EARTH_MAP')"
+        >卫星</span
+      >
     </div>
     <div id="container" class="map"></div>
     <!-- 传感器设置 -->
@@ -394,13 +415,17 @@ export default {
         this.chartWind = [];
         let sensorType = data.data || [];
         sensorType.forEach((sensor) => {
-          if (!sensorType.includes('WIND_SPEED') && sensor === 'WIND_DIRECTION') return
+          if (!sensorType.includes("WIND_SPEED") && sensor === "WIND_DIRECTION")
+            return;
           this.getSensorData(deviceCode, sensor);
         });
         this.sensorsForm = this.sensorsForm.map((s) => {
           let sensor = sensorType.filter((t) => s.value === t);
-          if (!sensorType.includes('WIND_SPEED') && s.value === 'WIND_DIRECTION') {
-            sensor = []
+          if (
+            !sensorType.includes("WIND_SPEED") &&
+            s.value === "WIND_DIRECTION"
+          ) {
+            sensor = [];
           }
           return { ...s, sensor: sensor.length ? s.value : "" };
         });
@@ -810,8 +835,9 @@ export default {
       height: 66px;
       line-height: 66px;
       font-size: 50px;
-      font-family: "ALiHeiTi-2";
+      font-family: HYGangYiTi;
       font-weight: 600;
+      text-shadow: 0px 8px 15px rgba(0, 0, 0, 0.45);
       color: #fff;
       letter-spacing: 7px;
     }
@@ -836,27 +862,29 @@ export default {
 }
 .home-chart-wrap-container {
   position: relative;
-  width: 459px;
-  min-height: 450px;
+  width: 369px;
+  margin: 20px auto;
+  min-height: 509px;
   max-height: 900px;
-  background: rgba(3, 14, 131, 0.8);
-  padding: 10px 30px;
   box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  z-index: 1001;
+  z-index: 1002;
 }
 .home-chart-wrap {
   position: absolute;
   top: 105px;
   right: 20px;
   width: 459px;
-  min-height: 450px;
-  max-height: 939px;
-  border: 1px solid #003B7A;
+  min-height: 509px;
+  max-height: 900px;
   box-sizing: border-box;
   z-index: 1000;
+  background: url(~@/assets/imgs/data_img_line_right_top.png) center top no-repeat,
+  url(~@/assets/imgs/data_img_line_right_foot.png) center bottom no-repeat,
+  url(~@/assets/imgs/data_img_line_right_middle.png) 0px 199px repeat-y;
+  overflow: hidden;
   .home-chart-buoy {
     position: absolute;
     left: -24px;
@@ -906,19 +934,25 @@ export default {
     background: url(~@/assets/imgs/data_ico_setting.png) center no-repeat;
     cursor: pointer;
   }
+  .home-chart-header-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
   span.chart-left-title {
     display: block;
     font-size: 24px;
     font-family: OPPOSans;
     font-weight: bold;
     color: #80B5FC;
-    margin-bottom: 8px;
+    margin-left: -24px;
+    line-height: 43px;
   }
   span.chart-left-icon {
     display: block;
-    width: 88px;
-    height: 16px;
-    background: url(~@/assets/imgs/data_bg.png) 0 center no-repeat;
+    width: 90px;
+    height: 43px;
+    background: url(~@/assets/imgs/data_ico_sensor.png) 0 center no-repeat;
   }
   .home-chart-container {
     padding: 0px 0px;
@@ -968,13 +1002,14 @@ export default {
   position: absolute;
   top: 105px;
   left: 20px;
-  width: 425px;
-  min-height: 216px;
-  background: rgba(3, 14, 131, 0.8);
-  border: 12px solid transparent;
-  border-image: url(~@/assets/imgs/data_img_line_left.png) 30;
+  width: 459px;
+  min-height: 509px;
+  background: url(~@/assets/imgs/data_img_line_left_top.png) center top no-repeat,
+  url(~@/assets/imgs/data_img_line_left_foot.png) center bottom no-repeat,
+  url(~@/assets/imgs/data_img_line_left_middle.png) 0px 199px repeat-y;
   z-index: 1000;
-  padding: 28px;
+  box-sizing: border-box;
+  padding: 28px 40px;
   .home-warn-header {
     display: flex;
     flex-direction: row;
@@ -986,9 +1021,24 @@ export default {
     border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
   }
   .home-warn-header-left {
-    width: 118px;
-    height: 22px;
-    background: url(~@/assets/imgs/warn.png) 0 center no-repeat;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  span.warn-left-title {
+    display: block;
+    font-size: 24px;
+    font-family: OPPOSans;
+    font-weight: bold;
+    color: #80B5FC;
+    margin-left: -24px;
+    line-height: 43px;
+  }
+  span.warn-left-icon {
+    display: block;
+    width: 90px;
+    height: 43px;
+    background: url(~@/assets/imgs/data_ico_alarm.png) 0 center no-repeat;
   }
   .home-warn-header-right {
     width: 44px;
@@ -1000,7 +1050,7 @@ export default {
     padding-top: 50px;
   }
   .home-warn-item {
-    color: #fff;
+    color: #A4CAFD;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1025,6 +1075,9 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+    }
+    &-time {
+      white-space: nowrap;
     }
     &-tag {
       width: 70px;

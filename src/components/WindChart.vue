@@ -70,14 +70,14 @@ export default {
       handler() {
         this.loadChart();
       },
-      deep: true
+      deep: true,
     },
     chartWind: {
       handler() {
         this.loadChart();
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   data() {
     return {
