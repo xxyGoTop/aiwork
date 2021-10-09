@@ -65,7 +65,7 @@
             <el-table-column prop="data" :label="label" align="center" />
           </el-table>
         </div>
-        <el-row style="margin-top: 16px" type="flex" justify="end">
+        <el-row class="page-pagt-wrap" style="margin-top: 16px" type="flex" justify="center">
           <el-pagination
             background
             @current-change="getSensorData"

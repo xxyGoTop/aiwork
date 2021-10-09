@@ -122,6 +122,13 @@ h1, h2, h3, h4 {
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
 }
 
+
+.page-container .page-pagt-wrap {
+  padding-top: 20px;
+  border-top: 2px solid;
+  border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
+}
+
 .page-container_top_bottom {
   position: absolute;
   width: 12px;

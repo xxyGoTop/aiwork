@@ -136,7 +136,7 @@
         <div class="home-chart-header">
           <div class="home-chart-header-left">
             <span class="chart-left-icon"></span>
-            <span class="chart-left-title">{{ deviceName }}</span>
+            <span class="chart-left-title" :title="deviceName">{{ deviceName }}</span>
           </div>
           <div class="home-chart-header-right" @click="visible = true"></div>
         </div>
@@ -882,7 +882,7 @@ export default {
   width: 459px;
   min-height: 509px;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 1003;
   background: url(~@/assets/imgs/data_img_line_right_top.png) center top no-repeat,
   url(~@/assets/imgs/data_img_line_right_foot.png) center bottom no-repeat,
   url(~@/assets/imgs/data_img_line_right_middle.png) 0px 199px repeat-y;
@@ -948,6 +948,10 @@ export default {
     color: #80B5FC;
     margin-left: -24px;
     line-height: 43px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 256px;
+    overflow: hidden;
   }
   span.chart-left-icon {
     display: block;
@@ -1008,7 +1012,7 @@ export default {
   background: url(~@/assets/imgs/data_img_line_left_top.png) center top no-repeat,
   url(~@/assets/imgs/data_img_line_left_foot.png) center bottom no-repeat,
   url(~@/assets/imgs/data_img_line_left_middle.png) 0px 199px repeat-y;
-  z-index: 1000;
+  z-index: 1003;
   box-sizing: border-box;
   padding: 28px 40px;
   .home-warn-header {

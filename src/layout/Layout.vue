@@ -39,8 +39,8 @@ export default {
         this.$route.name === "Way"
       ) {
         return {
-          width: "100%",
-          height: "100%",
+          width: clientWidth < 800 ? "1920px" : "100%",
+          height: clientWidth < 800 ? "1080px" : "100%",
         };
       }
       return {

@@ -119,7 +119,7 @@
             </el-table-column>
           </el-table>
         </div>
-        <el-row style="margin-top: 16px" type="flex" justify="end">
+        <el-row class="page-pagt-wrap" style="margin-top: 16px" type="flex" justify="center">
           <el-pagination
             background
             @current-change="handleAlarm"
@@ -197,7 +197,7 @@
             </el-table-column>
           </el-table>
         </div>
-        <el-row style="margin-top: 16px" type="flex" justify="end">
+        <el-row class="page-pagt-wrap" style="margin-top: 16px" type="flex" justify="center">
           <el-pagination
             background
             @current-change="getAlarmRulePage"
