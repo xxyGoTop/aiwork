@@ -858,20 +858,22 @@ export default {
   flex-direction: row;
   justify-content: space-between;
 }
-.home-chart-wrap-container::-webkit-scrollbar {
+.home-chart-container::-webkit-scrollbar {
   width: 0px;
 }
 .home-chart-wrap-container {
   position: relative;
   width: 369px;
-  margin: 20px auto;
   min-height: 509px;
-  max-height: 780px;
+  margin: 20px auto;
   box-sizing: border-box;
+  z-index: 1002;
+}
+.home-chart-container {
+  max-height: 660px;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
-  z-index: 1002;
 }
 .home-chart-wrap {
   position: absolute;
@@ -879,16 +881,14 @@ export default {
   right: 20px;
   width: 459px;
   min-height: 509px;
-  max-height: 780px;
   box-sizing: border-box;
   z-index: 1000;
   background: url(~@/assets/imgs/data_img_line_right_top.png) center top no-repeat,
   url(~@/assets/imgs/data_img_line_right_foot.png) center bottom no-repeat,
   url(~@/assets/imgs/data_img_line_right_middle.png) 0px 199px repeat-y;
-  overflow: hidden;
   .home-chart-buoy {
     position: absolute;
-    left: -24px;
+    left: -11px;
     top: 50%;
     transform: translate(0%, -50%);
     width: 24px;

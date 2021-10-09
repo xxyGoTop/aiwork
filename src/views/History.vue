@@ -116,10 +116,10 @@
           />
         </el-row>
       </div>
-      <div class="page-container_top_bottom page-container_top_left"></div>
-      <div class="page-container_top_bottom page-container_top_right"></div>
-      <div class="page-container_top_bottom page-container_bottom_left"></div>
-      <div class="page-container_top_bottom page-container_bottom_right"></div>
+      <!-- 背景图 -->
+      <div class="page-container-top_bg"></div>
+      <div class="page-container-bottom_bg"></div>
+      <div class="page-container-left_bg"></div>
     </div>
   </section>
 </template>

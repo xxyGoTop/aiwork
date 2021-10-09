@@ -9,7 +9,7 @@ export default {
   mounted() {
     const clientWidth = document.body.clientWidth;
     if (800 < clientWidth && clientWidth < 1610) {
-      document.body.style.zoom = 0.54;
+      document.body.style.zoom = 0.56;
     } else {
       document.body.style.zoom = 1;
     }

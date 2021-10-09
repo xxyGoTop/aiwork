@@ -1,20 +1,27 @@
 <template>
   <div class="page-header-wrap" :class="{ fixed: isFixed }">
-    <div class="page-header-back" @click="handleToBack">
-      <span class="page-header-back-icon"></span>
-      <span>返回</span>
+    <div class="page-header-left">
+      <div class="page-header-l_bg"></div>
+      <div class="page-header-r_bg"></div>
+      <div class="page-header-back" @click="handleToBack">
+        <span class="page-header-back-icon"></span>
+        <span>返回</span>
+      </div>
     </div>
     <div class="page-header-title">
       <span class="page-span-title">{{ title }}</span>
-      <span class="page-span-date">{{ time }} 星期{{ wwkMap[week] }}</span>
     </div>
-    <div class="page-header-user">
-      <span class="page-user-icon"></span>
-      <span class="page-user-name" :title="userInfo.name">
-        {{ userInfo.name }}
-      </span>
-      <span class="page-user-arrow"></span>
-      <div class="page-user-logout" @click="handleOut">退出登录</div>
+    <div class="page-header-right">
+      <div class="page-header-l_bg"></div>
+      <div class="page-header-l_bg"></div>
+      <div class="page-header-user">
+        <span class="page-user-icon"></span>
+        <span class="page-user-name" :title="userInfo.name">
+          {{ userInfo.name }}
+        </span>
+        <span class="page-user-arrow"></span>
+        <div class="page-user-logout" @click="handleOut">退出登录</div>
+      </div>
     </div>
   </div>
 </template>
@@ -93,15 +100,47 @@ export default {
   padding: 0px 20px;
   box-sizing: border-box;
   border-top: 10px solid #263fed;
+  .page-header {
+    &-left, &-right {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex: 1;
+    }
+    &-r_bg {
+      flex: 1;
+    }
+    &-left {
+      .page-header-l_bg {
+        width: 500px;
+        height: 152px;
+        background: url(~@/assets/imgs/nv_img_bg_second_left.png) center no-repeat;
+      }
+      .page-header-r_bg {
+        background: url(~@/assets/imgs/nv_img_bg_second_middle_left.png) center repeat;
+      }
+    }
+    &-right {
+      .page-header-l_bg {
+        width: 500px;
+        height: 152px;
+        background: url(~@/assets/imgs/nv_img_bg_second_right.png) center no-repeat;
+      }
+      .page-header-r_bg {
+        background: url(~@/assets/imgs/nv_img_bg_second_middle_right.png) center repeat;
+      }
+    }
+  }
   .page-header-title {
     position: absolute;
     top: -10px;
     left: 50%;
-    width: 1640px;
-    height: 93px;
+    width: 524px;
+    height: 152px;
     font-family: "ALiHeiTi-2";
     transform: translate(-50%, 0);
-    background: url(~@/assets/imgs/nav_page_header_bg.png) center 0 no-repeat;
+    background: url(~@/assets/imgs/nv_img_bg_second_middle.png) center 0 no-repeat;
     span {
       display: block;
       color: #ffffff;
@@ -120,6 +159,9 @@ export default {
     }
   }
   .page-header-back {
+    position: absolute;
+    left: 20px;
+    top: 20px;
     width: 132px;
     height: 39px;
     line-height: 39px;
@@ -146,6 +188,9 @@ export default {
     background: url(~@/assets/imgs/nav_left_hov.png) center no-repeat;
   }
   .page-header-user {
+    position: absolute;
+    right: 20px;
+    top: 20px;
     width: 132px;
     height: 39px;
     line-height: 39px;
