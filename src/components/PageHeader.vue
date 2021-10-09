@@ -12,7 +12,7 @@
       <span class="page-span-title">{{ title }}</span>
     </div>
     <div class="page-header-right">
-      <div class="page-header-l_bg"></div>
+      <div class="page-header-r_bg"></div>
       <div class="page-header-l_bg"></div>
       <div class="page-header-user">
         <span class="page-user-icon"></span>
@@ -94,14 +94,13 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  height: 91px;
+  height: 152px;
   margin-bottom: 26px;
   background-size: 100%;
-  padding: 0px 20px;
   box-sizing: border-box;
-  border-top: 10px solid #263fed;
   .page-header {
-    &-left, &-right {
+    &-left,
+    &-right {
       position: relative;
       display: flex;
       flex-direction: row;
@@ -115,32 +114,33 @@ export default {
       .page-header-l_bg {
         width: 500px;
         height: 152px;
-        background: url(~@/assets/imgs/nv_img_bg_second_left.png) center no-repeat;
+        background: url(~@/assets/imgs/nv_img_bg_second_left.png) center
+          no-repeat;
       }
       .page-header-r_bg {
-        background: url(~@/assets/imgs/nv_img_bg_second_middle_left.png) center repeat;
+        height: 152px;
+        background: url(~@/assets/imgs/nv_img_bg_second_middle_left.png) center
+          repeat;
       }
     }
     &-right {
       .page-header-l_bg {
         width: 500px;
         height: 152px;
-        background: url(~@/assets/imgs/nv_img_bg_second_right.png) center no-repeat;
+        background: url(~@/assets/imgs/nv_img_bg_second_right.png) center
+          no-repeat;
       }
       .page-header-r_bg {
-        background: url(~@/assets/imgs/nv_img_bg_second_middle_right.png) center repeat;
+        height: 152px;
+        background: url(~@/assets/imgs/nv_img_bg_second_middle_right.png) center
+          repeat;
       }
     }
   }
   .page-header-title {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    width: 524px;
+    width: 874px;
     height: 152px;
-    font-family: "ALiHeiTi-2";
-    transform: translate(-50%, 0);
-    background: url(~@/assets/imgs/nv_img_bg_second_middle.png) center 0 no-repeat;
+    background: url(~@/assets/imgs/nv_img_bg_second_middle.png) center no-repeat;
     span {
       display: block;
       color: #ffffff;
@@ -148,8 +148,8 @@ export default {
       font-weight: 600;
     }
     .page-span-title {
-      height: 66px;
-      line-height: 66px;
+      height: 90px;
+      line-height: 90px;
       font-size: 47px;
       font-family: HYGangYiTi;
       font-weight: 600;
@@ -161,7 +161,7 @@ export default {
   .page-header-back {
     position: absolute;
     left: 20px;
-    top: 20px;
+    top: 15px;
     width: 132px;
     height: 39px;
     line-height: 39px;
@@ -190,7 +190,7 @@ export default {
   .page-header-user {
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 15px;
     width: 132px;
     height: 39px;
     line-height: 39px;
@@ -206,7 +206,6 @@ export default {
     background: url(~@/assets/imgs/nav_right_hov.png) center no-repeat;
   }
   .page-header-user {
-    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -255,7 +254,7 @@ export default {
 }
 .page-header-wrap.fixed {
   position: absolute;
-  top: 0;
+  top: 0px;
   z-index: 1000;
   width: 100%;
 }

@@ -270,7 +270,7 @@ export default {
 }
 .page-form-wrap {
   position: absolute;
-  top: 100px;
+  top: 130px;
   left: 0;
   width: 100%;
   box-sizing: border-box;
