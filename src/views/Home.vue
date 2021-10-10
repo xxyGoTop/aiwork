@@ -242,7 +242,7 @@ import { mapState, mapMutations } from "vuex";
 import { postAuthLogout } from "@/api/user";
 import { getAlarmList } from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
-import { getSensorChart, getSensorData, setSensorChart } from "@/api/sensor";
+import { getSensorChart, queryAllSensorData, getSensorData, setSensorChart } from "@/api/sensor";
 import LineChart from "@/components/LineChart";
 import WindChart from "@/components/WindChart";
 import { mpStyle } from "@/assets/js/mpStyle";
@@ -250,6 +250,8 @@ import mapIcon from "@/assets/imgs/map_ico_location_nor.png";
 import mapIconPress from "@/assets/imgs/map_ico_location_press.png";
 import mapLocationBg from "@/assets/imgs/map_img_location_bg.png";
 import emptyIcon from "@/assets/imgs/empty.png";
+import popBg from "@/assets/imgs/pop_img_bg.png";
+import BlankBg from "@/assets/imgs/blank.gif";
 export default {
   name: "Home",
   components: { LineChart, WindChart },
@@ -393,7 +395,7 @@ export default {
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
-        pageSize: 6,
+        pageSize: 7,
       }).then((data) => {
         this.alarms = data.data.records || [];
       });
@@ -444,11 +446,15 @@ export default {
         const xdata = data.data.records.map(
           (rd) => rd.reportTime.split(" ")[1]
         );
+        const xtime = data.data.records.map(
+          (rd) => rd.reportTime
+        );
         const ydata = data.data.records.map((rd) => rd.data);
         const chartOptions = this.chartMap[sensorType];
 
         this.chartData.push({
           ...chartOptions,
+          xtime,
           xdata,
           ydata,
         });
@@ -466,6 +472,76 @@ export default {
         this.$message.success("设置成功");
         this.visible = false;
       });
+    },
+    queryAllSensorData(deviceCode) {
+      return queryAllSensorData({
+        deviceCode,
+        pageNum: 1,
+        pageSize: 1,
+      });
+    },
+    setMapInfoBox(deviceName, map, markerB, marker, sensorData = {}) {
+      /* eslint-disable */
+      const html = `<div class="map-info-wrap">
+        <div class="map-info-header">
+          <div class="map-info-name">
+            <span>${deviceName}</span>
+          </div>
+          <span class="map-info-time">${sensorData.reportTime}</span>
+        </div>
+        <div class="map-info-content">
+          <div class="map-info-con">
+            <div class="map-info-item temp">
+              <span>温度:</span>
+              <span>${sensorData.temp}</span>
+            </div>
+            <div class="map-info-item humidity">
+              <span>湿度:</span>
+              <span>${sensorData.humidity}%</span>
+            </div>
+            <div class="map-info-item flowRate">
+              <span>流速:</span>
+              <span>${sensorData.flowRate}m/s</span>
+            </div>
+            <div class="map-info-item flowVelocity">
+              <span>流量:</span>
+              <span>${sensorData.flowVelocity}m³/s</span>
+            </div>
+            <div class="map-info-item windSpeed">
+              <span>风速:</span>
+              <span>${sensorData.windSpeed}m/s</span>
+            </div>
+            <div class="map-info-item windDirection">
+              <span>风向:</span>
+              <span>${sensorData.windDirection}度</span>
+            </div>
+            <div class="map-info-item waterLevel">
+              <span>水位:</span>
+              <span>${sensorData.waterLevel}m</span>
+            </div>
+            <div class="map-info-item rainfall">
+              <span>雨量:</span>
+              <span>${sensorData.rainfall}mm</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+      const infoBox = new BMapGLLib.InfoBox(map, html, {
+        boxStyle: {
+          background: `url(${popBg}) center no-repeat`,
+          width: "442px",
+          height: "299px"
+        },
+        enableAutoPan: false,
+        align: INFOBOX_AT_BOTTOM,
+        offset: new BMapGL.Size(260, 30),
+        disableClose: true
+      });
+      marker.addEventListener("mouseover", () => {
+        infoBox.open(markerB)
+      });
+      marker.addEventListener("mouseout", () => infoBox.close());
+      /* eslint-disable */
     },
     setMapLabel(deviceName, longitude, latitude) {
       /* eslint-disable */
@@ -528,7 +604,6 @@ export default {
     readyMap() {
       /* eslint-disable */
       // 更换图标
-      const newIcon = new BMapGL.Icon(this.mapIconPress, new BMapGL.Size(44, 54));
       const {
         longitude,
         latitude,
@@ -542,7 +617,7 @@ export default {
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
-      map.centerAndZoom(point, 15);
+      map.centerAndZoom(point, 16);
       map.enableScrollWheelZoom(true);
       map.setMapStyleV2({ styleJson: mpStyle });
       map.addControl(scaleCtrl);
@@ -550,25 +625,37 @@ export default {
       this.setMapLabel(deviceName, longitude, latitude);
       this.devices.forEach((device, index) => {
         const { longitude, latitude, deviceCode: dCode, deviceName: dName } = device;
-        const myIcon = new BMapGL.Icon(this.mapIcon, new BMapGL.Size(44, 54));
         // 创建Marker标注
         const pt = new BMapGL.Point(longitude, latitude);
-        const marker = new BMapGL.Marker(pt, {
+        const myIcon = new BMapGL.Icon(BlankBg, new BMapGL.Size(1, 1));
+        const markerB = new BMapGL.Marker(pt, {
           icon: myIcon
+        });
+        map.addOverlay(markerB);
+        const marker = new BMapGLLib.RichMarker(`<div style="background: transparent;">
+          <img id="mpImg${index}" src="${this.mapIcon}" /></div>`, pt, {
+          "anchor" : new BMapGL.Size(-18, -27),
         });
         map.addOverlay(marker);
         if (index === 0) {
-          this.preMarker = marker;
-          marker.setIcon(newIcon);
+          this.preMarker = `mpImg${index}`;
+          document.getElementById(`mpImg${index}`).src = this.mapIconPress;
+          this.queryAllSensorData(dCode).then(data => {
+            this.setMapInfoBox(dName, map, markerB, marker, data.data.records[0] || {});
+          });
         }
         marker.addEventListener("click", () => {
           this.deviceCode = dCode;
           this.deviceName = dName;
           // 上一个
-          this.preMarker && this.preMarker.setIcon(myIcon);
-          marker.setIcon(newIcon);
-          this.preMarker = marker;
+          document.getElementById(this.preMarker).src = this.mapIcon;
+          document.getElementById(`mpImg${index}`).src = this.mapIconPress;
+          this.preMarker = `mpImg${index}`;
+          this.getSensorType(dCode);
           this.setMapLabel(dName, longitude, latitude);
+          this.queryAllSensorData(dCode).then(data => {
+            this.setMapInfoBox(dName, map, marker, data.data.records[0] || {});
+          });
         });
       });
       /* eslint-disable */
@@ -870,7 +957,7 @@ export default {
   z-index: 1002;
 }
 .home-chart-container {
-  max-height: 660px;
+  max-height: 690px;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
@@ -1061,6 +1148,9 @@ export default {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 36px;
+    &:last-child {
+      margin-bottom: 0px;
+    }
     &-left {
       width: 250px;
       height: 48px;
@@ -1122,8 +1212,9 @@ export default {
   top: 0;
   left: 0;
   z-index: 999;
-  width: 40%;
+  width: 30%;
   height: 100%;
+  pointer-events: none;
   background: linear-gradient(-90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
 }
 .home-right-bg {
@@ -1131,8 +1222,9 @@ export default {
   top: 0;
   right: 0;
   z-index: 999;
-  width: 40%;
+  width: 30%;
   height: 100%;
+  pointer-events: none;
   background: linear-gradient(90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
 }
 .home-bottom-bg {
@@ -1164,6 +1256,87 @@ export default {
     width: 821px;
     height: 18px;
     background: url(~@/assets/imgs/data_img_line_foot_right.png) 0 center no-repeat;
+  }
+}
+.map-info-wrap {
+  width: 100%;
+  height: 100%;
+  padding: 0px 46px 0px 27px;
+  box-sizing: border-box;
+  .map-info-header {
+    position: relative;
+    .map-info-name {
+      height: 86px;
+      padding-top: 50px;
+      border-bottom: 2px solid;
+      border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
+      box-sizing: border-box;
+      span {
+        font-size: 18px;
+        font-family: OPPOSans;
+        font-weight: bold;
+        color: #FFFFFF;
+        text-indent: 31px;
+        display: inline-block;
+        background: url(~@/assets/imgs/map_ico_location_nor1.png) 0 center no-repeat;
+      }
+    }
+    .map-info-time {
+      position: absolute;
+      top: 26px;
+      right: -15px;
+      font-size: 12px;
+      font-family: OPPOSans;
+      font-weight: 400;
+      color: #A4CAFD;
+    }
+  }
+  .map-info-con {
+    padding: 16px 0px 0px 5px;
+  }
+  .map-info-item {
+    text-indent: 26px;
+    span {
+      font-size: 16px;
+      font-weight: 500;
+      color: #80B5FC;
+    }
+    span + span {
+      font-size: 14px;
+      font-family: OPPOSans;
+      font-weight: 800;
+      color: #FBB719;
+      margin-left: 19px;
+    }
+  }
+  .map-info-con {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 10px;
+  }
+  .map-info-item.temp {
+    background: url(~@/assets/imgs/equipment_ico_temperature.png) 0 center no-repeat;
+  }
+  .map-info-item.humidity {
+    background: url(~@/assets/imgs/equipment_ico_humidity.png) 0 center no-repeat;
+  }
+  .map-info-item.flowVelocity {
+    background: url(~@/assets/imgs/equipment_ico_velocity.png) 0 center no-repeat;
+  }
+  .map-info-item.flowRate {
+    background: url(~@/assets/imgs/equipment_ico_traffic.png) 0 center no-repeat;
+  }
+  .map-info-item.windSpeed {
+    background: url(~@/assets/imgs/equipment_ico_speed.png) 0 center no-repeat;
+  }
+  .map-info-item.windDirection {
+    background: url(~@/assets/imgs/equipment_ico_direction.png) 0 center no-repeat;
+  }
+  .map-info-item.rainfall {
+    background: url(~@/assets/imgs/equipment_ico_rainfall.png) 0 center no-repeat;
+  }
+  .map-info-item.waterLevel {
+    background: url(~@/assets/imgs/equipment_ico_level.png) 0 center no-repeat;
   }
 }
 </style>
