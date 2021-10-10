@@ -613,7 +613,7 @@ export default {
       this.deviceCode = deviceCode;
       this.deviceName = deviceName;
       this.getSensorType(deviceCode);
-      this.map = new BMapGL.Map("container", { mapType: BMAP_EARTH_MAP });
+      this.map = new BMapGL.Map("container", { mapType: BMAP_EARTH_MAP, enableHighResolution: true });
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
