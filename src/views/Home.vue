@@ -126,7 +126,10 @@
       </div>
     </div>
     <!-- 设备数据 -->
-    <div class="home-chart-wrap" :class="{ explan: !isShow }">
+    <div
+      class="home-chart-wrap" 
+      :class="{ explan: !isShow }"
+    >
       <div
         class="home-chart-wrap-container"
         v-loading="chartLoading"
@@ -583,6 +586,7 @@ export default {
       /* eslint-disable */
     },
     wheel(event) {
+      if (event.target.className.trim() !== 'BMap_mask') return
       let delta = 0;
       if (!event) event = window.event;
       if (event.wheelDelta) {
@@ -660,7 +664,7 @@ export default {
       });
       /* eslint-disable */
       this.loading = false;
-      // this.setScrollZoom();
+      this.setScrollZoom();
     },
     handleOut() {
       postAuthLogout({
