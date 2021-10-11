@@ -82,7 +82,7 @@ export const getLoginURL = () => {
   )}`;
 };
 
-// 登录状态
+// 登录状态提示
 export const toLogin = (title, isClose = false) => {
   return MessageBox.alert(title, "提示", {
     confirmButtonText: "跳转",
