@@ -105,7 +105,12 @@
             <el-table-column prop="humidity" label="湿度(%)" align="center" />
           </el-table>
         </div>
-        <el-row class="page-pagt-wrap" style="margin-top: 16px" type="flex" justify="center">
+        <el-row
+          class="page-pagt-wrap"
+          style="margin-top: 16px"
+          type="flex"
+          justify="center"
+        >
           <el-pagination
             background
             @current-change="getDeviceHisroey"

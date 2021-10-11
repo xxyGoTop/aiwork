@@ -12,7 +12,7 @@ export const queryAllSensorData = (params) =>
     params,
   });
 
-export const getSensorChart = (params) => 
+export const getSensorChart = (params) =>
   Fetch({
     url: `/device/${params.deviceCode}/chart/sensorType`,
     params,

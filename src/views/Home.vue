@@ -126,10 +126,7 @@
       </div>
     </div>
     <!-- 设备数据 -->
-    <div
-      class="home-chart-wrap" 
-      :class="{ explan: !isShow }"
-    >
+    <div class="home-chart-wrap" :class="{ explan: !isShow }">
       <div
         class="home-chart-wrap-container"
         v-loading="chartLoading"
@@ -139,7 +136,9 @@
         <div class="home-chart-header">
           <div class="home-chart-header-left">
             <span class="chart-left-icon"></span>
-            <span class="chart-left-title" :title="deviceName">{{ deviceName }}</span>
+            <span class="chart-left-title" :title="deviceName">{{
+              deviceName
+            }}</span>
           </div>
           <div class="home-chart-header-right" @click="visible = true"></div>
         </div>
@@ -245,7 +244,12 @@ import { mapState, mapMutations } from "vuex";
 import { postAuthLogout } from "@/api/user";
 import { getAlarmList } from "@/api/alarm";
 import { getDeviceList } from "@/api/device";
-import { getSensorChart, queryAllSensorData, getSensorData, setSensorChart } from "@/api/sensor";
+import {
+  getSensorChart,
+  queryAllSensorData,
+  getSensorData,
+  setSensorChart,
+} from "@/api/sensor";
 import LineChart from "@/components/LineChart";
 import WindChart from "@/components/WindChart";
 import { mpStyle } from "@/assets/js/mpStyle";
@@ -398,7 +402,7 @@ export default {
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
-        pageSize: 7,
+        pageSize: 6,
       }).then((data) => {
         this.alarms = data.data.records || [];
       });
@@ -449,9 +453,7 @@ export default {
         const xdata = data.data.records.map(
           (rd) => rd.reportTime.split(" ")[1]
         );
-        const xtime = data.data.records.map(
-          (rd) => rd.reportTime
-        );
+        const xtime = data.data.records.map((rd) => rd.reportTime);
         const ydata = data.data.records.map((rd) => rd.data);
         const chartOptions = this.chartMap[sensorType];
 
@@ -961,7 +963,7 @@ export default {
   z-index: 1002;
 }
 .home-chart-container {
-  max-height: 690px;
+  max-height: 650px;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
