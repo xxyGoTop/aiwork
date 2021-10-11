@@ -256,6 +256,7 @@ export default {
   }
   &-chart-content {
     width: 100%;
+    max-height: 315px;
   }
 }
 </style>

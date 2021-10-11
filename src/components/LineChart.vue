@@ -1,6 +1,11 @@
 <template>
-  <div :style="lineStyle">
-    <v-chart ref="chart" class="chart" :option="option" />
+  <div ref="charWrap" :style="lineStyle">
+    <v-chart
+      ref="chart"
+      class="chart"
+      :option="option"
+      @finished="setStyle"
+    />
   </div>
 </template>
 
@@ -133,6 +138,16 @@ export default {
           },
         ],
       };
+    },
+    setStyle() {
+      const zoom = document.body.style.zoom;
+      console.log(zoom);
+      const { width, height} = this.lineStyle;
+      if (+zoom === 0.56) {
+        this.$refs.charWrap.style = `width:${width};height:${height};zoom: ${1 / 0.56}; transform: scale(${0.56}); transform-origin: 0 0;`
+      } else {
+        this.$refs.charWrap.style = `width:${width};height:${height}`;
+      }
     },
   },
   mounted() {

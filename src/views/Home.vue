@@ -623,7 +623,7 @@ export default {
       const map = this.map;   
       const point = new BMapGL.Point(longitude, latitude);   
       const scaleCtrl = new BMapGL.ScaleControl(); 
-      map.centerAndZoom(point, 16);
+      map.centerAndZoom(point, 17);
       map.enableScrollWheelZoom(true);
       map.setMapStyleV2({ styleJson: mpStyle });
       map.addControl(scaleCtrl);
@@ -751,7 +751,7 @@ export default {
   position: absolute;
   top: 0;
   left: 50%;
-  z-index: 1002;
+  z-index: 1005;
   width: 100%;
   height: 120px;
   background:linear-gradient(0deg, rgba(21, 23, 209, 0), #050771);
@@ -822,12 +822,14 @@ export default {
     }
     .home-right-button {
       position: relative;
+      z-index: 1006;
       .home-right-lasa-wrap {
         position: absolute;
         left: 0px;
         bottom: -33px;
         width: 112px;
         opacity: 0;
+        z-index: 1006;
       }
       .home-right-lasa {
         width: 112px;
@@ -961,9 +963,13 @@ export default {
   margin: 20px auto;
   box-sizing: border-box;
   z-index: 1002;
+  .chart-wrap {
+    max-height: 220px;
+    overflow: hidden;
+  }
 }
 .home-chart-container {
-  max-height: 650px;
+  max-height: 658px;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
