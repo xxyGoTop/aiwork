@@ -108,5 +108,5 @@ export const getCookie = (key) => {
   return decodeURIComponent(result[2]);
 };
 
-// md5
+// md5加密
 export const cMd5 = (val) => val ? md5(val) : ''; 
