@@ -84,11 +84,11 @@
               width="180"
             />
             <el-table-column
-              prop="flowVelocity"
+              prop="flowRate"
               label="流量(m³/s)"
               align="center"
             />
-            <el-table-column prop="flowRate" label="流速(m/s)" align="center" />
+            <el-table-column prop="flowVelocity" label="流速(m/s)" align="center" />
             <el-table-column prop="waterLevel" label="水位(m)" align="center" />
             <el-table-column
               prop="windSpeed"
@@ -117,6 +117,7 @@
             :current-page="page"
             :page-size="pageSize"
             :total="total"
+            :hide-on-single-page="true"
             layout="total, prev, pager, next"
           />
         </el-row>

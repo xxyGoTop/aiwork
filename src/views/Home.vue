@@ -291,13 +291,13 @@ export default {
           unit: "%",
           data: [810, 232, 301, 934],
         },
-        FLOW_RATE: {
+        FLOW_VELOCITY: {
           label: "流速",
           icon: "flowrate",
           color: ["rgba(0, 255, 132, 0.76)", "rgba(0, 255, 132, 0.11)"],
           unit: "m/s",
         },
-        FLOW_VELOCITY: {
+        FLOW_RATE: {
           label: "流量",
           icon: "flow",
           color: ["rgba(0, 54, 255, 0.76)", "rgba(0, 54, 255, 0.11)"],
@@ -372,12 +372,12 @@ export default {
         },
         {
           key: "流速：",
-          value: "FLOW_RATE",
-          sensor: "",
+          value: "",
+          sensor: "FLOW_VELOCITY",
         },
         {
           key: "流量：",
-          value: "FLOW_VELOCITY",
+          value: "FLOW_RATE",
           sensor: "",
         },
       ],
@@ -506,11 +506,11 @@ export default {
             </div>
             <div class="map-info-item flowRate">
               <span>流速:</span>
-              <span>${sensorData.flowRate}m/s</span>
+              <span>${sensorData.flowVelocity}m/s</span>
             </div>
             <div class="map-info-item flowVelocity">
               <span>流量:</span>
-              <span>${sensorData.flowVelocity}m³/s</span>
+              <span>${sensorData.flowRate}m³/s</span>
             </div>
             <div class="map-info-item windSpeed">
               <span>风速:</span>

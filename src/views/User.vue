@@ -133,6 +133,7 @@
             :current-page="userPage"
             :page-size="pageSize"
             :total="userTotal"
+            :hide-on-single-page="true"
             layout="total, prev, pager, next"
           />
         </el-row>
@@ -195,6 +196,7 @@
             :current-page="groupPage"
             :page-size="pageSize"
             :total="groupTotal"
+            :hide-on-single-page="true"
             layout="total, prev, pager, next"
           />
         </el-row>

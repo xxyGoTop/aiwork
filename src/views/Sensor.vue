@@ -77,6 +77,7 @@
             :current-page="page"
             :page-size="pageSize"
             :total="total"
+            :hide-on-single-page="true"
             layout="total, prev, pager, next"
           />
         </el-row>
@@ -125,11 +126,11 @@ export default {
         },
         {
           key: "流速",
-          value: "FLOW_RATE",
+          value: "FLOW_VELOCITY",
         },
         {
           key: "流量",
-          value: "FLOW_VELOCITY",
+          value: "FLOW_RATE",
         },
       ],
       sensor: null,
@@ -152,12 +153,12 @@ export default {
           unit: "%",
           data: [810, 232, 301, 934],
         },
-        FLOW_RATE: {
+        FLOW_VELOCITY: {
           label: "流速",
           color: ["rgba(0, 255, 132, 0.76)", "rgba(0, 255, 132, 0.11)"],
           unit: "m/s",
         },
-        FLOW_VELOCITY: {
+        FLOW_RATE: {
           label: "流量",
           color: ["rgba(0, 54, 255, 0.76)", "rgba(0, 54, 255, 0.11)"],
           unit: "m³/s",

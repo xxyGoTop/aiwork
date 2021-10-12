@@ -113,6 +113,7 @@
             :current-page="page"
             :page-size="pageSize"
             :total="total"
+            :hide-on-single-page="true"
             layout="total, prev, pager, next"
           />
         </el-row>
