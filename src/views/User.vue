@@ -75,7 +75,7 @@
       <div class="page-table" v-show="tab === 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe size="small" :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column prop="name" label="用户姓名" align="center" />
             <el-table-column prop="account" label="账号" align="center" />
@@ -145,6 +145,8 @@
             :data="groupList"
             v-loading="loading"
             style="width: 100%"
+            size="small"
+            :row-style="{ height: '56px' }"
           >
             <el-table-column
               prop="groupId"
@@ -205,6 +207,7 @@
     <!-- 编辑 -->
     <el-dialog
       :visible.sync="visible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       :title="userTitle"
       center
@@ -273,6 +276,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="gVisible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       :title="groupTitle"
       center
@@ -323,6 +327,7 @@
     <!-- 删除 -->
     <el-dialog
       :visible.sync="deleteVisible"
+      :append-to-body="true"
       custom-class="page-delete-dialog"
       center
     >
@@ -338,6 +343,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="deleteGroupVisible"
+      :append-to-body="true"
       custom-class="page-delete-dialog"
       center
     >
@@ -434,7 +440,7 @@ export default {
       groupTotal: 0,
       userPage: 1,
       groupPage: 1,
-      pageSize: 10,
+      pageSize: 20,
     };
   },
   computed: {
@@ -640,7 +646,7 @@ export default {
   height: 210px;
   padding: 20px;
   overflow-y: auto;
-  background: #0b315f;
+  background: #1214C2;
   box-sizing: border-box;
   border: 1px solid;
   border-image: linear-gradient(

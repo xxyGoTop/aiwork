@@ -144,6 +144,32 @@
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
 }
 
+.el-dialog{
+  display: flex;
+  display: -ms-flex; /* 兼容IE */
+  flex-direction: column;
+  -ms-flex-direction: column; /* 兼容IE */
+  margin:0 !important;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  max-height:calc(100% - 30px);
+  max-width:calc(100% - 30px);
+}
+.el-dialog .el-dialog__body{
+  max-height: 100%;
+  flex: 1;
+  -ms-flex: 1 1 auto; /* 兼容IE */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.el-dialog__wrapper {
+  /*隐藏ie和edge中遮罩的滚动条*/
+  overflow: hidden;
+}
+
 .el-dialog__header {
   font-size: 30px;
   font-family: "OPPOSans";
@@ -193,6 +219,18 @@
   .el-input__inner {
     width: 146px !important;
   }
+}
+
+.el-date-table th {
+  color: #fff;
+}
+
+.el-picker-panel__icon-btn {
+  color: #fff;
+}
+
+.el-date-picker__header-label {
+  color: #fff;
 }
 
 .el-picker-panel__footer {

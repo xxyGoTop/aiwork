@@ -1,4 +1,4 @@
-import md5 from 'js-md5';
+import md5 from "js-md5";
 import { MessageBox } from "element-ui";
 
 // 基本类型值
@@ -109,4 +109,4 @@ export const getCookie = (key) => {
 };
 
 // md5加密
-export const cMd5 = (val) => val ? md5(val) : ''; 
+export const cMd5 = (val) => (val ? md5(val) : "");

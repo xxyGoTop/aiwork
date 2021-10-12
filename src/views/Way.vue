@@ -50,7 +50,7 @@
               <el-option label="巡逻打卡" :value="1"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item style="margin-left: 8px">
+          <el-form-item style="margin-left: 2px">
             <el-button type="primary" @click="getLocationPage()"
               >查询</el-button
             >
@@ -278,7 +278,7 @@ export default {
   z-index: 1010;
   .page-form-content {
     position: relative;
-    background: rgba(5, 23, 45, 0.65);
+    background: rgb(4 27 128 / 92%);
     border: 1px solid #003b7a;
     padding: 31px 26px 9px;
   }

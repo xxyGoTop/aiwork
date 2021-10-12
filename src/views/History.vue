@@ -63,7 +63,7 @@
       <div class="page-table">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe size="small" :data="list" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
               prop="deviceName"
@@ -152,7 +152,7 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 10,
+      pageSize: 20,
     };
   },
   computed: {

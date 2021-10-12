@@ -7,6 +7,7 @@
       <div class="app-bottom-mid"></div>
       <div class="app-bottom-right"></div>
     </div>
+    <div class="app-bottom-footer" v-if="!isShowBottom"></div>
   </div>
 </template>
 
@@ -97,5 +98,16 @@ export default {
     background: url(~@/assets/imgs/data_img_line_foot_right.png) 0 center
       no-repeat;
   }
+}
+.app-bottom-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 996;
+  width: 100%;
+  height: 173px;
+  background: url(~@/assets/imgs/list_img_bg_foot.png) center
+    no-repeat;
+  background-size: 125%; 
 }
 </style>

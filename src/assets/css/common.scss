@@ -69,17 +69,17 @@ h1, h2, h3, h4 {
   gap: 0px 10px;
 }
 .page-wrapper {
-  background-color: #061369;
   position: relative;
   padding: 0px 24px 20px;
+  z-index: 1002;
 }
 .page-container {
   position: relative;
-  min-height: 420px;
+  min-height: calc(100vh + 152px);
   width: 100%;
   box-sizing: border-box;
   padding: 0px 16px 16px;
-  background-color: #041b80;
+  background-color: rgb(4 27 128 / 92%);
   border-left: 2px solid #0090ff;
   border-right: 2px solid #0090ff;
   &-top_bg {
@@ -111,6 +111,7 @@ h1, h2, h3, h4 {
   }
 }
 .page-container .page-table-header {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -122,6 +123,27 @@ h1, h2, h3, h4 {
   border-image: linear-gradient(90deg, rgba(0, 120, 255, 0.3), rgba(255, 255, 255, 0.3), rgba(0, 120, 255, 0.3)) 2 2;
 }
 
+.page-table-header::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 0;
+  width: 90px;
+  height: 43px;
+  background: url(~@/assets/imgs/list_img_point_left.png) center no-repeat;
+  background-size: 100%;
+}
+
+.page-table-header::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  right: 0;
+  width: 90px;
+  height: 43px;
+  background: url(~@/assets/imgs/list_img_point_right.png) center no-repeat;
+  background-size: 100%;
+}
 
 .page-container .page-pagt-wrap {
   padding-top: 20px;
@@ -162,6 +184,7 @@ h1, h2, h3, h4 {
   font-weight: bold;
   color: #80B5FC;
   line-height: 60px;
+  z-index: 1000;
   span {
     display: inline-block;
     cursor: pointer;
@@ -188,6 +211,7 @@ h1, h2, h3, h4 {
   font-size: 16px;
   color: #80B5FC;
   cursor: pointer;
+  z-index: 1000;
   &-icon {
     width: 22px;
     height: 22px;

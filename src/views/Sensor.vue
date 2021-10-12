@@ -49,7 +49,7 @@
         <!-- 表格 -->
         <h3>近一天数据</h3>
         <div class="page-table-box">
-          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe size="small" :data="list" v-loading="loading" style="width: 100%">
             <el-table-column
               type="index"
               label="序号"

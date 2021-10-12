@@ -72,7 +72,7 @@
       <div class="page-table">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe :data="list" size="small" v-loading="loading" style="width: 100%">
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
               prop="name"
@@ -144,6 +144,7 @@
     <!-- 详情 -->
     <el-dialog
       :visible.sync="visible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       title="打卡详情"
       center
@@ -197,7 +198,7 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 10,
+      pageSize: 20,
     };
   },
   computed: {

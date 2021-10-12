@@ -46,6 +46,7 @@
             :data="devices"
             v-loading="loading"
             style="width: 100%"
+            size="small"
           >
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column prop="name" label="设备名称" />
@@ -125,6 +126,7 @@
     <el-dialog
       v-loading="detailLoading"
       :visible.sync="visible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       :title="dTitle"
       center
@@ -171,6 +173,7 @@
     <!-- 删除 -->
     <el-dialog
       :visible.sync="deleteVisible"
+      :append-to-body="true"
       custom-class="page-delete-dialog"
       center
     >
@@ -187,6 +190,7 @@
     <!-- 详情 -->
     <el-dialog
       :visible.sync="detailVisible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       title="设备详情"
       center

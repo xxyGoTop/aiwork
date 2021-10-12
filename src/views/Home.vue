@@ -754,7 +754,6 @@ export default {
   z-index: 1005;
   width: 100%;
   height: 120px;
-  background:linear-gradient(0deg, rgba(21, 23, 209, 0), #050771);
   box-sizing: border-box;
   transform: translate(-50%, 0);
   &-left {
@@ -774,7 +773,7 @@ export default {
     }
     &-c {
       position: absolute;
-      top: 20px;
+      top: 24px;
       left: 16px;
       display: flex;
       flex-direction: row;
@@ -815,7 +814,7 @@ export default {
     }
     &-c {
       position: absolute;
-      top: 20px;
+      top: 24px;
       right: 16px;
       display: flex;
       flex-direction: row;
@@ -952,6 +951,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background: linear-gradient( 0deg, rgb(21 23 209 / 6%), #031575);
 }
 .home-chart-container::-webkit-scrollbar {
   width: 0px;
@@ -976,7 +976,7 @@ export default {
 }
 .home-chart-wrap {
   position: absolute;
-  top: 105px;
+  top: 118px;
   right: 20px;
   width: 459px;
   min-height: 509px;
@@ -1104,7 +1104,7 @@ export default {
 }
 .home-warn-wrap {
   position: absolute;
-  top: 105px;
+  top: 118px;
   left: 20px;
   width: 459px;
   min-height: 509px;
@@ -1227,7 +1227,7 @@ export default {
   width: 30%;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(-90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
+  background: linear-gradient(-90deg, rgba(21, 23, 209, 0), #050771);
 }
 .home-right-bg {
   position: absolute;
@@ -1237,7 +1237,7 @@ export default {
   width: 30%;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(21, 23, 209, 0), rgba(5, 7, 113, 0.58));
+  background: linear-gradient(90deg, rgba(21, 23, 209, 0), #050771);
 }
 .home-bottom-bg {
   position: absolute;

@@ -91,6 +91,7 @@
             :data="alarmList"
             v-loading="loading"
             style="width: 100%"
+            size="small"
           >
             <el-table-column
               type="index"
@@ -138,7 +139,7 @@
       <div class="page-table" v-show="tab !== 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" v-loading="loading" style="width: 100%">
+          <el-table stripe :data="list" size="small" v-loading="loading" style="width: 100%">
             <el-table-column
               prop="ruleId"
               label="序号"
@@ -226,6 +227,7 @@
     <!-- 编辑 -->
     <el-dialog
       :visible.sync="visible"
+      :append-to-body="true"
       custom-class="page-table-dialog"
       :title="dTitle"
       center
@@ -297,6 +299,7 @@
     <!-- 删除 -->
     <el-dialog
       :visible.sync="deleteVisible"
+      :append-to-body="true"
       custom-class="page-delete-dialog"
       center
     >
@@ -425,11 +428,11 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 10,
+      pageSize: 20,
       alarmList: [],
       alarmTotal: 10,
       alarmPage: 1,
-      alarmPageSize: 10,
+      alarmPageSize: 20,
     };
   },
   computed: {
