@@ -72,6 +72,7 @@ h1, h2, h3, h4 {
   position: relative;
   padding: 0px 24px 20px;
   z-index: 1002;
+  background: url(~@/assets/imgs/main_img_grid.png) repeat;
 }
 .page-container {
   position: relative;
@@ -80,6 +81,7 @@ h1, h2, h3, h4 {
   box-sizing: border-box;
   padding: 0px 16px 16px;
   background-color: rgb(4 27 128 / 92%);
+  background: url(~@/assets/imgs/list_img_bg_point.png) repeat;
   border-left: 2px solid #0090ff;
   border-right: 2px solid #0090ff;
   &-top_bg {

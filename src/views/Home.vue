@@ -951,7 +951,8 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background: linear-gradient( 0deg, rgb(21 23 209 / 6%), #031575);
+  height: 120px;
+  background: url(~@/assets/imgs/nv_img_bg_zhezhao.png) 0 0 repeat;
 }
 .home-chart-container::-webkit-scrollbar {
   width: 0px;
