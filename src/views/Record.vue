@@ -72,7 +72,13 @@
       <div class="page-table">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" size="small" v-loading="loading" style="width: 100%">
+          <el-table
+            stripe
+            :data="list"
+            size="small"
+            v-loading="loading"
+            style="width: 100%"
+          >
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
               prop="name"

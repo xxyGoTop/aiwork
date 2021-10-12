@@ -75,7 +75,13 @@
       <div class="page-table" v-show="tab === 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe size="small" :data="list" v-loading="loading" style="width: 100%">
+          <el-table
+            stripe
+            size="small"
+            :data="list"
+            v-loading="loading"
+            style="width: 100%"
+          >
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column prop="name" label="用户姓名" align="center" />
             <el-table-column prop="account" label="账号" align="center" />
@@ -648,7 +654,7 @@ export default {
   height: 210px;
   padding: 20px;
   overflow-y: auto;
-  background: #1214C2;
+  background: #1214c2;
   box-sizing: border-box;
   border: 1px solid;
   border-image: linear-gradient(

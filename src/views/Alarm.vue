@@ -140,7 +140,13 @@
       <div class="page-table" v-show="tab !== 'user'">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe :data="list" size="small" v-loading="loading" style="width: 100%">
+          <el-table
+            stripe
+            :data="list"
+            size="small"
+            v-loading="loading"
+            style="width: 100%"
+          >
             <el-table-column
               prop="ruleId"
               label="序号"

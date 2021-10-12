@@ -106,8 +106,7 @@ export default {
   z-index: 996;
   width: 100%;
   height: 173px;
-  background: url(~@/assets/imgs/list_img_bg_foot.png) center
-    no-repeat;
-  background-size: 125%; 
+  background: url(~@/assets/imgs/list_img_bg_foot.png) center no-repeat;
+  background-size: 125%;
 }
 </style>

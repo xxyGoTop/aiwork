@@ -63,7 +63,13 @@
       <div class="page-table">
         <!-- 表格 -->
         <div class="page-table-box">
-          <el-table stripe size="small" :data="list" v-loading="loading" style="width: 100%">
+          <el-table
+            stripe
+            size="small"
+            :data="list"
+            v-loading="loading"
+            style="width: 100%"
+          >
             <el-table-column prop="id" label="序号" width="80" align="center" />
             <el-table-column
               prop="deviceName"
@@ -88,7 +94,11 @@
               label="流量(m³/s)"
               align="center"
             />
-            <el-table-column prop="flowVelocity" label="流速(m/s)" align="center" />
+            <el-table-column
+              prop="flowVelocity"
+              label="流速(m/s)"
+              align="center"
+            />
             <el-table-column prop="waterLevel" label="水位(m)" align="center" />
             <el-table-column
               prop="windSpeed"
