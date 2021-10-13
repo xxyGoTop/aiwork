@@ -205,7 +205,7 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 20,
+      pageSize: 10,
     };
   },
   computed: {

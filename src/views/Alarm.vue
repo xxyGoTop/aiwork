@@ -436,11 +436,11 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 20,
+      pageSize: 10,
       alarmList: [],
       alarmTotal: 10,
       alarmPage: 1,
-      alarmPageSize: 20,
+      alarmPageSize: 10,
     };
   },
   computed: {

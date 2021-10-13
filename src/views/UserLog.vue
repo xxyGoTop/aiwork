@@ -80,7 +80,7 @@ export default {
       list: [],
       total: 10,
       page: 1,
-      pageSize: 20,
+      pageSize: 10,
       typeMap: {
         0: "PC用户登录",
         1: "APP用户登录",

@@ -448,7 +448,7 @@ export default {
       groupTotal: 0,
       userPage: 1,
       groupPage: 1,
-      pageSize: 20,
+      pageSize: 10,
     };
   },
   computed: {
