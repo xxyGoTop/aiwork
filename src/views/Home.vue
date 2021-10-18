@@ -283,6 +283,7 @@ export default {
           icon: "temper",
           color: ["rgba(255, 66, 0, 0.76)", "rgba(255, 66, 0, 0.11)"],
           unit: "°C",
+          sort: 5,
         },
         HUMIDITY: {
           label: "湿度",
@@ -290,42 +291,49 @@ export default {
           color: ["rgba(255, 174, 0, 0.76)", "rgba(255, 174, 0, 0.11)"],
           unit: "%",
           data: [810, 232, 301, 934],
+          sort: 4,
         },
         FLOW_VELOCITY: {
           label: "流速",
           icon: "flowrate",
           color: ["rgba(0, 255, 132, 0.76)", "rgba(0, 255, 132, 0.11)"],
           unit: "m/s",
+          sort: 3,
         },
         FLOW_RATE: {
           label: "流量",
           icon: "flow",
           color: ["rgba(0, 54, 255, 0.76)", "rgba(0, 54, 255, 0.11)"],
           unit: "m³/s",
+          sort: 2,
         },
         RAINFALL: {
           label: "雨量",
           icon: "rainfall",
           color: ["rgba(0, 222, 255, 0.76)", "rgba(0, 222, 255, 0.11)"],
           unit: "度",
+          sort: 6,
         },
         WATER_LEVEL: {
           label: "水位",
           icon: "level",
           color: ["rgba(255, 0, 78, 0.76)", "rgba(255, 0, 78, 0.12)"],
           unit: "度",
+          sort: 1,
         },
         WIND_SPEED: {
           label: "风速",
           icon: "wind",
           color: ["rgba(0, 168, 255, 0.76)", "rgba(0, 168, 255, 0.11)"],
           unit: "m/s",
+          sort: 7,
         },
         WIND_DIRECTION: {
           label: "风向",
           icon: "windir",
           color: ["rgba(186, 0, 255, 0.76)", "rgba(186, 0, 255, 0.11)"],
           unit: "度",
+          sort: 8,
         },
       },
       chartData: [],
@@ -372,8 +380,8 @@ export default {
         },
         {
           key: "流速：",
-          value: "",
-          sensor: "FLOW_VELOCITY",
+          value: "FLOW_VELOCITY",
+          sensor: "",
         },
         {
           key: "流量：",
@@ -463,6 +471,8 @@ export default {
           xdata,
           ydata,
         });
+      }).finally(() => {
+        this.chartData.sort((c, b) => (c.sort > b.sort ? 1 : -1));
       });
     },
     setSensorChart() {
