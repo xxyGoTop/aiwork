@@ -8,7 +8,7 @@ export default {
   components: { Layout },
   mounted() {
     const clientWidth = document.body.clientWidth;
-    if (800 < clientWidth && clientWidth < 1610) {
+    if (800 < clientWidth && clientWidth < 1700) {
       document.body.style.zoom = 0.56;
     } else {
       document.body.style.zoom = 1;
