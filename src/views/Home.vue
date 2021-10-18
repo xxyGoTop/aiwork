@@ -143,7 +143,7 @@
           <div class="home-chart-header-right" @click="visible = true"></div>
         </div>
         <div class="home-chart-container">
-          <div class="chart-wrap" v-for="chart in chartData" :key="chart.icon">
+          <div class="chart-wrap" :class="{'wind': chart.icon === 'windir'}" v-for="chart in chartData" :key="chart.icon">
             <el-row
               type="flex"
               align="middle"
@@ -977,6 +977,9 @@ export default {
   .chart-wrap {
     max-height: 220px;
     overflow: hidden;
+  }
+  .chart-wrap.wind {
+    max-height: 270px;
   }
 }
 .home-chart-container {
