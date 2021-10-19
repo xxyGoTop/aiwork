@@ -80,8 +80,7 @@ h1, h2, h3, h4 {
   width: 100%;
   box-sizing: border-box;
   padding: 0px 16px 16px;
-  background-color: rgb(4 27 128 / 92%);
-  background: url(~@/assets/imgs/list_img_bg_point.png) repeat;
+  background: rgba(4,27,128,.92) url(~@/assets/imgs/list_img_bg_point.png) repeat;
   border-left: 2px solid #0090ff;
   border-right: 2px solid #0090ff;
   &-top_bg {

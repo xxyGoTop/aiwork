@@ -87,105 +87,108 @@
       </div>
     </div>
     <!-- 背景色 -->
-    <div class="home-left-bg"></div>
-    <div class="home-right-bg"></div>
+    <!-- <div class="home-right-bg"></div> -->
     <div class="home-bottom-bg">
       <div class="home-bottom-left"></div>
       <div class="home-bottom-mid">藏ICP备2021000258号</div>
       <div class="home-bottom-right"></div>
     </div>
     <!-- 警告 -->
-    <div class="home-warn-wrap">
-      <div class="home-warn-header">
-        <div class="home-warn-header-left">
-          <span class="warn-left-icon"></span>
-          <span class="warn-left-title">报警通知</span>
-        </div>
-        <div
-          class="home-warn-header-right"
-          @click="toLinkRouter('/device/alarm')"
-        ></div>
-      </div>
-      <div class="home-warn-container">
-        <div class="home-warn-item" v-for="alarm in alarms" :key="alarm.id">
-          <div class="home-warn-item-left">
-            <span :title="alarm.deviceName">{{ alarm.deviceName }}</span>
-            <span :title="alarm.alarmReason">{{ alarm.alarmReason }}</span>
+    <div class="home-warn-bg">
+      <div class="home-warn-wrap">
+        <div class="home-warn-header">
+          <div class="home-warn-header-left">
+            <span class="warn-left-icon"></span>
+            <span class="warn-left-title">报警通知</span>
           </div>
-          <div class="home-warn-item-right">
-            <span
-              class="home-warn-item-tag"
-              :style="{ backgroundColor: sensorColor[alarm.type] }"
-            >
-              {{ alarm.sensorType }}报警
-            </span>
-            <span class="home-warn-item-time">{{ alarm.triggerTime }}</span>
-          </div>
+          <div
+            class="home-warn-header-right"
+            @click="toLinkRouter('/device/alarm')"
+          ></div>
         </div>
-        <el-empty v-if="alarms.length === 0" :image="emptyIcon"></el-empty>
+        <div class="home-warn-container">
+          <div class="home-warn-item" v-for="alarm in alarms" :key="alarm.id">
+            <div class="home-warn-item-left">
+              <span :title="alarm.deviceName">{{ alarm.deviceName }}</span>
+              <span :title="alarm.alarmReason">{{ alarm.alarmReason }}</span>
+            </div>
+            <div class="home-warn-item-right">
+              <span
+                class="home-warn-item-tag"
+                :style="{ backgroundColor: sensorColor[alarm.type] }"
+              >
+                {{ alarm.sensorType }}报警
+              </span>
+              <span class="home-warn-item-time">{{ alarm.triggerTime }}</span>
+            </div>
+          </div>
+          <el-empty v-if="alarms.length === 0" :image="emptyIcon"></el-empty>
+        </div>
       </div>
     </div>
     <!-- 设备数据 -->
-    <div class="home-chart-wrap" :class="{ explan: !isShow }">
-      <div
-        class="home-chart-wrap-container"
-        v-loading="chartLoading"
-        element-loading-text="拼命加载中..."
-        v-if="isShow"
-      >
-        <div class="home-chart-header">
-          <div class="home-chart-header-left">
-            <span class="chart-left-icon"></span>
-            <span class="chart-left-title" :title="deviceName">{{
-              deviceName
-            }}</span>
+    <div class="home-chart-bg" :class="{ explan: !isShow }">
+      <div class="home-chart-wrap" :class="{ explan: !isShow }">
+        <div
+          class="home-chart-wrap-container"
+          v-loading="chartLoading"
+          element-loading-text="拼命加载中..."
+          v-if="isShow"
+        >
+          <div class="home-chart-header">
+            <div class="home-chart-header-left">
+              <span class="chart-left-icon"></span>
+              <span class="chart-left-title" :title="deviceName">{{
+                deviceName
+              }}</span>
+            </div>
+            <div class="home-chart-header-right" @click="visible = true"></div>
           </div>
-          <div class="home-chart-header-right" @click="visible = true"></div>
-        </div>
-        <div class="home-chart-container">
-          <div class="chart-wrap" :class="{'wind': chart.icon === 'windir'}" v-for="chart in chartData" :key="chart.icon">
-            <el-row
-              type="flex"
-              align="middle"
-              justify="space-between"
-              class="chart-header"
-            >
-              <div class="chart-header-left" :class="chart.icon">
-                {{ chart.label }}
-              </div>
-              <div class="chart-header-right">{{ chart.unit }}</div>
-            </el-row>
-            <wind-chart
-              v-if="chart.icon === 'windir'"
-              :key="chart.icon"
-              :color="chart.color"
-              :chart-wind="chartWind"
-              :x-data="chart.xdata"
-              :y-data="chart.ydata"
-            >
-            </wind-chart>
-            <line-chart
-              v-else
-              :key="chart.icon"
-              :x-data="chart.xdata"
-              :y-data="chart.ydata"
-              :color="chart.color"
-            >
-            </line-chart>
+          <div class="home-chart-container">
+            <div class="chart-wrap" :class="{'wind': chart.icon === 'windir'}" v-for="chart in chartData" :key="chart.icon">
+              <el-row
+                type="flex"
+                align="middle"
+                justify="space-between"
+                class="chart-header"
+              >
+                <div class="chart-header-left" :class="chart.icon">
+                  {{ chart.label }}
+                </div>
+                <div class="chart-header-right">{{ chart.unit }}</div>
+              </el-row>
+              <wind-chart
+                v-if="chart.icon === 'windir'"
+                :key="chart.icon"
+                :color="chart.color"
+                :chart-wind="chartWind"
+                :x-data="chart.xdata"
+                :y-data="chart.ydata"
+              >
+              </wind-chart>
+              <line-chart
+                v-else
+                :key="chart.icon"
+                :x-data="chart.xdata"
+                :y-data="chart.ydata"
+                :color="chart.color"
+              >
+              </line-chart>
+            </div>
           </div>
+          <el-empty v-if="chartData.length === 0" :image="emptyIcon"></el-empty>
         </div>
-        <el-empty v-if="chartData.length === 0" :image="emptyIcon"></el-empty>
+        <div
+          v-if="isShow"
+          class="home-chart-buoy"
+          @click="isShow = !isShow"
+        ></div>
+        <div
+          v-if="!isShow"
+          class="home-chart-buoy explan"
+          @click="isShow = !isShow"
+        ></div>
       </div>
-      <div
-        v-if="isShow"
-        class="home-chart-buoy"
-        @click="isShow = !isShow"
-      ></div>
-      <div
-        v-if="!isShow"
-        class="home-chart-buoy explan"
-        @click="isShow = !isShow"
-      ></div>
     </div>
     <!-- 地图切换 -->
     <div class="home-map-control">
@@ -971,7 +974,7 @@ export default {
   position: relative;
   width: 369px;
   min-height: 509px;
-  margin: 20px auto;
+  margin: 20px auto 0px;
   box-sizing: border-box;
   z-index: 1002;
   .chart-wrap {
@@ -988,12 +991,23 @@ export default {
   overflow-y: auto;
   scrollbar-width: none;
 }
-.home-chart-wrap {
+.home-chart-bg {
   position: absolute;
-  top: 118px;
-  right: 20px;
+  top: 0px;
+  right: 0px;
+  z-index: 1000;
+  padding: 118px 20px 0px;
+  background: linear-gradient(90deg, rgba(21, 23, 209, 0), #050771);
+}
+.home-chart-bg.explan {
+  width: 0px;
+  background: none;
+}
+.home-chart-wrap {
+  position: relative;
   width: 459px;
   min-height: 509px;
+  padding-top: 3px;
   box-sizing: border-box;
   z-index: 1003;
   background: url(~@/assets/imgs/data_img_line_right_top.png) center top no-repeat,
@@ -1116,10 +1130,15 @@ export default {
   width: 0px;
   border: 0px;
 }
-.home-warn-wrap {
+.home-warn-bg {
   position: absolute;
-  top: 118px;
-  left: 20px;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  padding: 118px 20px 0px;
+  background: linear-gradient(-90deg, rgba(21, 23, 209, 0), #050771);
+}
+.home-warn-wrap {
   width: 459px;
   min-height: 509px;
   background: url(~@/assets/imgs/data_img_line_left_top.png) center top no-repeat,
