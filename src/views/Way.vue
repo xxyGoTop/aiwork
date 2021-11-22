@@ -180,8 +180,12 @@ export default {
       this.bmap.panTo(new BMapGL.Point(list[0].longitude, list[0].latitude));
       list.forEach((l, index) => {
         if (list[index + 1]) {
+          let distance = this.bmap.getDistance(
+            new BMapGL.Point(l.longitude, l.latitude),
+            new BMapGL.Point(list[index + 1].longitude, list[index + 1].latitude)
+          )
           let minutes = dayjs(new Date(l.createTime)).diff(dayjs(new Date(list[index + 1].createTime)), 'minutes');
-          if (minutes > 5) {
+          if (minutes > 5 || distance > 1000) {
             polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
             if (polyLine.length) {
               let pl = new BMapGL.Polyline(polyLine, { strokeColor: "#00FF00", strokeWeight: 7 })
