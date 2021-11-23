@@ -243,6 +243,7 @@
 
 <script>
 import dayjs from "dayjs";
+import * as Tone from "tone";
 import { mapState, mapMutations } from "vuex";
 import { postAuthLogout } from "@/api/user";
 import { getAlarmList } from "@/api/alarm";
@@ -406,15 +407,34 @@ export default {
       },
       time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       timer: null,
+      timer1: null
     };
   },
   methods: {
     ...mapMutations(["updateAccessToken"]),
+    triggerSynth() {
+      const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+      const now = Tone.now()
+      synth.triggerAttack("D4", now);
+      synth.triggerAttack("F4", now + 0.5);
+      synth.triggerAttack("A4", now + 1);
+      synth.triggerAttack("C5", now + 1.5);
+      synth.triggerAttack("E5", now + 2);
+      synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
+    },
     getAlarmList() {
       getAlarmList({
         pageNum: 1,
         pageSize: 6,
       }).then((data) => {
+        const isTrigger = data.data.records.some(r => {
+          const minutes = dayjs(new Date()).diff(dayjs(new Date(r.triggerTime)), 'minutes');
+          if (minutes < 5) return true;
+          return false;
+        })
+        if (isTrigger) {
+          this.triggerSynth();
+        }
         this.alarms = data.data.records || [];
       });
     },
@@ -719,11 +739,17 @@ export default {
     this.timer = setInterval(() => {
       this.time = dayjs().format('YYYY-MM-DD HH:mm:ss');
     }, 1000);
+    this.timer1 = setInterval(() => {
+      this.getAlarmList();
+    }, 300000);
   },
   beforeDestroy() {
     document.onmousemove = null;
     if (this.timer) {
       clearInterval(this.timer);
+    }
+    if (this.timer1) {
+      clearInterval(this.timer1);
     }
   },
 };
