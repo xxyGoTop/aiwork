@@ -1,5 +1,5 @@
 <template>
-  <div class="home" v-loading="loading">
+  <div class="home" @click="triggerTone" v-loading="loading">
     <div class="home-header">
       <div class="home-row">
         <div class="home-header-left">
@@ -407,14 +407,18 @@ export default {
       },
       time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       timer: null,
+      //synth: new Tone.Synth().toDestination(),
       timer1: null
     };
   },
   methods: {
     ...mapMutations(["updateAccessToken"]),
+    async triggerTone() {
+      await Tone.start();
+    },
     triggerSynth() {
       const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-      const now = Tone.now()
+      const now = Tone.now();
       synth.triggerAttack("D4", now);
       synth.triggerAttack("F4", now + 0.5);
       synth.triggerAttack("A4", now + 1);
@@ -427,15 +431,16 @@ export default {
         pageNum: 1,
         pageSize: 6,
       }).then((data) => {
-        const isTrigger = data.data.records.some(r => {
+        const records = data.data.records || [];
+        const isTrigger = records.some(r => {
           const minutes = dayjs(new Date()).diff(dayjs(new Date(r.triggerTime)), 'minutes');
           if (minutes < 5) return true;
           return false;
-        })
+        });
         if (isTrigger) {
           this.triggerSynth();
         }
-        this.alarms = data.data.records || [];
+        this.alarms = records;
       });
     },
     getDeviceList() {
@@ -729,12 +734,12 @@ export default {
     }
   },
   created() {
-    this.getAlarmList();
     this.getDeviceList().then(() => {
       this.readyMap();
     });
   },
   mounted() {
+    this.getAlarmList();
     this.week = dayjs().day();
     this.timer = setInterval(() => {
       this.time = dayjs().format('YYYY-MM-DD HH:mm:ss');
