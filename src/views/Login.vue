@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import * as Tone from "tone";
 import { cMd5 } from "@/util";
 import { mapState, mapMutations } from "vuex";
 import { postAuthLogin, getUserPage, getUserRole } from "@/api/user";
@@ -87,7 +88,7 @@ export default {
       this.updateRoles(role.data.records);
       this.updateUser(user.data.records);
     },
-    submitForm() {
+    async submitForm() {
       const { password } = this.formData;
       postAuthLogin({
         ...this.formData,
@@ -98,6 +99,7 @@ export default {
         this.getUser();
         this.$router.replace(this.$route.query.redirect || "/");
       });
+      await Tone.start();
     },
     handleIconClick() {
       this.showpass = !this.showpass;
