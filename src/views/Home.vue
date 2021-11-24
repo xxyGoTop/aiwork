@@ -431,10 +431,7 @@ export default {
         pageNum: 1,
         pageSize: 6,
       }).then((data) => {
-        const records = data.data.records.concat({
-          id: 1000,
-          triggerTime: '2021-11-24 19:23:00'
-        }) || [];
+        const records = data.data.records || [];
         const isTrigger = records.some(r => {
           const minutes = dayjs(new Date()).diff(dayjs(new Date(r.triggerTime)), 'minutes');
           if (minutes < 5) return true;
