@@ -419,12 +419,13 @@ export default {
     triggerSynth() {
       const synth = new Tone.PolySynth(Tone.Synth).toDestination();
       const now = Tone.now();
-      synth.triggerAttack("D4", now);
-      synth.triggerAttack("F4", now + 0.5);
-      synth.triggerAttack("A4", now + 1);
-      synth.triggerAttack("C5", now + 1.5);
-      synth.triggerAttack("E5", now + 2);
-      synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 1);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 2);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 3);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 4);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 5);
+      synth.triggerAttackRelease(["C5", "B4", "A4", "G4"], "8n", now + 6);
     },
     getAlarmList() {
       getAlarmList({
