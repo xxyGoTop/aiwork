@@ -177,6 +177,7 @@ export default {
       // }];
       const list = this.list;
       let polyLine = [];
+      let strokeColor = this.workType === 0 ? "#00FF00" : '#FF3227';
       this.bmap.panTo(new BMapGL.Point(list[0].longitude, list[0].latitude));
       list.forEach((l, index) => {
         if (list[index + 1]) {
@@ -188,7 +189,7 @@ export default {
           if (minutes > 5 || distance > 1000) {
             polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
             if (polyLine.length) {
-              let pl = new BMapGL.Polyline(polyLine, { strokeColor: "#00FF00", strokeWeight: 7 })
+              let pl = new BMapGL.Polyline(polyLine, { strokeColor: strokeColor, strokeWeight: 7 })
               this.bmap.addOverlay(pl);
             }
             polyLine = []
@@ -198,7 +199,7 @@ export default {
         } else {
           polyLine.push(new BMapGL.Point(l.longitude, l.latitude))
           if (polyLine.length) {
-            let pl = new BMapGL.Polyline(polyLine, { strokeColor: "#00FF00", strokeWeight: 7 })
+            let pl = new BMapGL.Polyline(polyLine, { strokeColor: strokeColor, strokeWeight: 7 })
             this.bmap.addOverlay(pl);
           }
         }
