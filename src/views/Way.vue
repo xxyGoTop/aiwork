@@ -45,7 +45,7 @@
           </el-form-item>
           <el-form-item label="作业类型" prop="workType">
             <el-select v-model="formInline.workType" placeholder="作业类型">
-              <el-option label="全部" value=""></el-option>
+              <!-- <el-option label="全部" value=""></el-option> -->
               <el-option label="值班打卡" :value="0"></el-option>
               <el-option label="巡逻打卡" :value="1"></el-option>
             </el-select>
@@ -95,7 +95,7 @@ export default {
         endTime: "",
         startTime: "",
         workStatus: "",
-        workType: "",
+        workType: 0,
       },
       // table相关
       loading: false,
@@ -177,7 +177,7 @@ export default {
       // }];
       const list = this.list;
       let polyLine = [];
-      let strokeColor = this.workType === 0 ? "#00FF00" : '#FF3227';
+      let strokeColor = this.formInline.workType === 0 ? "#00FF00" : '#FF3227';
       this.bmap.panTo(new BMapGL.Point(list[0].longitude, list[0].latitude));
       list.forEach((l, index) => {
         if (list[index + 1]) {
