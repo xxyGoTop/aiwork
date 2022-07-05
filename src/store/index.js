@@ -1,40 +1,28 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import getters from './getters'
 
 Vue.use(Vuex)
 
+const modulesFiles = require.context('./modules', true, /\.js$/)
+
+// you do not need `import app from './modules/app'`
+// it will auto require all vuex module from modules file
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  // set './app.js' => 'app'
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = modulesFiles(modulePath)
+  modules[moduleName] = value.default
+  return modules
+}, {})
+
 export default new Vuex.Store({
+  modules,
+  getters,
   state: {
     username: '',
     // 侧边栏菜单
     asideMenu: [],
-    groupMap: {
-      0: {
-        label: '主站',
-        link: 'http://product.dangdang.com/',
-        // http://product.dangdang.com/23413230.html(主站商品详情)
-      },
-      1: {
-        label: '天猫',
-        link: 'https://detail.tmall.com/item.htm?id=',
-      },
-      2: {
-        label: '拼多多',
-        link: 'https://mobile.yangkeduo.com/goods.html?goods_id=',
-      },
-      3: {
-        label: '抖音',
-        link: 'https://haohuo.jinritemai.com/views/product/detail?origin_type=604&id=',
-      },
-      4: {
-        label: '快手',
-        link: 'https://app.kwaixiaodian.com/merchant/shop/detail?id=',
-      },
-      5: {
-        label: '小红书',
-        link: 'https://pages.xiaohongshu.com/goods/',
-      },
-    },
     partnerId: '',
   },
   mutations: {
@@ -49,6 +37,4 @@ export default new Vuex.Store({
       state.partnerId = v;
     },
   },
-  actions: {},
-  modules: {},
 })
