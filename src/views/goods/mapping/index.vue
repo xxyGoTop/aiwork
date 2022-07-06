@@ -144,17 +144,17 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   QueryTaskList,
   TaskStatusList
-} from '@/api/goods/task';
-import BatchBindDrawer from './components/BatchBindDrawer';
-import BatchUnbindDrawer from './components/BatchUnbindDrawer';
-import BatchQueryDrawer from './components/BatchQueryDrawer';
-import DetailDrawer from './components/DetailDrawer';
-import BatchSKUQuery from './components/BatchSKUQuery';
-import { format } from 'date-fns';
+} from "@/api/goods/task"
+import BatchBindDrawer from "./components/BatchBindDrawer"
+import BatchUnbindDrawer from "./components/BatchUnbindDrawer"
+import BatchQueryDrawer from "./components/BatchQueryDrawer"
+import DetailDrawer from "./components/DetailDrawer"
+import BatchSKUQuery from "./components/BatchSKUQuery"
+import { format } from "date-fns"
 
 export default {
   components: {
@@ -173,14 +173,14 @@ export default {
       skuQueryVisible: false,
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 105
       },
       creationDate: [],
@@ -195,117 +195,117 @@ export default {
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     // 店铺查询
-     getShops() {
+    getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
+          this.shops = data || []
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
           if (this.queryForm.partnerId === -2) this.queryForm.partnerId = this.shops[0].partnerId
-          this.getList();
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 任务状态
     getTaskStatus() {
       TaskStatusList({ taskType: 105 })
         .then(({ data }) => {
           this.statusList = [
-            { status: '', name: '不限' },
+            { status: "", name: "不限" },
             ...data,
-          ];
+          ]
         })
         .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (value) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
-      this.getList();
+      this.queryForm.page = page
+      this.getList()
     },
     // 查看结果
     handlePublishResult(ty, row) {
-      let curStatus = '';
+      let curStatus = ""
       this.statusList.map(item => {
         if (item.name === row.status) {
           curStatus = item.status
         }
       })
-      this.detailVisible = true;
+      this.detailVisible = true
       this.detailInfo = Object.assign(row, {
         partnerId: this.queryForm.partnerId,
         state: curStatus,
         ty,
-      });
+      })
     },
     // 批量解绑映射
     handleBatchUnBind() {
-      this.unbindVisible = true;
-      this.unbindShops = this.shops.filter(shop => shop.groupType === 1) || [];
+      this.unbindVisible = true
+      this.unbindShops = this.shops.filter(shop => shop.groupType === 1) || []
     },
     // 新增映射绑定
     handleAddGoodsBind() {
-      this.bindVisible = true;
+      this.bindVisible = true
     },
     handleAddGoodsQuery() {
-      this.queryVisible = true;
+      this.queryVisible = true
     },
     // sku查询
     handleSKUQuery() {
-      this.skuQueryVisible = true;
+      this.skuQueryVisible = true
     },
   },
   created() {
-    this.getShops();
-    this.getTaskStatus();
+    this.getShops()
+    this.getTaskStatus()
   },
 }
 </script>

@@ -122,16 +122,16 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
-import { format } from 'date-fns';
-import PromoteEdit from './components/PromoteEdit.vue';
-import CreatePromote from './components/CreatePromote.vue';
-import { isValid } from '@/util';
+} from "@/api/goods/list"
+import { format } from "date-fns"
+import PromoteEdit from "./components/PromoteEdit.vue"
+import CreatePromote from "./components/CreatePromote.vue"
+import { isValid } from "@/util"
 import {
   GiftActStop,
   GiftActDel,
   GiftQuery,
-} from '@/api/promote/gift';
+} from "@/api/promote/gift"
 
 export default {
   components: {
@@ -145,23 +145,23 @@ export default {
       cvisible: false,
       cpayload: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 20,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 116,
       },
       creationDate: [],
       statusList: [
-        { value: '', label: '不限' },
-        { value: 0, label: '待开始' },
-        { value: 4, label: '活动中' },
-        { value: 25, label: '已结束' },
-        { value: 31, label: '任务终止' }
+        { value: "", label: "不限" },
+        { value: 0, label: "待开始" },
+        { value: 4, label: "活动中" },
+        { value: 25, label: "已结束" },
+        { value: 31, label: "任务终止" }
       ],
       shops: [],
       total: 0,
@@ -171,78 +171,78 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data && data.length ? data.filter(shop => shop.groupType === 1) : [];
-          this.queryForm.partnerId = this.shops[0].partnerId || '';
-          this.getList();
+          this.shops = data && data.length ? data.filter(shop => shop.groupType === 1) : []
+          this.queryForm.partnerId = this.shops[0].partnerId || ""
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (isValid(value)) params[key] = value;
+        if (isValid(value)) params[key] = value
       }
       GiftQuery(params)
         .then(({ data, total }) => {
-          this.giftList = data;
-          this.total = total;
+          this.giftList = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // 新增赠品促销
     handleGift() {
-      this.cvisible = true;
+      this.cvisible = true
       this.cpayload = {
         partnerId: this.queryForm.partnerId
       }
     },
     // 编辑
     handleGiftEdit(row) {
-      this.visible = true;
+      this.visible = true
       this.payload = {
         ...row,
-        type: 'edit'
+        type: "edit"
       }
     },
     // 查看活动
     handleViewAct(row) {
-      this.visible = true;
+      this.visible = true
       this.payload = {
         ...row,
-        type: 'detail'
+        type: "detail"
       }
     },
     // 终止
     handleGiftStop(row) {
       GiftActStop(row.taskId)
         .then(() => {
-          this.$message.success('终止任务成功');
-          this.getList();
+          this.$message.success("终止任务成功")
+          this.getList()
         })
         .catch(console.warn)
     },
@@ -250,14 +250,14 @@ export default {
     handleGiftDel(row) {
       GiftActDel(row.taskId)
         .then(() => {
-          this.$message.success('删除任务成功');
-          this.getList();
+          this.$message.success("删除任务成功")
+          this.getList()
         })
         .catch(console.warn)
     },
   },
-   created() {
-    this.getShops();
+  created() {
+    this.getShops()
   },
 }
 </script>

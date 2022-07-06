@@ -9,7 +9,7 @@ export default {
   props: {
     name: String,
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

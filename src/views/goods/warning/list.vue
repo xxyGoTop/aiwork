@@ -119,16 +119,16 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   GetTaskList,
   StopTask,
-} from '@/api/goods/warning';
-import PriceWarn from './components/PriceWarn.vue';
-import TaskDetail from './components/TaskDetail.vue';
+} from "@/api/goods/warning"
+import PriceWarn from "./components/PriceWarn.vue"
+import TaskDetail from "./components/TaskDetail.vue"
 import {
   isValid,
-} from '@/util';
+} from "@/util"
 
 export default {
   components: {
@@ -142,93 +142,93 @@ export default {
       payload: {},
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         curPage: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
       },
       creationDate: [],
       statusList: [
-        { value: '', label: '不限' },
-        { value: 34, label: '待开始' },
-        { value: 33, label: '进行中' },
-        { value: 25, label: '已过期' },
-        { value: 31, label: '任务终止' },
+        { value: "", label: "不限" },
+        { value: 34, label: "待开始" },
+        { value: 33, label: "进行中" },
+        { value: 25, label: "已过期" },
+        { value: 31, label: "任务终止" },
       ],
       shops: [],
       total: 0,
       listInfo: [],
       loading: false,
-      currentShop: '',
+      currentShop: "",
       isAdd: true,
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data.filter(shop => shop.groupType === 1) || [];
-          const isExist = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-          this.queryForm.partnerId = isExist ? this.$store.state.partnerId : this.shops[0].partnerId;
-          data.length && this.getList();
+          this.shops = data.filter(shop => shop.groupType === 1) || []
+          const isExist = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+          this.queryForm.partnerId = isExist ? this.$store.state.partnerId : this.shops[0].partnerId
+          data.length && this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1],
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (isValid(value)) params[key] = value;
+        if (isValid(value)) params[key] = value
       }
       GetTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.curPage = 1;
+      this.queryForm.curPage = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // 停止
     handleStop(row) {
       const params = {
         partnerId: this.queryForm.partnerId,
         taskNum: row.taskNum,
-      };
+      }
       StopTask(params)
         .then(() => {
-          this.$message.success('停止任务成功');
+          this.$message.success("停止任务成功")
           this.getList()
         })
         .catch(console.warn)
@@ -238,16 +238,16 @@ export default {
       this.payload = {
         ...row,
         partnerId: +this.queryForm.partnerId,
-      };
-      this.priceVisible = true;
-      this.isAdd = false;
+      }
+      this.priceVisible = true
+      this.isAdd = false
     },
     // 新增预警
     handleAddEarlyWarn() {
-      this.priceVisible = true;
-      this.isAdd = true;
+      this.priceVisible = true
+      this.isAdd = true
       if (this.queryForm.partnerId) {
-        this.currentShop = `${this.queryForm.partnerId}`;
+        this.currentShop = `${this.queryForm.partnerId}`
       }
     },
     // 预警结果
@@ -255,12 +255,12 @@ export default {
       this.detailInfo = {
         ...row,
         partnerId: this.queryForm.partnerId
-      };
-      this.taskVisible = true;
+      }
+      this.taskVisible = true
     }
   },
-   created() {
-    this.getShops();
+  created() {
+    this.getShops()
   },
 }
 </script>

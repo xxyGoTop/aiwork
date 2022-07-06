@@ -1,9 +1,9 @@
-import { OM as Fetch } from '@/api'
+import { OM as Fetch } from "@/api"
 
 // 列表查询
 export const QueryOrdersList = data => Fetch({
-  url: '/order/list',
-  method: 'post',
+  url: "/order/list",
+  method: "post",
   data
 })
 
@@ -14,16 +14,16 @@ export const GetBasicData = params => Fetch({
 
 // 导出
 export const OrderExport = (params) => Fetch({
-  url: '/order/export',
-  method: 'get',
+  url: "/order/export",
+  method: "get",
   params,
-  responseType: 'blob',
+  responseType: "blob",
 })
 
 // 重置订单状态
 export const ResetOrderStatus = data => Fetch({
-  url: '/order/resetOrderStatus',
-  method: 'post',
+  url: "/order/resetOrderStatus",
+  method: "post",
   data
 })
 

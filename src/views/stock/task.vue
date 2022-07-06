@@ -148,39 +148,39 @@ import {
   releaseStockLockTask,
   queryStockByTaskId,
   QueryTaskList,
-} from '@/api/stock';
+} from "@/api/stock"
 import {
   TaskStatusList,
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 import {
   GoodsShops,
-} from '@/api/goods/list';
-import { format } from 'date-fns';
-import DetailDrawer from './components/DetailDrawer';
-import LockStockDrawer from './components/LockStockDrawer';
+} from "@/api/goods/list"
+import { format } from "date-fns"
+import DetailDrawer from "./components/DetailDrawer"
+import LockStockDrawer from "./components/LockStockDrawer"
 import {
   hasValue,
   isValid,
-} from '@/util';
+} from "@/util"
 
 export default {
   components: { LockStockDrawer, DetailDrawer },
   data() {
     return {
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 202
       },
       lockForm: {
         partnerId: null,
-        stockDate: '',
+        stockDate: "",
       },
       creationDate: [],
       shops: [],
@@ -189,8 +189,8 @@ export default {
       listInfo: [],
       visible: false,
       loading: false,
-      title: '新增锁库存',
-      stockTitle: '首次锁库存',
+      title: "新增锁库存",
+      stockTitle: "首次锁库存",
       disabled: false,
       detailInfo: {},
       detailVisible: false,
@@ -203,104 +203,104 @@ export default {
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     hasValue,
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.shops = data || []
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 任务状态
     getTaskStatus() {
       TaskStatusList({ taskType: 202 })
         .then(({ data }) => {
           this.statusList = [
-            { status: '', name: '不限' },
+            { status: "", name: "不限" },
             ...data,
-          ];
+          ]
         })
         .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (isValid(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     handleSizeChange(pagesize) {
-      this.queryForm.pageSize = pagesize;
-      this.getList();
+      this.queryForm.pageSize = pagesize
+      this.getList()
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
-      this.getList();
+      this.queryForm.page = page
+      this.getList()
     },
     // 查看任务结果
     handleTaskResult(row) {
       const routeData = this.$router.resolve({
-        path: '/stock/list',
+        path: "/stock/list",
         query: {
           taskNum: row.taskNum,
         },
-      });
-      window.open(routeData.href, '_blank');
+      })
+      window.open(routeData.href, "_blank")
     },
     handleAddStock() {
       const { partnerId } = this.queryForm
       this.lockForm = {
         partnerId,
-        stockDate: '',
+        stockDate: "",
       }
-      this.title = '新增锁库存';
-      this.stockTitle = '首次锁库存';
-      this.disabled = false;
-      this.visible = true;
-      this.editStatus = 1;
-      this.lockType = {};
+      this.title = "新增锁库存"
+      this.stockTitle = "首次锁库存"
+      this.disabled = false
+      this.visible = true
+      this.editStatus = 1
+      this.lockType = {}
     },
     handleLockUp(row) {
       const { partnerId } = this.queryForm
@@ -308,14 +308,14 @@ export default {
         partnerId,
         stockDate: [row.startTime, row.endTime],
       }
-      this.title = '补锁库存';
-      this.stockTitle = '补锁锁库存';
-      this.disabled = true;
-      this.visible = true;
-      this.editStatus = row.uploadFile ? 3 : 1;
-      this.lockType = {};
-      this.edited = 0;
-      this.rows = [{...row}];
+      this.title = "补锁库存"
+      this.stockTitle = "补锁锁库存"
+      this.disabled = true
+      this.visible = true
+      this.editStatus = row.uploadFile ? 3 : 1
+      this.lockType = {}
+      this.edited = 0
+      this.rows = [{...row}]
       if (!row.uploadFile) {
         this.queryStockByTaskId(row, 0)
       }
@@ -326,44 +326,44 @@ export default {
         partnerId,
         stockDate: [row.startTime, row.endTime],
       }
-      this.title = '编辑锁库存';
-      this.stockTitle = '补锁锁库存';
-      this.disabled = true;
-      this.visible = true;
-      this.editStatus = row.uploadFile ? 3 : 1;
-      this.lockType = {};
-      this.edited = 1;
-      this.rows = [{...row}];
+      this.title = "编辑锁库存"
+      this.stockTitle = "补锁锁库存"
+      this.disabled = true
+      this.visible = true
+      this.editStatus = row.uploadFile ? 3 : 1
+      this.lockType = {}
+      this.edited = 1
+      this.rows = [{...row}]
       if (!row.uploadFile) {
         this.queryStockByTaskId(row, 1)
       }
     },
     handleRemoveLock({ taskNum }) {
-      const { partnerId } = this.queryForm;
+      const { partnerId } = this.queryForm
       releaseStockLockTask({
         partnerId,
         taskNum,
       }).then(() => {
-        this.$message.success('提交成功');
-        this.getList();
+        this.$message.success("提交成功")
+        this.getList()
       })
     },
     // 查看发布结果
     handlePublishResult(row) {
-      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId });
-      this.detailVisible = !this.detailVisible;
+      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId })
+      this.detailVisible = !this.detailVisible
     },
     // 任务
     queryStockByTaskId({ id }, edited = 0) {
-      const { partnerId } = this.queryForm;
-      this.stockLoading = true;
+      const { partnerId } = this.queryForm
+      this.stockLoading = true
       queryStockByTaskId({
         partnerId,
         taskId: id,
       }).then(data => {
-        const products = [];
+        const products = []
         data.data.forEach(good => {
-          let stocks = [];
+          let stocks = []
           if (good.productName) {
             good.stocks.forEach(stock => {
               if (stock.stockLockFlag && edited === 0) {
@@ -385,16 +385,16 @@ export default {
               stocks,
             })
           }
-        });
-        this.products = products;
+        })
+        this.products = products
       }).finally(() => {
-        this.stockLoading = false;
+        this.stockLoading = false
       })
     },
   },
   created() {
-    this.getShops();
-    this.getTaskStatus();
+    this.getShops()
+    this.getTaskStatus()
   },
 }
 </script>

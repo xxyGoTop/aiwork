@@ -183,141 +183,141 @@
 </template>
 
 <script>
-  import {
-    CreateLiveBasic,
-    LiveList,
-    DeleteLive,
-  } from '@/api/live';
-  import {
-    subMinutes,
-  } from 'date-fns';
+import {
+  CreateLiveBasic,
+  LiveList,
+  DeleteLive,
+} from "@/api/live"
+import {
+  subMinutes,
+} from "date-fns"
 
 
-  export default {
-    data: () => {
-      return {
-        loading: false,
-        form: {
-          liveId: '',
-          creationDate: '',
-          creationDateStart: '',
-          creationDateEnd: '',
-          liveStatus: '',
-          platformId: '',
-          liveName: '',
-          liveType: '',
-        },
-        liveStatusEnum: {
-          0: '未开始',
-          1: '进行中',
-          2: '已结束'
-        },
-        liveTypeEnum: {
-          1: '合作直播',
-          2: '店铺直播'
-        },
-        page: 1,
-        pageSize: 10,
-        total: 0,
-        list: [],
-        platformList:[],
-        liveTypeList:[],
-        liveStatusList:[]
-      };
-    },
-    created() {
-      this.getLiveList();
-      this.getCreateLiveBasic();
-    },
-    methods: {
-      getLiveList(size = 10, page = 1) {
-        const { creationDate } = this.form;
-        if (creationDate && creationDate.length) {
-          this.form.creationDateStart = creationDate[0];
-          this.form.creationDateEnd = creationDate[1];
+export default {
+  data: () => {
+    return {
+      loading: false,
+      form: {
+        liveId: "",
+        creationDate: "",
+        creationDateStart: "",
+        creationDateEnd: "",
+        liveStatus: "",
+        platformId: "",
+        liveName: "",
+        liveType: "",
+      },
+      liveStatusEnum: {
+        0: "未开始",
+        1: "进行中",
+        2: "已结束"
+      },
+      liveTypeEnum: {
+        1: "合作直播",
+        2: "店铺直播"
+      },
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      list: [],
+      platformList:[],
+      liveTypeList:[],
+      liveStatusList:[]
+    }
+  },
+  created() {
+    this.getLiveList()
+    this.getCreateLiveBasic()
+  },
+  methods: {
+    getLiveList(size = 10, page = 1) {
+      const { creationDate } = this.form
+      if (creationDate && creationDate.length) {
+        this.form.creationDateStart = creationDate[0]
+        this.form.creationDateEnd = creationDate[1]
+      } else {
+        this.form.creationDateStart = ""
+        this.form.creationDateEnd = ""
+      }
+      this.form.curPage=page
+      this.form.pageSize=size
+      this.loading = true
+      LiveList({
+        ...this.form
+      }).then(data => {
+        if (data.code === 200) {
+          this.list = data.data || []
+          this.total = data.total || 0
         } else {
-          this.form.creationDateStart = '';
-          this.form.creationDateEnd = '';
+          this.list = []
+          this.total = 0
         }
-        this.form.curPage=page;
-        this.form.pageSize=size;
-        this.loading = true;
-        LiveList({
-          ...this.form
+        this.loading = false
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    handleDeleteLive(liveId) {
+      this.$confirm("确定删除该直播活动吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        DeleteLive({
+          liveId
         }).then(data => {
           if (data.code === 200) {
-            this.list = data.data || [];
-            this.total = data.total || 0;
+            this.$message.success("删除成功")
           } else {
-            this.list = [];
-            this.total = 0;
+            this.$message.success("删除失败:" + data.msg)
           }
-          this.loading = false;
-        }).finally(() => {
-          this.loading = false;
-        });
-      },
-      handleDeleteLive(liveId) {
-        this.$confirm('确定删除该直播活动吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }).then(() => {
-          DeleteLive({
-            liveId
-          }).then(data => {
-            if (data.code === 200) {
-              this.$message.success('删除成功');
-            } else {
-              this.$message.success('删除失败:' + data.msg);
-            }
-            this.getLiveList(this.pageSize, this.page);
-          }).catch((error) => {
-            this.$message.success('删除失败:' + error);
-          });
-        });
-      },
-      handleSearchLiveList() {
-        this.page = 1;
-        this.getLiveList(this.pageSize);
-      },
-      handleSizeChange(size) {
-        this.pageSize = size;
-        this.getLiveList(size, this.page);
-      },
-      handleCurrentChange(page) {
-        this.page = page;
-        this.getLiveList(this.pageSize, page);
-      },
-      handleReset() {
-        this.$refs.form.resetFields();
-      },
-      getCreateLiveBasic(){
-        CreateLiveBasic().then(({ data }) => {
-          this.platformList = data ? data.platformList : [];
-          this.liveTypeList = data ? data.liveTypeList : [];
-          this.liveStatusList = data ? data.liveStatusList : [];
+          this.getLiveList(this.pageSize, this.page)
+        }).catch((error) => {
+          this.$message.success("删除失败:" + error)
         })
-      },
-      handleCreateNewLive() {
-        this.$router.push('/living/createLive');
-      },
-      handleJumpToLiveDetail(liveId) {
-        const path = "/living/submit/" + liveId + "/1";
-        this.$router.push(path);
-      },
-      handleUpdateLive(row) {
-        const { liveId, startTime } = row;
-        const sTime = subMinutes(new Date(startTime), 15);
-        const path = "/living/updateLive/" + liveId;
-        if (sTime < new Date()) {
-          this.$message.error('活动开始前15分钟开始不允许编辑');
-          return;
-        }
-        this.$router.push(path);
-      }
+      })
     },
-  };
+    handleSearchLiveList() {
+      this.page = 1
+      this.getLiveList(this.pageSize)
+    },
+    handleSizeChange(size) {
+      this.pageSize = size
+      this.getLiveList(size, this.page)
+    },
+    handleCurrentChange(page) {
+      this.page = page
+      this.getLiveList(this.pageSize, page)
+    },
+    handleReset() {
+      this.$refs.form.resetFields()
+    },
+    getCreateLiveBasic(){
+      CreateLiveBasic().then(({ data }) => {
+        this.platformList = data ? data.platformList : []
+        this.liveTypeList = data ? data.liveTypeList : []
+        this.liveStatusList = data ? data.liveStatusList : []
+      })
+    },
+    handleCreateNewLive() {
+      this.$router.push("/living/createLive")
+    },
+    handleJumpToLiveDetail(liveId) {
+      const path = "/living/submit/" + liveId + "/1"
+      this.$router.push(path)
+    },
+    handleUpdateLive(row) {
+      const { liveId, startTime } = row
+      const sTime = subMinutes(new Date(startTime), 15)
+      const path = "/living/updateLive/" + liveId
+      if (sTime < new Date()) {
+        this.$message.error("活动开始前15分钟开始不允许编辑")
+        return
+      }
+      this.$router.push(path)
+    }
+  },
+}
 </script>
 
 <style lang="scss">

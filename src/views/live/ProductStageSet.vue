@@ -111,8 +111,8 @@
 </template>
 
 <script>
-import MyInput from './components/MyInput';
-import { StageGiftInfoList, GiftInfo, SaveProductStage } from '@/api/live';
+import MyInput from "./components/MyInput"
+import { StageGiftInfoList, GiftInfo, SaveProductStage } from "@/api/live"
 
 export default {
   components: {
@@ -123,68 +123,68 @@ export default {
     return {
       list: [],
       loading: false,
-      giftProductIds: '',
-      mainProductId: '',
-    };
+      giftProductIds: "",
+      mainProductId: "",
+    }
   },
 
   computed: {
     action: function() {
-      return this.$route.params.action;
+      return this.$route.params.action
     }
   },
 
   created() {
-    this.getStageGiftList();
+    this.getStageGiftList()
   },
 
   methods: {
     changeStageStart(obj) {
-      const { value, index } = obj;
-      const list = this.list;
-      const stage = list[index];
+      const { value, index } = obj
+      const list = this.list
+      const stage = list[index]
       this.$set(this.list, index, { ...stage, stageStartIndex: value })
     },
     changeStageEnd(obj) {
-      const { value, index } = obj;
-      const list = this.list;
-      const stage = list[index];
+      const { value, index } = obj
+      const list = this.list
+      const stage = list[index]
       this.$set(this.list, index, { ...stage, stageEndIndex: value })
     },
     getStageGiftList() {
       const {
         liveId,
         mainProductId
-      } = this.$route.params;
-      this.mainProductId = mainProductId;
+      } = this.$route.params
+      this.mainProductId = mainProductId
       StageGiftInfoList({
         liveId: liveId,
         promoType: 2,
         mainProductIds: mainProductId
       }).then(data => {
         if (data.data && data.data.length) {
-          this.list = data.data.map(d => ({ ...d, mainProductId: mainProductId, promoType: 2 }));
+          this.list = data.data.map(d => ({ ...d, mainProductId: mainProductId, promoType: 2 }))
         } else {
-          this.list = [];
+          this.list = []
         }
-      });
+      })
     },
     deleteStage(index) {
-      this.list.splice(index, 1);
+      this.list.splice(index, 1)
     },
     deleteGiftProduct(index, row) {
-      let giftProductInfoVoList = this.list[index]["giftProductInfoVoList"];
+      let giftProductInfoVoList = this.list[index]["giftProductInfoVoList"]
       let gIndex = giftProductInfoVoList.indexOf(row)
       giftProductInfoVoList.splice(gIndex, 1)
       if (giftProductInfoVoList.length === 0) {
-        this.list.splice(index, 1);
+        this.list.splice(index, 1)
       }
     },
     addStage(){
       const {
         liveId,
         mainProductId
-      } = this.$route.params;
+      } = this.$route.params
       this.list.push({
         giftProductInfoVoList: [],
         liveId: liveId,
@@ -192,28 +192,28 @@ export default {
         promoType: 2,
         stageEndIndex: null,
         stageStartIndex: null,
-      });
+      })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     addGiftProduct (index) {
-      let _this = this;
-      const h = _this.$createElement;
+      let _this = this
+      const h = _this.$createElement
       _this.$msgbox({
-        title: '添加商品',
-        message: h('div', {
+        title: "添加商品",
+        message: h("div", {
           attrs: {
-            class: 'el-textarea',
+            class: "el-textarea",
           },
         }, [
-          h('textarea', {
+          h("textarea", {
             attrs: {
-              class: 'el-textarea__inner',
-              autocomplete: 'off',
+              class: "el-textarea__inner",
+              autocomplete: "off",
               rows: 8,
-              id:'giftProductIds',
-              placeholder: '请输入要添加的商品ID，多个商品ID请用英文逗号隔开',
+              id:"giftProductIds",
+              placeholder: "请输入要添加的商品ID，多个商品ID请用英文逗号隔开",
             },
             value: _this.giftProductIds,
             on: { input: _this.onCommentInputChange }
@@ -221,12 +221,12 @@ export default {
         ]),
         showCancelButton: true,
         closeOnClickModal: false,
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
         beforeClose: (action, _, done) => {
-          if (action === 'confirm') {
-            if (_this.giftProductIds === '' || _this.giftProductIds === undefined) {
-              this.$message.error('请至少维护一个商品')
+          if (action === "confirm") {
+            if (_this.giftProductIds === "" || _this.giftProductIds === undefined) {
+              this.$message.error("请至少维护一个商品")
             }else {
               GiftInfo(
                 { productIds: _this.giftProductIds }
@@ -234,50 +234,50 @@ export default {
                 if (data.code !== 200) {
                   this.$message.error(data.message)
                 } else {
-                  let gift = data.data;
-                  let giftProductInfoVoList = this.list[index]["giftProductInfoVoList"];
-                  let giftProductIds = giftProductInfoVoList.map(g => g.giftProductId);
+                  let gift = data.data
+                  let giftProductInfoVoList = this.list[index]["giftProductInfoVoList"]
+                  let giftProductIds = giftProductInfoVoList.map(g => g.giftProductId)
                   gift.forEach((v) => {
                     if (giftProductIds.indexOf(v.giftProductId) === -1) {
                       giftProductInfoVoList.push(v)
                     }
-                  });
-                  done();
+                  })
+                  done()
                 }
               })
             }
             //done();
           } else {
-            done();
+            done()
           }
         }
       }).finally(()=>{
-        _this.giftProductIds = '';
-        document.getElementById('giftProductIds').value = '';
-      });
+        _this.giftProductIds = ""
+        document.getElementById("giftProductIds").value = ""
+      })
     },
     onCommentInputChange() {
-      this.giftProductIds = document.getElementById('giftProductIds').value;
+      this.giftProductIds = document.getElementById("giftProductIds").value
     },
     save() {
       const {
         liveId,
-      } = this.$route.params;
+      } = this.$route.params
       SaveProductStage(this.list, {
         promoType: 2,
         liveId,
       }).then(data => {
-        if (data.code === 200 && data.data !== 'SYSTEM_ERROR') {
-          this.$message.success('保存成功');
-          this.$router.back();
+        if (data.code === 200 && data.data !== "SYSTEM_ERROR") {
+          this.$message.success("保存成功")
+          this.$router.back()
         }
       })
     },
     cancel() {
-      this.$router.back();
+      this.$router.back()
     }
   },
-};
+}
 </script>
 
 <style lang="scss">

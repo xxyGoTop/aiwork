@@ -178,31 +178,31 @@ import {
   saveFile,
   hasValue,
   filterSpace
-} from '@/util';
+} from "@/util"
 import {
   UploadFile,
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 import {
   BatchPriceSubmit,
   GetProductIndoById,
   DownloadTaskTemplate
-} from '@/api/goods/price';
+} from "@/api/goods/price"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 const defaultFormData = {
-  partnerId: '',
+  partnerId: "",
   taskType: 103,
-  startTime: '',
-  endTime: '',
-  uploadFile: '',
+  startTime: "",
+  endTime: "",
+  uploadFile: "",
   extra: 0,
-};
+}
 
 export default {
   props: {
@@ -221,72 +221,72 @@ export default {
       if (this.formData.queryCondition.length) {
         if (this.formData.queryCondition[0].productId) {
           callback()
-        } else callback(new Error('请输入改价商品信息'));
-      } else callback(new Error('请输入改价商品信息'));
-    };
+        } else callback(new Error("请输入改价商品信息"))
+      } else callback(new Error("请输入改价商品信息"))
+    }
     const validateFiles = (_, value, callback) => {
       if (!this.formData.uploadFile) {
-        callback(new Error('请上传文件'))
-      } else callback();
-    };
+        callback(new Error("请上传文件"))
+      } else callback()
+    }
     return {
       formData: {
         ...defaultFormData,
         queryCondition: [
           {
-            productId: '',
-            productName: '',
-            originalPrice: '',
-            outerCode: '',
-            ddSalePrice: '',
-            outerSalePrice: '',
-            changePrice: '',
+            productId: "",
+            productName: "",
+            originalPrice: "",
+            outerCode: "",
+            ddSalePrice: "",
+            outerSalePrice: "",
+            changePrice: "",
           }
         ],
       },
-      activeName: 'manual',
+      activeName: "manual",
       isUploadLoading: false,
       uploadStatusMap: {
         pending: {
-          icon: 'el-icon-loading',
-          label: '上传中...',
+          icon: "el-icon-loading",
+          label: "上传中...",
         },
         success: {
-          icon: 'el-icon-circle-check',
-          label: '上传成功',
+          icon: "el-icon-circle-check",
+          label: "上传成功",
         },
         fail: {
-          icon: 'el-icon-warning-outline',
-          label: '上传失败',
+          icon: "el-icon-warning-outline",
+          label: "上传失败",
         },
       },
       fileList: [],
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         queryCondition: [
-          { required: true, validator: validatePids, trigger: 'blur' },
+          { required: true, validator: validatePids, trigger: "blur" },
         ],
         uploadFile: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
-          { validator: validateFiles, trigger: 'blur' }
+          { required: true, message: "请上传文件", trigger: "blur" },
+          { validator: validateFiles, trigger: "blur" }
         ],
       },
-    };
+    }
   },
   watch: {
     pickShop() {
-      this.formData.partnerId = Number(this.pickShop);
+      this.formData.partnerId = Number(this.pickShop)
     },
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
     // 拼多多、抖音
     isPddDy() {
@@ -296,7 +296,7 @@ export default {
   methods: {
     // 获取商品信息
     handleGetInfoById(row, $index) {
-      const pid = filterSpace(row.productId);
+      const pid = filterSpace(row.productId)
       if (!hasValue(pid)) return
       GetProductIndoById({
         productId: pid,
@@ -305,9 +305,9 @@ export default {
         .then(({ data }) => {
           this.$nextTick(() => {
             if (this.groupType === 2) {
-              this.formData.queryCondition.splice($index, 1, { productId: row.productId, ...data, groupPursePrice: '' });
+              this.formData.queryCondition.splice($index, 1, { productId: row.productId, ...data, groupPursePrice: "" })
             } else {
-              this.formData.queryCondition.splice($index, 1, { productId: row.productId, ...data, changePrice: '' });
+              this.formData.queryCondition.splice($index, 1, { productId: row.productId, ...data, changePrice: "" })
             }
           })
         })
@@ -316,88 +316,88 @@ export default {
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
       DownloadTaskTemplate({
-        groupType: this.groupType === 2 ? this.groupType : '',
+        groupType: this.groupType === 2 ? this.groupType : "",
         taskType: this.formData.taskType,
         // taskSubType: this.formData.taskSubType,
       })
         .then((data) => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     handleClose() {
-      this.$refs.form.clearValidate();
-      this.$refs.upload && this.$refs.upload.clearFiles();
+      this.$refs.form.clearValidate()
+      this.$refs.upload && this.$refs.upload.clearFiles()
       this.formData = {
-        partnerId: '',
+        partnerId: "",
         taskType: 103,
-        startTime: '',
-        endTime: '',
-        uploadFile: '',
+        startTime: "",
+        endTime: "",
+        uploadFile: "",
         extra: 0,
-      };
+      }
       this.formData.queryCondition = [
         {
-          productId: '',
-          productName: '',
-          originalPrice: '',
-          outerCode: '',
-          ddSalePrice: '',
-          outerSalePrice: '',
-          changePrice: '',
+          productId: "",
+          productName: "",
+          originalPrice: "",
+          outerCode: "",
+          ddSalePrice: "",
+          outerSalePrice: "",
+          changePrice: "",
         }
-      ];
-      this.formData.partnerId = Number(this.pickShop);
-      this.activeName = 'manual';
-      this.$emit('update:visible', false);
-      this.fileList = [];
+      ]
+      this.formData.partnerId = Number(this.pickShop)
+      this.activeName = "manual"
+      this.$emit("update:visible", false)
+      this.fileList = []
     },
     // 删除文件
     handleRemoveFile() {
-      this.formData.uploadFile = '';
-      this.fileList = [];
+      this.formData.uploadFile = ""
+      this.fileList = []
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       // if (/[\u4e00-\u9fa5]/.test(file.name)) {
       //   message = '文件名不能含有中文';
       // }
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.formData.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.formData.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     handlePublish() {
       this.$refs.form.validate(valid => {
@@ -409,7 +409,7 @@ export default {
             endTime,
             extra,
             ...condition
-          } = this.formData;
+          } = this.formData
 
           const data = {
             taskType,
@@ -417,8 +417,8 @@ export default {
             startTime,
             endTime,
             extra: this.groupType === 1 ? 1 : extra
-          };
-          if (this.activeName === 'manual') {
+          }
+          if (this.activeName === "manual") {
             // 拼多多
             if (this.groupType === 2) {
               condition.queryCondition = condition.queryCondition.map(item => {
@@ -434,7 +434,7 @@ export default {
                 }
               })
               const isNum = condition.queryCondition.every(el => (+el.singlePrice > 0 && +el.groupPursePrice > 0))
-              if (!isNum) return this.$message.error('存在修改价格非正数')
+              if (!isNum) return this.$message.error("存在修改价格非正数")
             } else {
               // 天猫、抖音
               condition.queryCondition = condition.queryCondition.map(item => {
@@ -449,7 +449,7 @@ export default {
                 }
               })
               const isNum = condition.queryCondition.every(el => +el.changePrice > 0)
-              if (!isNum) return this.$message.error('存在修改价格非正数')
+              if (!isNum) return this.$message.error("存在修改价格非正数")
             }
             data.queryCondition = JSON.stringify(condition.queryCondition)
           } else {
@@ -459,68 +459,68 @@ export default {
           BatchPriceSubmit(data)
             .then(() => {
               if (data.partnerId === -2) {
-                this.$message.success('任务创建成功，请前往各店铺查看详情');
+                this.$message.success("任务创建成功，请前往各店铺查看详情")
               } else {
-                this.$message.success('创建任务成功');
+                this.$message.success("创建任务成功")
               }
-              this.handleClose();
-              this.$emit('success');
+              this.handleClose()
+              this.$emit("success")
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
     // 选择店铺change
     handlePartnerChange() {
       const colProps = {
-        productId: '',
-        productName: '',
-        outerCode: '',
-        originalPrice: '',
-        ddSalePrice: '',
-        outerSalePrice: '',
-      };
+        productId: "",
+        productName: "",
+        outerCode: "",
+        originalPrice: "",
+        ddSalePrice: "",
+        outerSalePrice: "",
+      }
       if (this.groupType === 2) {
         this.formData.queryCondition = [{
           ...colProps,
-          pddSinglePrice: '',
-          groupPursePrice: '',
+          pddSinglePrice: "",
+          groupPursePrice: "",
         }]
       } else {
         this.formData.queryCondition = [{
           ...colProps,
-          changePrice: '',
+          changePrice: "",
         }]
       }
     },
     handleAddPrice() {
       if (this.formData.queryCondition.length < 20) {
         const colProps = {
-          productId: '',
-          productName: '',
-          outerCode: '',
-          originalPrice: '',
-          ddSalePrice: '',
-          outerSalePrice: '',
-        };
+          productId: "",
+          productName: "",
+          outerCode: "",
+          originalPrice: "",
+          ddSalePrice: "",
+          outerSalePrice: "",
+        }
         if (this.groupType !== 2) {
           this.formData.queryCondition.push({
             ...colProps,
-            changePrice: '',
-          });
+            changePrice: "",
+          })
         } else {
           this.formData.queryCondition.push({
             ...colProps,
-            pddSinglePrice: '',
-            groupPursePrice: '',
-          });
+            pddSinglePrice: "",
+            groupPursePrice: "",
+          })
         }
       } else {
-        this.$message.warning('最多可输入20个品')
+        this.$message.warning("最多可输入20个品")
       }
     },
     handleRemovePrice(_, index) {
-      this.formData.queryCondition.splice(index, 1);
+      this.formData.queryCondition.splice(index, 1)
     },
   },
 }

@@ -107,14 +107,14 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   QueryTaskList,
   TaskStatusList,
-} from '@/api/goods/task';
-import BatchDrawer from './components/BatchDrawer';
-import DetailDrawer from './components/DetailDrawer';
-import { format } from 'date-fns';
+} from "@/api/goods/task"
+import BatchDrawer from "./components/BatchDrawer"
+import DetailDrawer from "./components/DetailDrawer"
+import { format } from "date-fns"
 
 export default {
   components: {
@@ -126,14 +126,14 @@ export default {
       detailVisible: false,
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 106
       },
       creationDate: [],
@@ -144,110 +144,110 @@ export default {
       tasks: [],
       loading: false,
       batchVisible: false,
-      currentShop: '',
+      currentShop: "",
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     // 获取店铺
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           this.shops.push({
             groupType: 2,
             partnerId: -2,
-            partnerName: '拼多多_全平台'
+            partnerName: "拼多多_全平台"
           })
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 获取任务状态列表
     getStatusList() {
       TaskStatusList({ taskType: 106 })
         .then(({ data }) => {
           this.statusList = [
-            { status: '', name: '不限' },
+            { status: "", name: "不限" },
             ...data,
-          ];
+          ]
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (value) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.tasks = data;
-          this.total = total;
+          this.tasks = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
-      this.queryForm.partnerId = this.shops[0].partnerId;
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
+      this.queryForm.partnerId = this.shops[0].partnerId
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
+      this.queryForm.page = page
       this.getList()
     },
     // 查看上架结果
     handleShelfResult(row) {
-      let curStatus = '';
+      let curStatus = ""
       this.statusList.map(item => {
         if (item.name === row.status) {
           curStatus = item.status
         }
       })
-      this.detailVisible = true;
-      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus });
+      this.detailVisible = true
+      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus })
     },
     // 上下架
     handleShelf() {
-      this.batchVisible = true;
+      this.batchVisible = true
       if (this.queryForm.partnerId) {
-        this.currentShop = `${this.queryForm.partnerId}`;
+        this.currentShop = `${this.queryForm.partnerId}`
       }
     }
   },
   created() {
-    this.getShops();
-    this.getStatusList();
+    this.getShops()
+    this.getStatusList()
   },
 }
 </script>

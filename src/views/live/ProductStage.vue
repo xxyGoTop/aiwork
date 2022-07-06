@@ -76,93 +76,93 @@
 
 <script>
 
-import { MainProductList, DeleteMainProduct, SaveMainProduct } from '@/api/live';
+import { MainProductList, DeleteMainProduct, SaveMainProduct } from "@/api/live"
 
 export default {
   data: () => {
     return {
       list: [],
       loading: false,
-    };
+    }
   },
   computed: {
     action: function() {
-      return this.$route.params.action;
+      return this.$route.params.action
     }
   },
   created() {
-    this.getMainProductList();
+    this.getMainProductList()
   },
   methods: {
     getMainProductList() {
       const {
         liveId
-      } = this.$route.params;
-      this.loading = true;
+      } = this.$route.params
+      this.loading = true
       MainProductList({
         liveId:liveId
       }).then(data => {
         if (data.code !== 200) {
-          this.$message.error(data.data.msg);
+          this.$message.error(data.data.msg)
         } else {
-          this.list = data.data;
+          this.list = data.data
           if (this.list.length > 0) {
-            this.$refs.finish.$el.style.display = 'inline';
+            this.$refs.finish.$el.style.display = "inline"
           } else {
-            this.$refs.finish.$el.style.display = 'none';
+            this.$refs.finish.$el.style.display = "none"
           }
         }
       }).finally(() => {
-        this.loading = false;
-      });
+        this.loading = false
+      })
     },
 
     deleteRow(row) {
-      this.$confirm('确定取消删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("确定取消删除吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       }).then(() => {
-        this.deleteRowData(row);
-      });
+        this.deleteRowData(row)
+      })
     },
 
     deleteRowData(row){
       const {
         liveId
-      } = this.$route.params;
+      } = this.$route.params
       DeleteMainProduct({
         liveId: liveId,
         promoType: 2,
         mainProductIds : row.mainProductId
       }).then(data =>{
         if (data.code === 200) {
-          this.getMainProductList();
-          this.$message.success('已删除数据');
+          this.getMainProductList()
+          this.$message.success("已删除数据")
         }
-      });
+      })
     },
 
     addProduct () {
       const {
         liveId
-      } = this.$route.params;
-      let _this = this;
-      const h = _this.$createElement;
+      } = this.$route.params
+      let _this = this
+      const h = _this.$createElement
       _this.$msgbox({
-        title: '添加主商品',
-        message: h('div', {
+        title: "添加主商品",
+        message: h("div", {
           attrs: {
-            class: 'el-textarea',
+            class: "el-textarea",
           },
         }, [
-          h('textarea', {
+          h("textarea", {
             attrs: {
-              class: 'el-textarea__inner',
-              autocomplete: 'off',
+              class: "el-textarea__inner",
+              autocomplete: "off",
               rows: 8,
-              id:'mainProduct',
-              placeholder: '请输入要添加的商品ID，多个商品ID请用英文逗号隔开',
+              id:"mainProduct",
+              placeholder: "请输入要添加的商品ID，多个商品ID请用英文逗号隔开",
             },
             value: _this.mainProduct,
             on: { input: _this.onCommentInputChange }
@@ -170,12 +170,12 @@ export default {
         ]),
         showCancelButton: true,
         closeOnClickModal: false,
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
         beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            if (_this.mainProduct === '' || _this.mainProduct === undefined) {
-              this.$message.error('请至少维护一个商品')
+          if (action === "confirm") {
+            if (_this.mainProduct === "" || _this.mainProduct === undefined) {
+              this.$message.error("请至少维护一个商品")
             }else {
               SaveMainProduct(
                 {
@@ -184,41 +184,41 @@ export default {
                   mainProductIds: _this.mainProduct
                 }
               ).then(data => {
-                if (data.code !== 200 || data.data === 'SYSTEM_ERROR') {
+                if (data.code !== 200 || data.data === "SYSTEM_ERROR") {
                   this.$message.error(data.message)
                 } else {
-                  this.getMainProductList();
-                  done();
+                  this.getMainProductList()
+                  done()
                 }
-             });
-           }
-         } else {
-           done();
-         }
-       }
-     }).finally(()=>{
-        _this.mainProduct = ''
-        document.getElementById("mainProduct").value = ''
-      });
-   },
+              })
+            }
+          } else {
+            done()
+          }
+        }
+      }).finally(()=>{
+        _this.mainProduct = ""
+        document.getElementById("mainProduct").value = ""
+      })
+    },
    
-   onCommentInputChange() {
-     this.mainProduct = document.getElementById("mainProduct").value;
-   },
+    onCommentInputChange() {
+      this.mainProduct = document.getElementById("mainProduct").value
+    },
 
-   handleToSet(mainProductId) {
-     const {
-       liveId,
-       action,
-     } = this.$route.params;
-     this.$router.push(`/living/product/stage/set/${action}/${liveId}/${mainProductId}`);
-   },
+    handleToSet(mainProductId) {
+      const {
+        liveId,
+        action,
+      } = this.$route.params
+      this.$router.push(`/living/product/stage/set/${action}/${liveId}/${mainProductId}`)
+    },
 
-   handleToPromo() {
-     this.$router.back();
-   },
- },
-};
+    handleToPromo() {
+      this.$router.back()
+    },
+  },
+}
 </script>
 
 <style lang="scss">

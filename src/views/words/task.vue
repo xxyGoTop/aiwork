@@ -116,10 +116,10 @@
 import {
   QueryTaskList,
   CancelTask
-} from '@/api/words/task';
-import DetailDrawer from './components/DetailDrawer';
-import { format } from 'date-fns';
-import { hasValue } from '@/util'
+} from "@/api/words/task"
+import DetailDrawer from "./components/DetailDrawer"
+import { format } from "date-fns"
+import { hasValue } from "@/util"
 
 export default {
   components: {
@@ -130,41 +130,41 @@ export default {
       detailVisible: false,
       detailInfo: {},
       queryForm: {
-        platForm: '1',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        platForm: "1",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 109
       },
       creationDate: [],
       // 任务状态
       statusList: [
-        { status: '', name: '不限' },
-        { status: 0, name: '初始化' },
-        { status: 1, name: '处理中' },
-        { status: 2, name: '解析进行中' },
-        { status: 3, name: '待处理' },
-        { status: 10, name: '部分成功' },
-        { status: 11, name: '全部成功' },
-        { status: 12, name: '解析完成' },
-        { status: 20, name: '部分失败' },
-        { status: 21, name: '全部失败' },
-        { status: 22, name: '解析失败' },
-        { status: 30, name: '系统异常' },
-        { status: 25, name: '已过期' },
-        { status: 40, name: '恢复中' },
-        { status: 50, name: '恢复中' },
+        { status: "", name: "不限" },
+        { status: 0, name: "初始化" },
+        { status: 1, name: "处理中" },
+        { status: 2, name: "解析进行中" },
+        { status: 3, name: "待处理" },
+        { status: 10, name: "部分成功" },
+        { status: 11, name: "全部成功" },
+        { status: 12, name: "解析完成" },
+        { status: 20, name: "部分失败" },
+        { status: 21, name: "全部失败" },
+        { status: 22, name: "解析失败" },
+        { status: 30, name: "系统异常" },
+        { status: 25, name: "已过期" },
+        { status: 40, name: "恢复中" },
+        { status: 50, name: "恢复中" },
       ],
       shops: {
-        1: '天猫',
-        2: '拼多多',
-        3: '抖音',
-        4: '快手',
-        5: '小红书'
+        1: "天猫",
+        2: "拼多多",
+        3: "抖音",
+        4: "快手",
+        5: "小红书"
       },
       total: 0,
       listInfo: [],
@@ -173,67 +173,67 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         platForm: +this.queryForm.platForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
-      this.getList();
+      this.queryForm.page = page
+      this.getList()
     },
     // 查看结果
     handleTaskResult(row) {
-      this.detailVisible = true;
-      this.detailInfo = Object.assign({ platForm: this.queryForm.platForm }, row);
+      this.detailVisible = true
+      this.detailInfo = Object.assign({ platForm: this.queryForm.platForm }, row)
     },
     // 取消任务
     handleCancelTask(row) {
       CancelTask({ taskNum: row.taskNum })
         .then(() => {
-          this.$message.success('取消任务成功')
+          this.$message.success("取消任务成功")
           this.getList()
         })
         .catch(console.warn)
     },
     handleAddWords() {
-      this.queryVisible = true;
+      this.queryVisible = true
     },
   },
   created() {
-    this.getList();
+    this.getList()
   },
 }
 </script>

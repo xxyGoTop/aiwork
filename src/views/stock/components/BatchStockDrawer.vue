@@ -51,18 +51,18 @@ import {
   UploadFile,
   DownloadTaskTemplate,
   TaskCreate,
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 import {
   acceptTypes,
   saveFile,
   hasValue,
-} from '@/util';
+} from "@/util"
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 export default {
   props: {
     visible: {
@@ -77,10 +77,10 @@ export default {
   },
   data() {
     return {
-      activeName: 'upload',
+      activeName: "upload",
       queryForm: {
         taskType: 203,
-        uploadFile: '',
+        uploadFile: "",
       },
       fileList: [],
       isUploadLoading: false,
@@ -91,80 +91,80 @@ export default {
   methods: {
     handleCreateTask() {
       if (!hasValue(this.partnerId)) {
-        return this.$message.warning('请选择店铺');
+        return this.$message.warning("请选择店铺")
       } else if (!this.queryForm.uploadFile) {
-        return this.$message.warning('请上传文件');
+        return this.$message.warning("请上传文件")
       }
       const {
         taskType,
         uploadFile,
-      } = this.queryForm;
+      } = this.queryForm
       TaskCreate({
         taskType,
         partnerId: this.partnerId,
         uploadFile,
       }).then(() => {
-        this.$message.success('正在导出中，请前往下载中心查看导出状态');
-        this.handleClose();
+        this.$message.success("正在导出中，请前往下载中心查看导出状态")
+        this.handleClose()
       }).finally(() => {
-        this.loading = false;
+        this.loading = false
       })
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
-      this.fileList = [];
-      this.$emit('update:visible', false);
+      this.$refs.upload && this.$refs.upload.clearFiles()
+      this.fileList = []
+      this.$emit("update:visible", false)
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
       DownloadTaskTemplate({
         groupType: 1,
         taskType: this.queryForm.taskType,
-        taskSubType: '',
+        taskSubType: "",
       })
         .then((data) => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.queryForm.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.queryForm.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
   },
 }

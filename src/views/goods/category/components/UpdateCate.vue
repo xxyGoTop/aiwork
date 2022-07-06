@@ -39,7 +39,7 @@
 <script>
 import {
   CateUpdate,
-} from '@/api/goods/category';
+} from "@/api/goods/category"
 export default {
   props: {
     visible: {
@@ -52,7 +52,7 @@ export default {
     },
     ty: {
       type: String,
-      default: 'single'
+      default: "single"
     },
     payload: {
       type: Object,
@@ -62,32 +62,32 @@ export default {
   data() {
     return {
       formData: {
-        partnerId: '',
-        productIds: '',
-        tmProductId: '',
+        partnerId: "",
+        productIds: "",
+        tmProductId: "",
       },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         tmProductId: [
-          { required: true, message: '请输入新产品挂靠ID', trigger: 'blur' },
+          { required: true, message: "请输入新产品挂靠ID", trigger: "blur" },
         ],
       },
-    };
+    }
   },
   watch: {
     visible(val) {
       if (val) {
-        this.formData.partnerId = this.payload.partnerId;
-        this.formData.productIds = this.payload.productIds;
+        this.formData.partnerId = this.payload.partnerId
+        this.formData.productIds = this.payload.productIds
       }
     },
   },
   methods: {
     handleClose() {
-      this.$refs.form.resetFields();
-      this.$emit('update:visible', false);
+      this.$refs.form.resetFields()
+      this.$emit("update:visible", false)
     },
     handleSubmit() {
       this.$refs.form.validate(valid => {
@@ -101,28 +101,28 @@ export default {
             .then(({ code, data }) => {
               if (code == 200) {
                 if (data && data.length) {
-                  let errMsg = '';
+                  let errMsg = ""
                   data.forEach(e => {
                     if (!e.success) {
                       errMsg += `${e.productId}：${e.remark}<br>`
                     }
                   })
-                  const defaultMsg = `共修改商品${data.length}个，其中成功${data.filter(i => i.success).length}个，失败${data.filter(i => !i.success).length}个`;
+                  const defaultMsg = `共修改商品${data.length}个，其中成功${data.filter(i => i.success).length}个，失败${data.filter(i => !i.success).length}个`
                   if (errMsg) {
                     return this.$message.error({
                       dangerouslyUseHTMLString: true,
                       message: `${defaultMsg}<br/>${errMsg}`
-                    });
+                    })
                   }
-                  this.$message.success('修改成功');
-                  this.handleClose();
-                  this.$emit('success');
+                  this.$message.success("修改成功")
+                  this.handleClose()
+                  this.$emit("success")
                 }
               }
             })
             .catch(console.warn)
         }
-      });
+      })
     },
   },
 }

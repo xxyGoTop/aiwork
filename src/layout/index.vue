@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import { AppMain, Navbar, Sidebar } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
-import { mapState } from 'vuex'
+import { AppMain, Navbar, Sidebar } from "./components"
+import ResizeMixin from "./mixin/ResizeHandler"
+import { mapState } from "vuex"
 
 export default {
-  name: 'Layout',
+  name: "Layout",
   components: {
     AppMain,
     Navbar,
@@ -37,13 +37,13 @@ export default {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
+        mobile: this.device === "mobile"
       }
     }
   },
   methods: {
     handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+      this.$store.dispatch("app/closeSideBar", { withoutAnimation: false })
     }
   }
 }

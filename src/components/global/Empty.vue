@@ -22,18 +22,18 @@ export default {
   props: {
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     titlePosition: {
       type: String,
-      default: 'bottom', // bottom, top
+      default: "bottom", // bottom, top
     },
     desc: {
       type: String,
-      default: '暂无数据',
+      default: "暂无数据",
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

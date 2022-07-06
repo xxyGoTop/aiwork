@@ -25,8 +25,8 @@ list: [
 
 export default {
   model: {
-    prop: 'list',
-    event: 'change',
+    prop: "list",
+    event: "change",
   },
   props: {
     list: {
@@ -38,25 +38,25 @@ export default {
     return {
       uploadStatusMap: {
         pending: {
-          icon: 'el-icon-loading',
-          label: '上传中...',
+          icon: "el-icon-loading",
+          label: "上传中...",
         },
         success: {
-          icon: 'el-icon-circle-check',
-          label: '上传成功',
+          icon: "el-icon-circle-check",
+          label: "上传成功",
         },
         fail: {
-          icon: 'el-icon-warning-outline',
-          label: '上传失败',
+          icon: "el-icon-warning-outline",
+          label: "上传失败",
         },
       },
-    };
+    }
   },
   methods: {
     handleRemoveFile(index) {
-      const list = [...this.list];
-      list.splice(index, 1);
-      this.$emit('change', list);
+      const list = [...this.list]
+      list.splice(index, 1)
+      this.$emit("change", list)
     },
   },
 }

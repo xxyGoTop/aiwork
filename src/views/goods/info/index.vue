@@ -126,16 +126,16 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   // TaskDetailQuery,
   QueryTaskList,
   TaskStatusList,
   InfoAbort
-} from '@/api/goods/task';
-import BatchDrawer from './components/BatchDrawer';
-import DetailDrawer from './components/DetailDrawer';
-import { format } from 'date-fns';
+} from "@/api/goods/task"
+import BatchDrawer from "./components/BatchDrawer"
+import DetailDrawer from "./components/DetailDrawer"
+import { format } from "date-fns"
 
 export default {
   components: { BatchDrawer, DetailDrawer },
@@ -147,14 +147,14 @@ export default {
       tempDetailInfo: {},
       editPayload: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 104
       },
       creationDate: [],
@@ -164,137 +164,137 @@ export default {
       total: 0,
       listInfo: [],
       loading: false,
-      updateType: 'add'
+      updateType: "add"
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           this.shops.push({
             groupType: 2,
             partnerId: -2,
-            partnerName: '拼多多_全平台'
+            partnerName: "拼多多_全平台"
           })
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 任务状态
     getTaskStatus() {
       TaskStatusList({ taskType: 104 })
         .then(({ data }) => {
           this.statusList = [
-            { status: '', name: '不限' },
+            { status: "", name: "不限" },
             ...data,
-          ];
+          ]
         })
         .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (value !== '' && value !== undefined) params[key] = value;
+        if (value !== "" && value !== undefined) params[key] = value
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
+      this.queryForm.page = page
       this.getList()
     },
     // 查看结果
     handleUpdateResult(row) {
-      this.detailVisible = true;
-      let curStatus = '';
+      this.detailVisible = true
+      let curStatus = ""
       this.statusList.map(item => {
         if (item.name === row.status) {
           curStatus = item.status
         }
       })
-      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus });
+      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus })
     },
     // 新增信息修改
     handleUpdateGoodsInfo(ty, row) {
-      this.visible = true;
-      this.updateType = ty;
-      if (ty === 'edit') {
+      this.visible = true
+      this.updateType = ty
+      if (ty === "edit") {
         this.editPayload = row
       }
     },
     // 停止
     handleStopUpdateInfo(row) {
-      let taskSubType = '';
+      let taskSubType = ""
       switch (row.subTaskType) {
-        case '标题锁定': 
-          taskSubType = 1045;
-          break;
-        case '标题前缀':
-          taskSubType = 1046;
-          break;
-        case '替换BANNER':
-          taskSubType = 1047;
-          break;
-        case '替换banner':
-          taskSubType = 1047;
-          break; 
-        case '替换首图':
-          taskSubType = 1048;
-          break; 
-        case '定时包邮':
-          taskSubType = 1049;
-          break;
-        case '全量更新':
-          taskSubType = 1041;
-          break;
-        case '更新主站标题':
-          taskSubType = 1042;
-          break;
-        case '更新主站主图':
-          taskSubType = 1043;
-          break;
-        case '更新主站详情':
-          taskSubType = 1044;
-          break;
+      case "标题锁定": 
+        taskSubType = 1045
+        break
+      case "标题前缀":
+        taskSubType = 1046
+        break
+      case "替换BANNER":
+        taskSubType = 1047
+        break
+      case "替换banner":
+        taskSubType = 1047
+        break 
+      case "替换首图":
+        taskSubType = 1048
+        break 
+      case "定时包邮":
+        taskSubType = 1049
+        break
+      case "全量更新":
+        taskSubType = 1041
+        break
+      case "更新主站标题":
+        taskSubType = 1042
+        break
+      case "更新主站主图":
+        taskSubType = 1043
+        break
+      case "更新主站详情":
+        taskSubType = 1044
+        break
       }
       const params = {
         id: row.id,
@@ -302,15 +302,15 @@ export default {
       }
       InfoAbort(params)
         .then(() => {
-          this.$message.success('停止商品信息修改成功');
-          this.getList();
+          this.$message.success("停止商品信息修改成功")
+          this.getList()
         })
         .catch(console.warn)
     }
   },
-   created() {
-    this.getShops();
-    this.getTaskStatus();
+  created() {
+    this.getShops()
+    this.getTaskStatus()
   },
 }
 </script>

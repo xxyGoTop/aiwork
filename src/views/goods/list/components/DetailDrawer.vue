@@ -341,15 +341,15 @@
 </template>
 
 <script>
-import ECharts from 'vue-echarts';
-import 'echarts/lib/chart/line';
-import 'echarts/lib/component/tooltip';
-import 'echarts/lib/component/grid';
+import ECharts from "vue-echarts"
+import "echarts/lib/chart/line"
+import "echarts/lib/component/tooltip"
+import "echarts/lib/component/grid"
 import { 
   format,
   subDays,
   getDay
-} from 'date-fns';
+} from "date-fns"
 import {
   GoodsPrice,
   GoodsSale,
@@ -361,10 +361,10 @@ import {
   SpecificationRecover,
   PDNormsList,
   PDNormsR,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   DeleteProduct,
-} from '@/api/goods/black';
+} from "@/api/goods/black"
 
 /* 黑名单类型枚举
   1081 商品黑名单,
@@ -389,7 +389,7 @@ export default {
   },
   data() {
     return {
-      activePane: 'storeRemain',
+      activePane: "storeRemain",
       storeInfos: [],
       lockStoreInfos: [],
       mainSiteInfos: [],
@@ -401,15 +401,15 @@ export default {
       onshelfBlacklist: [],
       changePrices: [],
       logInfos: [],
-      dateRange: '7',
+      dateRange: "7",
       dateValue: [],
       option: {
         tooltip: {
-          trigger: 'item',
-          backgroundColor: '#ffffff',
-          extraCssText: 'box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);',
+          trigger: "item",
+          backgroundColor: "#ffffff",
+          extraCssText: "box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);",
           textStyle: {
-            color: '#141414',
+            color: "#141414",
           },
           formatter: ({ data }) => {
             return `<span style="color:#999999;font-size:12px">${data.name}</span><br />
@@ -425,7 +425,7 @@ export default {
           bottom: 0,
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: [],
           // nameTextStyle: {
           //   fontWeight: 300,
@@ -439,7 +439,7 @@ export default {
         yAxis: {
           // name: '销售量',
           // nameLocation: 'end',
-          type: 'value',
+          type: "value",
           // nameTextStyle: {
           //   fontWeight: 300,
           //   fontSize: 14,
@@ -448,10 +448,10 @@ export default {
         series: [
           {
             data: [],
-            type: 'line',
+            type: "line",
             smooth: true,
             lineStyle: {
-              color: '#FC5757',
+              color: "#FC5757",
               width: 2
             },
             label: {
@@ -464,7 +464,7 @@ export default {
   },
   computed: {
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
     groupType() {
       return this.info.groupType
@@ -472,7 +472,7 @@ export default {
   },
   watch: {
     visible(val) {
-      val && this.handleTabsToggle({ name: 'storeRemain' });
+      val && this.handleTabsToggle({ name: "storeRemain" })
     },
   },
   methods: {
@@ -481,69 +481,69 @@ export default {
     },
     // 关闭drawer
     handleDrawerClose() {
-      this.activePane = 'storeRemain';
-      this.dateValue = [];
-      this.normsInfos = [];
-      this.$emit('update:visible', false);
+      this.activePane = "storeRemain"
+      this.dateValue = []
+      this.normsInfos = []
+      this.$emit("update:visible", false)
     },
     // 切换tabs
     handleTabsToggle(tab) {
-      this.activePane = tab.name;
-      const params = [this.info.partnerId, this.info.productId, this.info.outerDangProductId];
+      this.activePane = tab.name
+      const params = [this.info.partnerId, this.info.productId, this.info.outerDangProductId]
       switch(this.activePane) {
-        case 'storeRemain':
-          GoodsStore({ partnerId: this.info.partnerId, productId: this.info.productId, outerDangProductId: this.info.outerDangProductId })
-            .then(({ data }) => {
-              this.mainSiteInfos = data.ddStock || [];
-              this.storeInfos = data.syncStock || [];
-              this.lockStoreInfos = data.lockStock || [];
-            })
-            .catch(console.warn)
-          break;
-        case 'price':
-          GoodsPrice(...[this.info.partnerId, this.info.productId, this.info.outerCode])
-           .then(({ data }) => {
-              if(!data.originalPrice && !data.ddSalePrice && !data.outerSalePrice) {
-                return this.priceList = []
-              } else {
-                this.priceList = [data];
-              }
-            })
-            .catch(console.warn)
-          break;
-        case 'blacklist':
-          GoodsBlackList(...params)
-           .then(({ data }) => {
-              this.priceBlacklist = data.prices || [];
-              this.storeBlacklist = data.stocks || [];
-              this.prodBlacklist = data.products || [];
-              this.onshelfBlacklist = data.onShelves || [];
-              this.changePrices = data.changePrices || []
-            })
-            .catch(console.warn)
-          break;
-        case 'sales':
-          if (this.dateValue.length === 0) {
-            this.handleSelectDate(this.dateRange)
-          } else {
-            this.handleSelectDate(this.dateRange);
-          }
-          // this.handleGetSaleData();
-          break;
-        case 'norms':
-          if (this.info.groupType === 2 || this.info.groupType === 3) {
-            this.handleGetPDStyle()
-          } else if (this.info.groupType === 1) {
-            this.handleGetStyle();
-          }
-          break;
-        case 'log':
-          GoodsOperateLog({ partnerId: this.info.partnerId, productId: this.info.productId })
-            .then(({ data }) => {
-              this.logInfos = data.list;
-            })
-            .catch(console.warn)
-          break;
+      case "storeRemain":
+        GoodsStore({ partnerId: this.info.partnerId, productId: this.info.productId, outerDangProductId: this.info.outerDangProductId })
+          .then(({ data }) => {
+            this.mainSiteInfos = data.ddStock || []
+            this.storeInfos = data.syncStock || []
+            this.lockStoreInfos = data.lockStock || []
+          })
+          .catch(console.warn)
+        break
+      case "price":
+        GoodsPrice(...[this.info.partnerId, this.info.productId, this.info.outerCode])
+          .then(({ data }) => {
+            if(!data.originalPrice && !data.ddSalePrice && !data.outerSalePrice) {
+              return this.priceList = []
+            } else {
+              this.priceList = [data]
+            }
+          })
+          .catch(console.warn)
+        break
+      case "blacklist":
+        GoodsBlackList(...params)
+          .then(({ data }) => {
+            this.priceBlacklist = data.prices || []
+            this.storeBlacklist = data.stocks || []
+            this.prodBlacklist = data.products || []
+            this.onshelfBlacklist = data.onShelves || []
+            this.changePrices = data.changePrices || []
+          })
+          .catch(console.warn)
+        break
+      case "sales":
+        if (this.dateValue.length === 0) {
+          this.handleSelectDate(this.dateRange)
+        } else {
+          this.handleSelectDate(this.dateRange)
+        }
+        // this.handleGetSaleData();
+        break
+      case "norms":
+        if (this.info.groupType === 2 || this.info.groupType === 3) {
+          this.handleGetPDStyle()
+        } else if (this.info.groupType === 1) {
+          this.handleGetStyle()
+        }
+        break
+      case "log":
+        GoodsOperateLog({ partnerId: this.info.partnerId, productId: this.info.productId })
+          .then(({ data }) => {
+            this.logInfos = data.list
+          })
+          .catch(console.warn)
+        break
       }
     },
     // 规格查询-天猫
@@ -551,10 +551,10 @@ export default {
       const {
         partnerId,
         outerCode,
-      } = this.info;
+      } = this.info
       SpecificationList(partnerId, outerCode)
         .then(({ data }) => {
-          this.normsInfos = data || [];
+          this.normsInfos = data || []
         })
         .catch(console.warn)
     },
@@ -562,10 +562,10 @@ export default {
     handleGetPDStyle() {
       const {
         id
-      } = this.info;
+      } = this.info
       PDNormsList(id)
         .then(({ data }) => {
-          this.normsInfos = data || [];
+          this.normsInfos = data || []
         })
         .catch(console.warn)
     },
@@ -573,23 +573,23 @@ export default {
     handleStyle(row, status) {
       PDNormsR({ id: row.id, status })
         .then(() => {
-          this.$message.success(status === 1 ? '删除成功' : '恢复成功');
-          this.handleGetPDStyle();
+          this.$message.success(status === 1 ? "删除成功" : "恢复成功")
+          this.handleGetPDStyle()
         })
         .catch(console.warn)
     },
     // 锁库存
     handleLockStore() {
-      this.$router.push('/stock/task')
+      this.$router.push("/stock/task")
     },
     // 解锁库存
     handleUnlockStore() {
-      this.$router.push('/stock/task')
+      this.$router.push("/stock/task")
     },
     // 添加
     handleRouterJump() {
       this.$router.push({
-        path: '/goods/black/task'
+        path: "/goods/black/task"
       })
     },
     // 解除价格黑名单
@@ -598,10 +598,10 @@ export default {
         partnerId: this.info.partnerId,
         productId: this.info.productId,
         blackType: 1084
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.$delete(this.priceBlacklist, index)
         })
         .catch(console.warn)
@@ -612,10 +612,10 @@ export default {
         partnerId: this.info.partnerId,
         productId: this.info.productId,
         blackType: 1083
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.$delete(this.storeBlacklist, index)
         })
         .catch(console.warn)
@@ -626,10 +626,10 @@ export default {
         partnerId: this.info.partnerId,
         productId: this.info.productId,
         blackType: 1081
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.$delete(this.prodBlacklist, index)
         })
         .catch(console.warn)
@@ -640,10 +640,10 @@ export default {
         partnerId: this.info.partnerId,
         productId: this.info.productId,
         blackType: 1082
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.$delete(this.onshelfBlacklist, index)
         })
         .catch(console.warn)
@@ -654,65 +654,65 @@ export default {
         partnerId: this.info.partnerId,
         productId: this.info.productId,
         blackType: 1087
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.$delete(this.changePrices, index)
         })
         .catch(console.warn)
     },
     // 选择日期
     handleSelectDate(val) {
-      const now = new Date();
-      let day = getDay(now);
+      const now = new Date()
+      let day = getDay(now)
       if (day === 0) {
         day = 7
       } 
       // else if (day === 1) {
       //   day = 2
       // }
-      let tempDate = [];
+      let tempDate = []
       switch(val) {
-        case '7':
-          tempDate.push(subDays(now, day - 1));
-          tempDate.push(subDays(now, 0));
-          this.dateValue = tempDate;
-          this.handleGetSaleData();
-          tempDate = [];
-          break;
-        case '14':
-          tempDate.push(subDays(now, (6 + day)));
-          tempDate.push(subDays(now, day));
-          this.dateValue = tempDate;
-          this.handleGetSaleData();
-          tempDate = [];
-          break;
-        case '30':
-          tempDate.push(subDays(now, 30));
-          tempDate.push(subDays(now, 0));
-          this.dateValue = tempDate;
-          this.handleGetSaleData();
-          tempDate = [];
-          break;
-        case '90':
-          tempDate.push(subDays(now, 90));
-          tempDate.push(subDays(now, 0));
-          this.dateValue = tempDate;
-          this.handleGetSaleData();
-          tempDate = [];
-          break;
+      case "7":
+        tempDate.push(subDays(now, day - 1))
+        tempDate.push(subDays(now, 0))
+        this.dateValue = tempDate
+        this.handleGetSaleData()
+        tempDate = []
+        break
+      case "14":
+        tempDate.push(subDays(now, (6 + day)))
+        tempDate.push(subDays(now, day))
+        this.dateValue = tempDate
+        this.handleGetSaleData()
+        tempDate = []
+        break
+      case "30":
+        tempDate.push(subDays(now, 30))
+        tempDate.push(subDays(now, 0))
+        this.dateValue = tempDate
+        this.handleGetSaleData()
+        tempDate = []
+        break
+      case "90":
+        tempDate.push(subDays(now, 90))
+        tempDate.push(subDays(now, 0))
+        this.dateValue = tempDate
+        this.handleGetSaleData()
+        tempDate = []
+        break
       }
     },
     // 规格删除-天猫
     handleStyleDel(row) {
       const {
         partnerId,
-      } = this.info;
+      } = this.info
       SpecificationDelete(partnerId, row.id)
         .then(() => {
-          this.$message.success('删除成功');
-          this.handleGetStyle();
+          this.$message.success("删除成功")
+          this.handleGetStyle()
         })
         .catch(console.warn)
     },
@@ -720,38 +720,38 @@ export default {
     handleStyleRecover(row) {
       const {
         partnerId,
-      } = this.info;
+      } = this.info
       SpecificationRecover(partnerId, row.id)
         .then(() => {
-          this.$message.success('恢复成功');
-          this.handleGetStyle();
+          this.$message.success("恢复成功")
+          this.handleGetStyle()
         })
         .catch(console.warn)
     },
     handleGetSaleData() {
-      this.dateValue = this.dateValue || [];
-      const startDate = this.dateValue[0];
-      const endDate = this.dateValue[1];
+      this.dateValue = this.dateValue || []
+      const startDate = this.dateValue[0]
+      const endDate = this.dateValue[1]
       if (this.dateValue.length === 0) {
         return false
       }
       GoodsSale({
         partnerId: this.info.partnerId,
         productId: this.info.productId,
-        startTime: format(startDate, 'yyyy-MM-dd'),
-        endTime: format(endDate, 'yyyy-MM-dd'),
+        startTime: format(startDate, "yyyy-MM-dd"),
+        endTime: format(endDate, "yyyy-MM-dd"),
       })
         .then(({ data }) => {
           this.option.series[0].data = data.map(item => {
             return {
-              name: format(new Date(item.saleDate), 'yyyy-MM-dd'),
+              name: format(new Date(item.saleDate), "yyyy-MM-dd"),
               value: item.saleQuantity,
               ...item
             }
-          });
+          })
           this.option.xAxis.data = data.map(item => {
-            return format(new Date(item.saleDate), 'yyyy-MM-dd').slice(5, 10)
-          });
+            return format(new Date(item.saleDate), "yyyy-MM-dd").slice(5, 10)
+          })
         })
         .catch(console.warn)
     }

@@ -42,10 +42,10 @@
 <script>
 import {
   BatchStockSync,
-} from '@/api/stock';
+} from "@/api/stock"
 import{
   local
-} from '@/util';
+} from "@/util"
 
 export default {
   props: {
@@ -62,26 +62,26 @@ export default {
   data() {
     const validatePids = (_, value, callback) => {
       if (!/^(?:\d+[\n\r]\s*)*\d+\s*$/.test(value)) {
-        callback(new Error('ID格式不正确'))
+        callback(new Error("ID格式不正确"))
       } else if (value.trim().split(/[\n\r]\s*/).length > 100) {
-        callback(new Error('最多支持发布100品'))
-      } else callback();
-    };
+        callback(new Error("最多支持发布100品"))
+      } else callback()
+    }
     return {
       queryForm: {
-        pratnerId: '',
-        productIds: '',
+        pratnerId: "",
+        productIds: "",
       },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'change' }
+          { required: true, message: "请选择店铺", trigger: "change" }
         ],
         productIds: [
-          { required: true, message: '请录入商品ID', trigger: 'blur' },
-          { validator: validatePids, trigger: 'blur' }
+          { required: true, message: "请录入商品ID", trigger: "blur" },
+          { validator: validatePids, trigger: "blur" }
         ],
       },
-      tempProductIds: '',
+      tempProductIds: "",
     }
   },
   computed: {
@@ -90,24 +90,24 @@ export default {
         return this.visible
       },
       set(val) {
-        this.$emit('update:visible', val)
+        this.$emit("update:visible", val)
       }
     },
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   watch: {
     pickShop() {
-      this.queryForm.partnerId = Number(this.pickShop);
+      this.queryForm.partnerId = Number(this.pickShop)
     },
   },
   methods: {
     handleClose() {
-      this.$refs.queryForm.clearValidate();
-      local.set('ids', this.queryForm.productIds);
-      this.drawer = false;
+      this.$refs.queryForm.clearValidate()
+      local.set("ids", this.queryForm.productIds)
+      this.drawer = false
     },
     handleCreateTask() {
       this.$refs.queryForm.validate(valid => {
@@ -115,12 +115,12 @@ export default {
           const data = {
             partnerId: this.queryForm.partnerId,
             productIds: this.queryForm.productIds.split(/[\n\r]\s*/).filter(i => i)
-          };
+          }
           BatchStockSync(data)
             .then(() => {
-              this.$message.success('库存批量同步任务提交成功');
-              this.handleClose();
-              this.$emit('refresh');
+              this.$message.success("库存批量同步任务提交成功")
+              this.handleClose()
+              this.$emit("refresh")
             })
             .catch(console.warn)
         }

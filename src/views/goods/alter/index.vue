@@ -88,25 +88,25 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   GetAlterList,
-} from '@/api/goods/alter';
+} from "@/api/goods/alter"
 import {
   TaskResult,
-} from '@/api/goods/task';
-import DetailDrawer from './components/DetailDrawer';
-import { format } from 'date-fns';
+} from "@/api/goods/task"
+import DetailDrawer from "./components/DetailDrawer"
+import { format } from "date-fns"
 import {
   dlFile
-} from '@/util';
+} from "@/util"
 
 const taskResultMap = {
-  '-1': '任务不存在',
-  '-2': '系统异常',
-  '2': '结果文件生成中',
-  '3': '结果文件已经上传',
-};
+  "-1": "任务不存在",
+  "-2": "系统异常",
+  "2": "结果文件生成中",
+  "3": "结果文件已经上传",
+}
 
 export default {
   components: { DetailDrawer },
@@ -115,10 +115,10 @@ export default {
       detailVisible: false,
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 20,
         page: 1,
         // operator: '',
@@ -127,9 +127,9 @@ export default {
       },
       creationDate: [],
       statusList: [
-        { status: '', name: '不限' },
-        { status: 11, name: '已完成' },
-        { status: 1, name: '生成中' },
+        { status: "", name: "不限" },
+        { status: 11, name: "已完成" },
+        { status: 1, name: "生成中" },
       ],
       shops: [],
       total: 0,
@@ -140,59 +140,59 @@ export default {
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = this.shops[0].partnerId;
-          this.getList();
+          this.shops = data || []
+          this.queryForm.partnerId = this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (value !== '' && value !== undefined) params[key] = value;
+        if (value !== "" && value !== undefined) params[key] = value
       }
       GetAlterList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // 查看结果
     handleShowDetail(row) {
-      this.detailVisible = true;
-      this.detailInfo = Object.assign({ partnerId: this.queryForm.partnerId }, row);
+      this.detailVisible = true
+      this.detailInfo = Object.assign({ partnerId: this.queryForm.partnerId }, row)
     },
     // 下载
     handleDownloadInfo(row) {
@@ -201,16 +201,16 @@ export default {
       })
         .then(({ data }) => {
           if (data === 3) {
-            dlFile(`${this.exportLink}${row.taskId}`, `商品信息变更明细-${row.taskNum}`, 'xlsx');
+            dlFile(`${this.exportLink}${row.taskId}`, `商品信息变更明细-${row.taskNum}`, "xlsx")
           } else {
-            this.$message.warning(taskResultMap[data]);
+            this.$message.warning(taskResultMap[data])
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
   },
-   created() {
-    this.getShops();
+  created() {
+    this.getShops()
   },
 }
 </script>

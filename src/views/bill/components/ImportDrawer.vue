@@ -40,7 +40,7 @@
 <script>
 import {
   ImportBill
-} from '@/api/bill'
+} from "@/api/bill"
 
 export default {
   props: {
@@ -52,59 +52,59 @@ export default {
   data() {
     return {
       uploadForm: {
-        fileUrl: '',
+        fileUrl: "",
       },
-      file: '',
+      file: "",
       isError: false
     }
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false);
-      this.$refs.upload.clearFiles();
+      this.$emit("update:visible", false)
+      this.$refs.upload.clearFiles()
       if (this.isError) this.isError = false
-      this.file = '';
-      this.uploadForm.fileUrl = '';
+      this.file = ""
+      this.uploadForm.fileUrl = ""
     },
     handleUpload() {
       if (this.uploadForm.fileUrl) {
-        this.uploadForm.fileUrl = '';
+        this.uploadForm.fileUrl = ""
       }
       if (this.isError) this.isError = false
       // this.$refs['upload'].$refs['upload-inner'].handleClick();
-      this.$refs.upload.$children[0].$refs.input.click();
-      this.$refs.inputUpload.blur();
+      this.$refs.upload.$children[0].$refs.input.click()
+      this.$refs.inputUpload.blur()
     },
     uploadBefore(file) {
       if (this.isError) this.isError = false
       const fileTypes = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-excel',
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
       ]
       if (!fileTypes.includes(file.type)) {
-        this.isError = true;
+        this.isError = true
         return false
       }
       if (file.size > 500 * 1024 * 1024) {
-        this.$message.warning('上传文件大小超过500MB')
+        this.$message.warning("上传文件大小超过500MB")
         return false
       }
-      this.file = file;
-      this.uploadForm.fileUrl = URL.createObjectURL(file);
+      this.file = file
+      this.uploadForm.fileUrl = URL.createObjectURL(file)
       return true
     },
     customUpload(options) {
       if (!options.file) {
-        this.$message.warning('请先选择上传文件')
+        this.$message.warning("请先选择上传文件")
         return
       }
       if (this.isError) this.isError = false
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       ImportBill(formData)
         .then(({ code }) => {
           if (code === 200) {
-            this.$message.success('文件上传成功');
+            this.$message.success("文件上传成功")
             this.handleClose()
           }
         })

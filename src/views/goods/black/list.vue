@@ -114,13 +114,13 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   QueryProductList,
   DeleteProduct,
-} from '@/api/goods/black';
-import { format } from 'date-fns';
-import BlackDrawer from './components/BlackDrawer.vue';
+} from "@/api/goods/black"
+import { format } from "date-fns"
+import BlackDrawer from "./components/BlackDrawer.vue"
 
 export default {
   components: { BlackDrawer },
@@ -129,102 +129,102 @@ export default {
       visible: false,
       payload: {},
       queryForm: {
-        partnerId: '',
-        productId: '',
-        blackDateBegin: '',
-        blackDateEnd: '',
+        partnerId: "",
+        productId: "",
+        blackDateBegin: "",
+        blackDateEnd: "",
         pageSize: 10,
         pageNum: 1,
-        creator: '',
-        productBlackStatus: '1',
-        blackModel: ''
+        creator: "",
+        productBlackStatus: "1",
+        blackModel: ""
       },
       creationDate: [],
       statusList: {
-        0: '未开始',
-        1: '生效中',
+        0: "未开始",
+        1: "生效中",
       },
       shops: [],
       total: 0,
       listInfo: [],
       loading: false,
-      currentShop: '',
+      currentShop: "",
       isAdd: true,
       // 黑名单类型
       blackType: {
-        1081: '商品黑名单',
-        1082: '上架黑名单',
-        1083: '库存黑名单',
-        1084: '价格同步黑名单',
-        1087: '改价黑名单',
-        1086: '上架黑名单',
+        1081: "商品黑名单",
+        1082: "上架黑名单",
+        1083: "库存黑名单",
+        1084: "价格同步黑名单",
+        1087: "改价黑名单",
+        1086: "上架黑名单",
       },
       blackTypeList: [
-        { label: '不限', value: '' },
-        { label: '商品黑名单', value: 1081 },
-        { label: '上架黑名单', value: '1082,1086' },
-        { label: '库存黑名单', value: 1083 },
-        { label: '价格同步黑名单', value: 1084 },
-        { label: '改价黑名单', value: 1087 },
+        { label: "不限", value: "" },
+        { label: "商品黑名单", value: 1081 },
+        { label: "上架黑名单", value: "1082,1086" },
+        { label: "库存黑名单", value: 1083 },
+        { label: "价格同步黑名单", value: 1084 },
+        { label: "改价黑名单", value: 1087 },
       ]
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
+          this.shops = data || []
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
           if (this.queryForm.partnerId === -2) this.queryForm.partnerId = this.shops[0].partnerId
-          data.length && this.getList();
+          data.length && this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         blackDateBegin: this.creationDate[0],
         blackDateEnd: this.creationDate[1],
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (value !== '' && value !== undefined) params[key] = value;
+        if (value !== "" && value !== undefined) params[key] = value
       }
       QueryProductList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.pageNum = 1;
+      this.queryForm.pageNum = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
-      this.queryForm.blackModel = '';
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
+      this.queryForm.blackModel = ""
     },
     // 移除
     handleRemoveBlack(row) {
@@ -232,10 +232,10 @@ export default {
         partnerId: this.queryForm.partnerId,
         productId: row.productId,
         blackType: row.blackType
-      };
+      }
       DeleteProduct(params)
         .then(() => {
-          this.$message.success('移除成功');
+          this.$message.success("移除成功")
           this.getList()
         })
         .catch(console.warn)
@@ -245,21 +245,21 @@ export default {
       this.payload = Object.assign(
         {},
         row
-      );
-      this.visible = true;
-      this.isAdd = false;
+      )
+      this.visible = true
+      this.isAdd = false
     },
     // 新增黑名单
     handleAddBlack() {
-      this.visible = true;
-      this.isAdd = true;
+      this.visible = true
+      this.isAdd = true
       if (this.queryForm.partnerId) {
-        this.currentShop = `${this.queryForm.partnerId}`;
+        this.currentShop = `${this.queryForm.partnerId}`
       }
     },
   },
-   created() {
-    this.getShops();
+  created() {
+    this.getShops()
   },
 }
 </script>

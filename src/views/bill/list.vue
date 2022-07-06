@@ -136,22 +136,22 @@
 </template>
 
 <script>
-import ImportDrawer from './components/ImportDrawer'
-import TaskDrawer from './components/TaskDrawer'
+import ImportDrawer from "./components/ImportDrawer"
+import TaskDrawer from "./components/TaskDrawer"
 // import { saveFile } from '@/util'
 import {
   QueryBillList,
   // DownloadBillTemp,
   QueryTaskList,
-} from '@/api/bill.js'
-import { format } from 'date-fns'
+} from "@/api/bill.js"
+import { format } from "date-fns"
 
 
 // 默认下单时间
 const defaultDate = () => {
-  const end = new Date();
-  const start = new Date();
-  start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+  const end = new Date()
+  const start = new Date()
+  start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
   return [start, end]
 }
 
@@ -161,22 +161,22 @@ export default {
     TaskDrawer,
   },
   data() {
-    let curDate = '';
+    let curDate = ""
     return {
       isLoading: false,
       billForm: {
         orderDate: defaultDate(),
-        status: '0',
-        orderId: '',
+        status: "0",
+        orderId: "",
         page: 1,
         pageSize: 10
       },
       total: 0,
       syncOptions: {
-        0: '全部',
-        1: '待同步',
-        2: '同步中',
-        3: '成功'
+        0: "全部",
+        1: "待同步",
+        2: "同步中",
+        3: "成功"
       },
       billList: [],
       importVisible: false,
@@ -197,28 +197,28 @@ export default {
           return date.getTime() > new Date().getTime()
         },
         shortcuts: [{
-          text: '近一个月',
+          text: "近一个月",
           onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit("pick", [start, end])
           }
         }, {
-          text: '近三个月',
+          text: "近三个月",
           onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit("pick", [start, end])
           }
         }, {
-          text: '最近半年',
+          text: "最近半年",
           onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
-            picker.$emit('pick', [start, end]);
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 180)
+            picker.$emit("pick", [start, end])
           }
         }]
       },
@@ -234,18 +234,18 @@ export default {
     }
   },
   created() {
-    this.getBillList();
+    this.getBillList()
   },
   methods: {
     format(date) {
-      return format(new Date(date), 'yyyy-MM-dd HH:mm:ss')
+      return format(new Date(date), "yyyy-MM-dd HH:mm:ss")
     },
     getBillList() {
       if (this.isLoading) return
-      this.isLoading = true;
-      this.billForm.orderDate = this.billForm.orderDate || [];
-      const orderCreationDateBegin = this.billForm.orderDate[0] ? this.format(this.billForm.orderDate[0]) : this.format(defaultDate()[0]);
-      const orderCreationDateEnd = this.billForm.orderDate[1] ? this.format(this.billForm.orderDate[1]) : this.format(defaultDate()[1]);
+      this.isLoading = true
+      this.billForm.orderDate = this.billForm.orderDate || []
+      const orderCreationDateBegin = this.billForm.orderDate[0] ? this.format(this.billForm.orderDate[0]) : this.format(defaultDate()[0])
+      const orderCreationDateEnd = this.billForm.orderDate[1] ? this.format(this.billForm.orderDate[1]) : this.format(defaultDate()[1])
       
       const data = {
         status: Number(this.billForm.status),
@@ -254,11 +254,11 @@ export default {
         pageSize: this.billForm.pageSize,
         orderCreationDateBegin,
         orderCreationDateEnd
-      };
+      }
       QueryBillList(data)
         .then(({ data, total}) => {
-          this.billList = data;
-          this.total = total;
+          this.billList = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
@@ -269,15 +269,15 @@ export default {
       this.getBillList()
     },
     handleReset() {
-      this.$refs.billForm.resetFields();
+      this.$refs.billForm.resetFields()
     },
     handleCurrentChange(page) {
       this.billForm.page = page,
-      this.handleSearch();
+      this.handleSearch()
     },
     // 导入
     handleImport() {
-      this.importVisible = true;
+      this.importVisible = true
     },
     getTaskList() {
       const data = {
@@ -286,13 +286,13 @@ export default {
       }
       QueryTaskList(data)
         .then(data => {
-          this.taskList = data;
+          this.taskList = data
         })
         .catch(console.warn)
     },
     // 任务列表
     handleTask() {
-      this.taskVisible = true;
+      this.taskVisible = true
       this.getTaskList()
     },
     // 下载模板

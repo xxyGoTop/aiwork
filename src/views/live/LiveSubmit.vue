@@ -144,174 +144,174 @@
 </template>
 
 <script>
-  import { GetLiveInfo, GetLiveProductList, GetStageInfo, submitLiveInfo } from '@/api/live';
+import { GetLiveInfo, GetLiveProductList, GetStageInfo, submitLiveInfo } from "@/api/live"
 
-  export default {
-    data: () => {
-      return {
-        tableData: [{
-          promoType: '活动阶梯赠',
-          address: '预计赠品成本（元）：',
-        }, {
-          promoType: '单品阶梯赠',
-          address: '预计赠品成本（元）：',
-        }, {
-          promoType: '单品买赠',
-          address: '预计赠品成本（元）：',
-        }],
-        url: [{
-          0: '设置活动阶梯赠',
-          1: '设置单品阶梯赠',
-          2: '设置单品买赠',
-        }, {
-          0: '查看活动阶梯赠',
-          1: '查看单品阶梯赠',
-          2: '查看单品买赠',
-        }],
-        stageInfo: {
-          1: '',
-          2: '',
-          3: '',
-        },
-        totalPrice: {
-          1: 0,
-          2: 0,
-          3: 0,
-        },
-        active: 3,
-        loading: false,
-        readOnly: true,
-        form: {
-          liveName: '',
-          platformName: '',
-          liveType: '',
-          consumableType: '',
-          packageType: '',
-          startTime: '',
-          endTime: '',
-        },
-        orderStatus: {
-          1: '待当当确认',
-          2: '已完成',
-          3: '已取消',
-        },
+export default {
+  data: () => {
+    return {
+      tableData: [{
+        promoType: "活动阶梯赠",
+        address: "预计赠品成本（元）：",
+      }, {
+        promoType: "单品阶梯赠",
+        address: "预计赠品成本（元）：",
+      }, {
+        promoType: "单品买赠",
+        address: "预计赠品成本（元）：",
+      }],
+      url: [{
+        0: "设置活动阶梯赠",
+        1: "设置单品阶梯赠",
+        2: "设置单品买赠",
+      }, {
+        0: "查看活动阶梯赠",
+        1: "查看单品阶梯赠",
+        2: "查看单品买赠",
+      }],
+      stageInfo: {
+        1: "",
+        2: "",
+        3: "",
+      },
+      totalPrice: {
+        1: 0,
+        2: 0,
+        3: 0,
+      },
+      active: 3,
+      loading: false,
+      readOnly: true,
+      form: {
+        liveName: "",
+        platformName: "",
+        liveType: "",
+        consumableType: "",
+        packageType: "",
+        startTime: "",
+        endTime: "",
+      },
+      orderStatus: {
+        1: "待当当确认",
+        2: "已完成",
+        3: "已取消",
+      },
 
-        liveTypes: {
-          1: '合作直播',
-          2: '店铺直播',
-        },
-        page: 1,
-        pageSize: 20,
-        total: 0,
-        list: [],
-        liveId: '',
-        action: 0,
-        Bsubmit: true,
-        loadingInfo: false,
-      };
-    },
-    computed: {
-      urlName() {
-        return (index) => {
-          let url = '';
-          switch(index) {
-            case 0:
-              url = `/living/activity/stage/${this.action}/` + this.liveId; 
-              break;
-            case 1:
-              url = `/living/product/stage/${this.action}/` + this.liveId; 
-              break;
-            case 2:
-              url = `/living/product/single/${this.action}/` + this.liveId; 
-              break;
-          }
-          return url;
+      liveTypes: {
+        1: "合作直播",
+        2: "店铺直播",
+      },
+      page: 1,
+      pageSize: 20,
+      total: 0,
+      list: [],
+      liveId: "",
+      action: 0,
+      Bsubmit: true,
+      loadingInfo: false,
+    }
+  },
+  computed: {
+    urlName() {
+      return (index) => {
+        let url = ""
+        switch(index) {
+        case 0:
+          url = `/living/activity/stage/${this.action}/` + this.liveId 
+          break
+        case 1:
+          url = `/living/product/stage/${this.action}/` + this.liveId 
+          break
+        case 2:
+          url = `/living/product/single/${this.action}/` + this.liveId 
+          break
         }
+        return url
+      }
+    }
+  },
+  created() {
+    this.requestActiveDetail()
+    this.GetStageInfo()
+    this.getLiveInfo()
+    this.getProductList()
+  },
+  methods: {
+    requestActiveDetail() {
+      const {
+        liveId,
+        action,
+      } = this.$route.params
+      this.liveId = liveId
+      if (action === "1") {
+        this.action = action
+        this.Bsubmit = false
+        this.active = 4
       }
     },
-    created() {
-      this.requestActiveDetail();
-      this.GetStageInfo();
-      this.getLiveInfo();
-      this.getProductList();
-    },
-    methods: {
-      requestActiveDetail() {
-        const {
-          liveId,
-          action,
-        } = this.$route.params;
-        this.liveId = liveId;
-        if (action === '1') {
-          this.action = action;
-          this.Bsubmit = false;
-          this.active = 4;
+    submitLiveInfo() {
+      submitLiveInfo({
+        "liveId": this.liveId,
+      }).then(data => {
+        if (data.code === 200) {
+          this.$message.success("提交成功")
+          this.$router.push("/living/LiveList")
         }
-      },
-      submitLiveInfo() {
-        submitLiveInfo({
-          'liveId': this.liveId,
-        }).then(data => {
-          if (data.code === 200) {
-            this.$message.success('提交成功');
-            this.$router.push('/living/LiveList');
-          }
-        });
-      },
-      getLiveInfo() {
-        this.loadingInfo = true;
-        GetLiveInfo({
-          'liveId': this.liveId,
-          'curPage': '1',
-          'pageSize': 10,
-        }).then(data => {
-          if (data.code === 200 && data.data !== 'SYSTEM_ERROR') {
-            this.form = data.data[0];
-          }
-        }).catch((e) => {
-          console.log(e.toString())
-        }).finally(() => {
-          this.loadingInfo = false;
-        });
-      },
-      GetStageInfo() {
-        GetStageInfo({
-          liveId: this.liveId,
-        }).then(data => {
-          if (data.code === 200) {
-            for (let object of data.data) {
-              this.$set(this.stageInfo, Number(object.promoType), object.promoNum);
-              this.$set(this.totalPrice, Number(object.promoType), object.giftTotalPrice);
-            }
-          }
-        });
-      },
-      getProductList() {
-        const liveId = {
-          'liveId': this.liveId,
-        };
-        this.loading = true;
-        GetLiveProductList(liveId).then(data => {
-          if (data.code === 200) {
-            this.list = data.data || [];
-            this.total = data.data.length || 0;
-          } else {
-            this.list = [];
-            this.total = 0;
-            this.$message.error(data.message);
-          }
-        }).finally(() => {
-          this.loading = false;
-        });
-      },
-      preview() {
-        this.$router.push({ path:'/living/promo/list/'+this.liveId +'/'+this.action })
-      },
-      submit() {
-        this.submitLiveInfo();
-      },
+      })
     },
-  };
+    getLiveInfo() {
+      this.loadingInfo = true
+      GetLiveInfo({
+        "liveId": this.liveId,
+        "curPage": "1",
+        "pageSize": 10,
+      }).then(data => {
+        if (data.code === 200 && data.data !== "SYSTEM_ERROR") {
+          this.form = data.data[0]
+        }
+      }).catch((e) => {
+        console.log(e.toString())
+      }).finally(() => {
+        this.loadingInfo = false
+      })
+    },
+    GetStageInfo() {
+      GetStageInfo({
+        liveId: this.liveId,
+      }).then(data => {
+        if (data.code === 200) {
+          for (let object of data.data) {
+            this.$set(this.stageInfo, Number(object.promoType), object.promoNum)
+            this.$set(this.totalPrice, Number(object.promoType), object.giftTotalPrice)
+          }
+        }
+      })
+    },
+    getProductList() {
+      const liveId = {
+        "liveId": this.liveId,
+      }
+      this.loading = true
+      GetLiveProductList(liveId).then(data => {
+        if (data.code === 200) {
+          this.list = data.data || []
+          this.total = data.data.length || 0
+        } else {
+          this.list = []
+          this.total = 0
+          this.$message.error(data.message)
+        }
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    preview() {
+      this.$router.push({ path:"/living/promo/list/"+this.liveId +"/"+this.action })
+    },
+    submit() {
+      this.submitLiveInfo()
+    },
+  },
+}
 </script>
 
 <style lang="scss">

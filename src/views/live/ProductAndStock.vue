@@ -56,181 +56,181 @@
   </div>
 </template>
 <script>
-  import { saveFile } from '@/util';
-  import {
-    DownLiveProduct,
-    GetLiveProductsByLiveId,
-    LogicDeleteLiveProuct,
-    UploadLiveProduct,
-    UpdatePrelockNum,
-    SaveLiveProduct
-  } from '@/api/live';
+import { saveFile } from "@/util"
+import {
+  DownLiveProduct,
+  GetLiveProductsByLiveId,
+  LogicDeleteLiveProuct,
+  UploadLiveProduct,
+  UpdatePrelockNum,
+  SaveLiveProduct
+} from "@/api/live"
 
-  export default {
-    data: () => {
-      return {
-        list: [],
-        giftProductIds: '',
-        loading: false,
-        loadingTable: false,
-        filename: '',
-        isProgress: false,
-        percentage: 10,
-        errorPath: '',
-      };
+export default {
+  data: () => {
+    return {
+      list: [],
+      giftProductIds: "",
+      loading: false,
+      loadingTable: false,
+      filename: "",
+      isProgress: false,
+      percentage: 10,
+      errorPath: "",
+    }
+  },
+  created() {
+    this.getProductList()
+  },
+  methods: {
+    getProductList() {
+      const {
+        liveId,
+      } = this.$route.params
+      this.loadingTable = true
+      const param = { "liveId": liveId }
+      GetLiveProductsByLiveId(param).then(data => {
+        this.list = data.data || []
+      }).finally(() => {
+        this.loadingTable = false
+      })
     },
-    created() {
-      this.getProductList();
+    //模板下载
+    downloadTemplate() {
+      DownLiveProduct({
+        path: this.errorPath,
+      }).then(data => {
+        if (!data) return
+        // const fileName = "商品上传异常数据.xlsx";
+        saveFile(data, "商品上传异常数据", "xlsx")
+      })
     },
-    methods: {
-      getProductList() {
-        const {
-          liveId,
-        } = this.$route.params;
-        this.loadingTable = true;
-        const param = { "liveId": liveId };
-        GetLiveProductsByLiveId(param).then(data => {
-          this.list = data.data || [];
-        }).finally(() => {
-          this.loadingTable = false;
-        });
-      },
-      //模板下载
-      downloadTemplate() {
-        DownLiveProduct({
-          path: this.errorPath,
-        }).then(data => {
-          if (!data) return;
-          // const fileName = "商品上传异常数据.xlsx";
-          saveFile(data, '商品上传异常数据', 'xlsx');
-        });
-      },
-      handleTestSuccess(file) {
-        const {
-          liveId,
-          platformId
-        } = this.$route.params;
-        const formData = new FormData()
-        formData.append('file', file.file)
-        formData.append("liveId", liveId)
-        formData.append("platformId", platformId)
+    handleTestSuccess(file) {
+      const {
+        liveId,
+        platformId
+      } = this.$route.params
+      const formData = new FormData()
+      formData.append("file", file.file)
+      formData.append("liveId", liveId)
+      formData.append("platformId", platformId)
 
-        this.filename = file.file.name;
-        this.isProgress = true;
-        this.percentage = 20;
-        UploadLiveProduct(formData)
-          .then(data => {
-            if (data.code === 200) {
-              this.percentage = 100;
-              //如果包含错误文件
-              if (data.data && data.data.hasError) {
-                this.errorPath = data.data.errorPath;
-                this.$message.error('数据有异常');
-              } else {
-                this.errorPath = '';
-              }
-            }
-          })
-          .finally(() => {
-            setTimeout(() => {
-              this.filename = '';
-              this.isProgress = false;
-            }, 1000);
-            this.getProductList();
-          });
-      },
-      deleteProduct(row) {
-        const { liveId } = this.$route.params;
-        const param = { "liveProductId": row.id, liveId };
-        LogicDeleteLiveProuct(param).then(data => {
+      this.filename = file.file.name
+      this.isProgress = true
+      this.percentage = 20
+      UploadLiveProduct(formData)
+        .then(data => {
           if (data.code === 200) {
-            //刷新表单数据
-            this.getProductList();
+            this.percentage = 100
+            //如果包含错误文件
+            if (data.data && data.data.hasError) {
+              this.errorPath = data.data.errorPath
+              this.$message.error("数据有异常")
+            } else {
+              this.errorPath = ""
+            }
           }
         })
-      },
-      updatePrelockNum(){
-        const {
-          liveId,
-        } = this.$route.params;
-        this.loading = true;
-        UpdatePrelockNum({
-          liveId: liveId,
-          liveProducts: [...this.list],
-        }).then(data => {
-          if (data.code === 200 && data.data !== 'SYSTEM_ERROR') {
-            this.$router.push(`/living/promo/list/${liveId}/0`);
-          }
-        }).finally(() => {
-          this.loading = false;
-        });
-      },
-      handleBack() {
-        const {
-          liveId,
-        } = this.$route.params;
-        this.$router.push(`/living/updateLive/${liveId}`);
-      },
-      addProduct () {
-        const {
-          liveId,
-          platformId
-        } = this.$route.params;
-        let _this = this;
-        const h = _this.$createElement;
-        _this.$msgbox({
-          title: '添加商品',
-          message: h('div', {
-            attrs: {
-              class: 'el-textarea',
-            },
-          }, [
-            h('textarea', {
-              attrs: {
-                class: 'el-textarea__inner',
-                autocomplete: 'off',
-                rows: 8,
-                id:'giftProductIds',
-                placeholder: '请输入要添加的商品ID，多个商品ID请用英文逗号隔开，每次最多支持50个商品ID，超过50个，则取前50个；',
-              },
-              value: _this.giftProductIds,
-              on: { input: _this.onCommentInputChange }
-            })
-          ]),
-          showCancelButton: true,
-          closeOnClickModal: false,
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              if (_this.giftProductIds === '' || _this.giftProductIds === undefined) {
-                this.$message.error('请至少维护一个商品')
-              } else {
-                var param = {productIds: _this.giftProductIds,liveId:liveId,platformId:platformId};
-                SaveLiveProduct(param).then(data => {
-                  if (data.code === 200 && data.data !== 'SYSTEM_ERROR') {
-                    this.getProductList();
-                    done();
-                  }
-                });
-              }
-            } else {
-              done();
-            }
-          }
-        }).finally(()=>{
-          _this.giftProductIds = ''
-          document.getElementById("giftProductIds").value = ''
-        }).catch(()=>{
-          _this.giftProductIds = ''
-          document.getElementById("giftProductIds").value = ''
-        });
-      },
-      onCommentInputChange() {
-        this.giftProductIds = document.getElementById("giftProductIds").value;
-      },
+        .finally(() => {
+          setTimeout(() => {
+            this.filename = ""
+            this.isProgress = false
+          }, 1000)
+          this.getProductList()
+        })
     },
-  };
+    deleteProduct(row) {
+      const { liveId } = this.$route.params
+      const param = { "liveProductId": row.id, liveId }
+      LogicDeleteLiveProuct(param).then(data => {
+        if (data.code === 200) {
+          //刷新表单数据
+          this.getProductList()
+        }
+      })
+    },
+    updatePrelockNum(){
+      const {
+        liveId,
+      } = this.$route.params
+      this.loading = true
+      UpdatePrelockNum({
+        liveId: liveId,
+        liveProducts: [...this.list],
+      }).then(data => {
+        if (data.code === 200 && data.data !== "SYSTEM_ERROR") {
+          this.$router.push(`/living/promo/list/${liveId}/0`)
+        }
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    handleBack() {
+      const {
+        liveId,
+      } = this.$route.params
+      this.$router.push(`/living/updateLive/${liveId}`)
+    },
+    addProduct () {
+      const {
+        liveId,
+        platformId
+      } = this.$route.params
+      let _this = this
+      const h = _this.$createElement
+      _this.$msgbox({
+        title: "添加商品",
+        message: h("div", {
+          attrs: {
+            class: "el-textarea",
+          },
+        }, [
+          h("textarea", {
+            attrs: {
+              class: "el-textarea__inner",
+              autocomplete: "off",
+              rows: 8,
+              id:"giftProductIds",
+              placeholder: "请输入要添加的商品ID，多个商品ID请用英文逗号隔开，每次最多支持50个商品ID，超过50个，则取前50个；",
+            },
+            value: _this.giftProductIds,
+            on: { input: _this.onCommentInputChange }
+          })
+        ]),
+        showCancelButton: true,
+        closeOnClickModal: false,
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        beforeClose: (action, instance, done) => {
+          if (action === "confirm") {
+            if (_this.giftProductIds === "" || _this.giftProductIds === undefined) {
+              this.$message.error("请至少维护一个商品")
+            } else {
+              var param = {productIds: _this.giftProductIds,liveId:liveId,platformId:platformId}
+              SaveLiveProduct(param).then(data => {
+                if (data.code === 200 && data.data !== "SYSTEM_ERROR") {
+                  this.getProductList()
+                  done()
+                }
+              })
+            }
+          } else {
+            done()
+          }
+        }
+      }).finally(()=>{
+        _this.giftProductIds = ""
+        document.getElementById("giftProductIds").value = ""
+      }).catch(()=>{
+        _this.giftProductIds = ""
+        document.getElementById("giftProductIds").value = ""
+      })
+    },
+    onCommentInputChange() {
+      this.giftProductIds = document.getElementById("giftProductIds").value
+    },
+  },
+}
 </script>
 
 <style lang="scss">

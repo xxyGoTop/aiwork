@@ -94,12 +94,12 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   GetGraftList,
-} from '@/api/goods/graft';
-import GraftEdit from './components/GraftEdit';
-import { format } from 'date-fns';
+} from "@/api/goods/graft"
+import GraftEdit from "./components/GraftEdit"
+import { format } from "date-fns"
 
 export default {
   components: {
@@ -108,22 +108,22 @@ export default {
   data() {
     return {
       visible: false,
-      graftType: 'add',
+      graftType: "add",
       graftRow: {},
       queryForm: {
-        partnerId: '',
-        productId: '',
-        creationDateBegin: '',
-        creationDateEnd: '',
+        partnerId: "",
+        productId: "",
+        creationDateBegin: "",
+        creationDateEnd: "",
         pageSize: 10,
         pageNum: 1,
-        operator: '',
+        operator: "",
       },
       creationDate: [],
       statusMap: {
-        51: '嫁接中',
-        1: '嫁接成功',
-        '-51': '嫁接失败'
+        51: "嫁接中",
+        1: "嫁接成功",
+        "-51": "嫁接失败"
       },
       shops: [],
       total: 0,
@@ -132,64 +132,64 @@ export default {
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     // 获取店铺
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data.filter(item => (item.groupType === 2 || item.groupType === 3 || item.groupType === 4));
-          const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-          this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.shops = data.filter(item => (item.groupType === 2 || item.groupType === 3 || item.groupType === 4))
+          const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+          this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const params = {
         ...this.queryForm,
         creationDateBegin: this.creationDate[0],
         creationDateEnd: this.creationDate[1]
-      };
+      }
       GetGraftList(params)
         .then(({ data, total }) => {
-          this.graftlist = data || [];
-          this.total = total || 0;
+          this.graftlist = data || []
+          this.total = total || 0
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.pageNum = 1;
+      this.queryForm.pageNum = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
-      this.queryForm.partnerId = this.shops[0].partnerId;
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
+      this.queryForm.partnerId = this.shops[0].partnerId
     },
     // 新增、编辑
     handleGraft(ty, row) {
-      this.visible = true;
-      this.graftType = ty;
-      if (ty === 'edit') {
+      this.visible = true
+      this.graftType = ty
+      if (ty === "edit") {
         this.graftRow = {
           productId: row.productId,
           outerDangProductId: row.outerDangProductId,
@@ -202,7 +202,7 @@ export default {
     }
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
 }
 </script>

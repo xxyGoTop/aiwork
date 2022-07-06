@@ -26,14 +26,14 @@ export default {
   data() {
     return {
       value: this.stage || undefined,
-    };
+    }
   },
   methods: {
     handleChange(value) {
-      this.$emit('change', {
+      this.$emit("change", {
         value,
         index: this.index,
-      });
+      })
     },
   },
 }

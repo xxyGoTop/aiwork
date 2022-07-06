@@ -85,19 +85,19 @@
 import {
   TaskDetailQuery,
   TaskResult,
-} from '@/api/goods/task';
-import { format } from 'date-fns';
+} from "@/api/goods/task"
+import { format } from "date-fns"
 import {
   dlFile,
   hasValue
-} from '@/util';
+} from "@/util"
 
 const taskResultMap = {
-  '-1': '任务不存在',
-  '-2': '系统异常',
-  '2': '结果文件生成中',
-  '3': '结果文件已经上传',
-};
+  "-1": "任务不存在",
+  "-2": "系统异常",
+  "2": "结果文件生成中",
+  "3": "结果文件已经上传",
+}
 
 export default {
   props: {
@@ -118,52 +118,52 @@ export default {
       exportLink: process.env.VUE_APP_EXPORT_LINK,
       loading: false,
       queryModel: {
-        productId: '',
-        saleStatus: '',
+        productId: "",
+        saleStatus: "",
       },
     }
   },
   computed: {
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
   },
   watch: {
     visible(val) {
-      val && this.getTaskDetail();
+      val && this.getTaskDetail()
     }
   },
   methods: {
     // 查询
     handleSearch() {
       if (this.queryModel.productId) {
-        if (!/^\d+$/.test(this.queryModel.productId)) return this.$message.warning('请输入数字')
+        if (!/^\d+$/.test(this.queryModel.productId)) return this.$message.warning("请输入数字")
       }
       this.getTaskDetail()
     },
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getTaskDetail() {
       if (this.loading) return
-      this.loading = true;
+      this.loading = true
       const queryParams = {
         ...this.queryModel,
         page: this.page,
         pageSize: 10,
         partnerId: this.info.partnerId,
-        taskId: this.info.id || ''
-      };
-      const params = Object.create(null);
+        taskId: this.info.id || ""
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       TaskDetailQuery(params)
         .then(({ data, total }) => {
-          this.prdInfoList = data;
-          this.total = total;
+          this.prdInfoList = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
@@ -171,9 +171,9 @@ export default {
         })
     },
     handleDrawerClose() {
-      this.$emit('update:visible', false);
-      this.queryModel.saleStatus = '';
-      this.queryModel.productId = '';
+      this.$emit("update:visible", false)
+      this.queryModel.saleStatus = ""
+      this.queryModel.productId = ""
     },
     handleExport() {
       // 必须先执行导出操作后才可以下载
@@ -182,12 +182,12 @@ export default {
       })
         .then(({ data }) => {
           if (data === 3) {
-            dlFile(`${this.exportLink}${this.info.id}`, `添加SKU详情-${this.info.taskNum}`, 'xlsx');
+            dlFile(`${this.exportLink}${this.info.id}`, `添加SKU详情-${this.info.taskNum}`, "xlsx")
           } else {
-            this.$message.warning(taskResultMap[data]);
+            this.$message.warning(taskResultMap[data])
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
   }
 }

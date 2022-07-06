@@ -276,19 +276,19 @@ import {
   stockSync,
   queryStockByProduct,
   exportStockQueryData,
-} from '@/api/stock';
+} from "@/api/stock"
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   saveFile,
   local,
-} from '@/util';
-import { format } from 'date-fns';
-import LockStockDrawer from './components/LockStockDrawer';
-import ExportStockDrawer from './components/ExportStockDrawer';
-import BatchStockDrawer from './components/BatchStockDrawer';
-import BatchSync from './components/BatchSync';
+} from "@/util"
+import { format } from "date-fns"
+import LockStockDrawer from "./components/LockStockDrawer"
+import ExportStockDrawer from "./components/ExportStockDrawer"
+import BatchStockDrawer from "./components/BatchStockDrawer"
+import BatchSync from "./components/BatchSync"
 
 export default {
   components: {
@@ -303,8 +303,8 @@ export default {
       batchQueryVisible: false,
       batchSyncVisible: false,
       queryForm: {
-        partnerId: '',
-        productIds: '',
+        partnerId: "",
+        productIds: "",
         // pageSize: 20,
         // page: 1,
       },
@@ -314,81 +314,81 @@ export default {
       tableData: [],
       loading: false,
       lockForm: {
-        partnerId: '',
+        partnerId: "",
         stockDate: null,
       },
       products: [],
       editStatus: 1,
       stockLoading: false,
       exportVisible: false,
-      pickShop: '',
+      pickShop: "",
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     // 批量同步
     handleBatchSync() {
-      this.batchSyncVisible = true;
+      this.batchSyncVisible = true
       if (this.queryForm.partnerId) {
-        this.pickShop = `${this.queryForm.partnerId}`;
+        this.pickShop = `${this.queryForm.partnerId}`
       }
     },
     // 批量同步查询
     handleSyncQuery() {
-      const ids = [...new Set(local.get('ids').split(/[\n\r]\s*/).filter(i => i))].join('\n');
-      this.queryForm.productIds = ids;
-      this.getList();
+      const ids = [...new Set(local.get("ids").split(/[\n\r]\s*/).filter(i => i))].join("\n")
+      this.queryForm.productIds = ids
+      this.getList()
     },
     // 批量查询
     handleBatchQuery() {
-      this.batchQueryVisible = true;
+      this.batchQueryVisible = true
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.shops = data || []
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      const prods = this.queryForm.productIds.split(/[\n\r]\s*/).filter(i => i);
+      this.loading = true
+      const prods = this.queryForm.productIds.split(/[\n\r]\s*/).filter(i => i)
       const queryParams = {
         partnerId: this.queryForm.partnerId,
         pageSize: this.queryForm.pageSize,
         page: this.queryForm.page,
-        productIds: prods + ''
-      };
+        productIds: prods + ""
+      }
       if (prods.length > 100) {
-        return this.$message.warning('最多支持100品查询')
+        return this.$message.warning("最多支持100品查询")
       }
       stockQuery(queryParams)
         .then(({ data, total }) => {
-          this.tableData = data;
-          this.total = total;
+          this.tableData = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
@@ -396,76 +396,76 @@ export default {
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
+      this.$refs.queryForm.resetFields()
     },
     handleExport() {
-      this.exportVisible = true;
+      this.exportVisible = true
     },
     handleExportQuery() {
-      const { partnerId, productIds } = this.queryForm;
+      const { partnerId, productIds } = this.queryForm
       if (!productIds) {
         this.$message.error("未输入查询商品ID")
         return
       }
       exportStockQueryData({
         partnerId,
-        productId: productIds ? productIds.split(',') : '',
+        productId: productIds ? productIds.split(",") : "",
       })
         .then((data) => {
-          saveFile(data, '库存查询结果', 'xlsx');
+          saveFile(data, "库存查询结果", "xlsx")
         })
         .catch(console.warn)
     },
     handleSizeChange(pagesize) {
-      this.queryForm.pageSize = pagesize;
-      this.getList();
+      this.queryForm.pageSize = pagesize
+      this.getList()
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
-      this.getList();
+      this.queryForm.page = page
+      this.getList()
     },
     handleStockSync({ productId, outerDangProductId }) {
-      const { partnerId } = this.queryForm;
+      const { partnerId } = this.queryForm
       stockSync({
         partnerId,
         productId,
         outerDangProductId
       }).then(() => {
-        this.$message.success('提交成功');
-        this.getList();
+        this.$message.success("提交成功")
+        this.getList()
       })
     },
     handleLock({ productId }) {
-      const { partnerId } = this.queryForm;
+      const { partnerId } = this.queryForm
       this.lockForm = {
         partnerId,
       }
-      this.visible = true;
-      this.queryStockByProduct(productId);
+      this.visible = true
+      this.queryStockByProduct(productId)
     },
     queryStockByProduct(productId) {
-      const { partnerId } = this.queryForm;
-      this.stockLoading = true;
+      const { partnerId } = this.queryForm
+      this.stockLoading = true
       queryStockByProduct({
         partnerId,
         productId,
       }).then(data => {
-        this.products = [{ ...data.data }];
+        this.products = [{ ...data.data }]
       }).finally(() => {
-        this.stockLoading = false;
+        this.stockLoading = false
       })
     },
     // 查看发布结果
     handleResult(row) {
-      const { partnerId } = this.queryForm;
+      const { partnerId } = this.queryForm
       this.$router.push(`/stock/list?partnerId=${partnerId}&productId=${row.productId}`)
     },
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
   beforeDestroy() {
-    local.remove('ids');
+    local.remove("ids")
   }
 }
 </script>

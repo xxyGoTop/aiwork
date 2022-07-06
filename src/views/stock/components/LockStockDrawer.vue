@@ -184,61 +184,61 @@
 import {
   addStockLock,
   queryStockByProduct,
-} from '@/api/stock';
+} from "@/api/stock"
 import {
   UploadFile,
   DownloadTaskTemplate,
   TaskCreate,
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 import {
   acceptTypes,
   saveFile,
   isValid,
-} from '@/util';
+} from "@/util"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 const lockGoods = {
-  productId: '',
-  productName: '',
-  outerStock: '',
+  productId: "",
+  productName: "",
+  outerStock: "",
   stocks: [
     {
-      warehouseName: '天津',
+      warehouseName: "天津",
       warehouseId: 30,
-      stockLockNum: '',
-      ddStock: '',
+      stockLockNum: "",
+      ddStock: "",
       unit: 1,
       stockLockFlag: false,
     },
     {
-      warehouseName: '无锡',
+      warehouseName: "无锡",
       warehouseId: 17,
-      stockLockNum: '',
-      ddStock: '',
+      stockLockNum: "",
+      ddStock: "",
       unit: 1,
       stockLockFlag: false,
     },
     {
-      warehouseName: '广州',
+      warehouseName: "广州",
       warehouseId: 15,
-      stockLockNum: '',
-      ddStock: '',
+      stockLockNum: "",
+      ddStock: "",
       unit: 1,
       stockLockFlag: false,
     }
   ]
-};
+}
 
 // 库存类型-自动锁库存值
 const autoLockRow = {
-  minThresholdNum: '', // 最小值
+  minThresholdNum: "", // 最小值
   addUnit: 1, // 补锁单位
-  addStockLockNum: '', // 补锁值
+  addStockLockNum: "", // 补锁值
 }
 
 export default {
@@ -258,36 +258,36 @@ export default {
     products: {
       type: Array,
       default: function() {
-        return [];
+        return []
       } 
     },
     row: {
       type: Array,
       default: function() {
-        return [];
+        return []
       } 
     },
     shops: {
       type: Array,
       default: function() {
-        return [];
+        return []
       }
     },
     title: {
       type: String,
-      default: '新增锁库存'
+      default: "新增锁库存"
     },
     stockTitle: {
       type: String,
-      default: '首次锁库存'    
+      default: "首次锁库存"    
     },
     lockForm: {
       type: Object,
       default: function() {
         return {
-          partnerId: '',
+          partnerId: "",
           stockDate: null,
-        };
+        }
       }
     },
     editStatus: {
@@ -297,7 +297,7 @@ export default {
     lockType: {
       type: Object,
       default: function() {
-        return {};
+        return {}
       },
     },
     edited: {
@@ -308,14 +308,14 @@ export default {
   // 普通锁taskSubType：2021  自动锁：2022
   data() {
     return {
-      activeName: 'manual',
+      activeName: "manual",
       queryForm: {
-        pratnerId: '',
+        pratnerId: "",
         stockDate: null,
         lockStockType: 1,
         taskType: 202,
         taskSubType: 2021,
-        uploadFile: '',
+        uploadFile: "",
       },
       fileList: [],
       goods: [],
@@ -324,19 +324,19 @@ export default {
       loading: false,
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         stockDate: [
-          { required: !this.disabled, message: '请选择时间', trigger: 'blur' }
+          { required: !this.disabled, message: "请选择时间", trigger: "blur" }
         ],
         lockStockType: [
-          { required: true, message: '请选择锁库存类型', trigger: 'blur' }
+          { required: true, message: "请选择锁库存类型", trigger: "blur" }
         ],
       },
       // 锁库存类型
       lockTypes: [
-        { value: 1, label: '单次锁库存' },
-        { value: 2, label: '自动锁库存' }
+        { value: 1, label: "单次锁库存" },
+        { value: 2, label: "自动锁库存" }
       ],
     }
   },
@@ -346,12 +346,12 @@ export default {
         return this.visible
       },
       set(val) {
-        this.$emit('update:visible', val)
+        this.$emit("update:visible", val)
       }
     },
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   watch: {
@@ -359,23 +359,23 @@ export default {
       this.queryForm = { 
         ...val,
         taskType: 202,
-        uploadFile: '',
+        uploadFile: "",
         lockStockType: 1,
-      };
+      }
     },
     products: function(val) {
-      this.goods = val;
-      this.$refs.stock.clearValidate();
+      this.goods = val
+      this.$refs.stock.clearValidate()
     },
     editStatus: function(val) {
-      this.activeName = +val === 3 ? 'upload' : 'manual'
+      this.activeName = +val === 3 ? "upload" : "manual"
     },
   },
   methods: {
     // 删除文件
     handleRemoveFile() {
-      this.queryForm.uploadFile = '';
-      this.fileList = [];
+      this.queryForm.uploadFile = ""
+      this.fileList = []
     },
     isValid,
     // 添加锁库存行
@@ -388,11 +388,11 @@ export default {
           }
         })
       }
-      this.goods.push(JSON.parse(JSON.stringify(lockGoods)));
+      this.goods.push(JSON.parse(JSON.stringify(lockGoods)))
     },
     // 删除锁库存行
     deleteLockGoods(index, stockIndex) {
-      const stocks = this.goods[index].stocks;
+      const stocks = this.goods[index].stocks
       if (stocks.length === 1) {
         this.$delete(this.goods, index)
       } else {
@@ -401,9 +401,9 @@ export default {
     },
     // 手动提交
     addStockLock() {
-      const lockDetailList = [];
-      const { partnerId, stockDate } = this.queryForm;
-      this.loading = true;
+      const lockDetailList = []
+      const { partnerId, stockDate } = this.queryForm
+      this.loading = true
       this.goods.forEach(good => {
         good.stocks.forEach(stock => {
           const stockRow = {
@@ -412,28 +412,28 @@ export default {
             unit: stock.unit,
             warehouseId: stock.warehouseId,
             lockType: Object.keys(this.lockType).length ? this.lockType[good.productId] : 1,
-            startTime: stockDate ? stockDate[0] : '',
-            endTime: stockDate ? stockDate[1] : '',
-          };
+            startTime: stockDate ? stockDate[0] : "",
+            endTime: stockDate ? stockDate[1] : "",
+          }
           if (this.groupType === 1) {
-            stockRow.minThresholdNum = stock.minThresholdNum;
+            stockRow.minThresholdNum = stock.minThresholdNum
             stockRow.addUnit = stock.addUnit
             stockRow.addStockLockNum = stock.addStockLockNum
           }
           lockDetailList.push(stockRow)
         })
-      });
+      })
       const data = {
         partnerId,
         lockDetailList,
         edited: this.edited ? 1 : 0,
-      };
-      if (this.groupType === 1) data.lockStockType = this.queryForm.lockStockType;
+      }
+      if (this.groupType === 1) data.lockStockType = this.queryForm.lockStockType
       addStockLock(data)
         .then(() => {
-          this.$message.success('手动创建成功');
-          this.handleClose();
-          this.$emit('refresh');
+          this.$message.success("手动创建成功")
+          this.handleClose()
+          this.$emit("refresh")
         })
         .catch(error => {
           if (error.data && error.data.length) {
@@ -441,16 +441,16 @@ export default {
           }
         })
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     upStockLock() {
-      const lockDetailList = [];
-      const { partnerId } = this.queryForm;
-      const { startTime, endTime } = this.row.length ? this.row[0] : {};
-      this.loading = true;
+      const lockDetailList = []
+      const { partnerId } = this.queryForm
+      const { startTime, endTime } = this.row.length ? this.row[0] : {}
+      this.loading = true
       this.goods.forEach(good => {
-        const { lockStartTime = '', lockEndTime = '' } = this.row.find(r => r.productId === good.productId) || {};
+        const { lockStartTime = "", lockEndTime = "" } = this.row.find(r => r.productId === good.productId) || {}
         if (good.stocks && good.stocks.length) {
           good.stocks.forEach(stock => {
             const stockRow = {
@@ -461,27 +461,27 @@ export default {
               lockType: Object.keys(this.lockType).length ? this.lockType[good.productId] : stock.lockType,
               startTime: lockStartTime || startTime,
               endTime: lockEndTime|| endTime,
-            };
+            }
             if (this.groupType === 1) {
-              stockRow.minThresholdNum = stock.minThresholdNum;
+              stockRow.minThresholdNum = stock.minThresholdNum
               stockRow.addUnit = stock.addUnit
               stockRow.addStockLockNum = stock.addStockLockNum
             }
             lockDetailList.push(stockRow)
           })
         }
-      });
+      })
       const data = {
         partnerId,
         lockDetailList,
         edited: this.edited ? 1 : 0,
-      };
-      if (this.groupType === 1) data.lockStockType = this.queryForm.lockStockType;
+      }
+      if (this.groupType === 1) data.lockStockType = this.queryForm.lockStockType
       addStockLock(data)
         .then(() => {
-          this.$message.success('提交成功');
-          this.handleClose();
-          this.$emit('refresh');
+          this.$message.success("提交成功")
+          this.handleClose()
+          this.$emit("refresh")
         })
         .catch(error => {
           if (error.data && error.data.length) {
@@ -489,27 +489,27 @@ export default {
           }
         })
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     // 上传任务提交
     lockStockTaskCreate() {
-      this.loading = true;
+      this.loading = true
       const {
         taskType,
         partnerId,
         uploadFile,
         stockDate,
         lockStockType,
-      } = this.queryForm;
+      } = this.queryForm
       const queryCondition = {
         lockType: (this.disabled && this.edited === 0) ? 2 : 1,
-        startTime: stockDate ? stockDate[0] : '',
-        endTime: stockDate ? stockDate[1] : '',
-      };
-      if (this.activeName === 'upload') {
+        startTime: stockDate ? stockDate[0] : "",
+        endTime: stockDate ? stockDate[1] : "",
+      }
+      if (this.activeName === "upload") {
         if (!uploadFile) {
-          return this.$message.warning('请上传文件')
+          return this.$message.warning("请上传文件")
         }
       }
       TaskCreate({
@@ -517,22 +517,22 @@ export default {
         taskSubType: lockStockType === 2 ? 2022 : 2021,
         partnerId,
         uploadFile,
-        startTime: stockDate ? stockDate[0] : '',
-        endTime: stockDate ? stockDate[1] : '',
+        startTime: stockDate ? stockDate[0] : "",
+        endTime: stockDate ? stockDate[1] : "",
         queryCondition: JSON.stringify(queryCondition),
       }).then(() => {
-        this.$message.success('任务创建成功');
-        this.$emit('refresh');
-        this.handleClose();
+        this.$message.success("任务创建成功")
+        this.$emit("refresh")
+        this.handleClose()
       }).finally(() => {
-        this.loading = false;
+        this.loading = false
       })
     },
     handleCreateTask() {
       if (this.disabled) {
-        if (this.row.length === 0 && this.activeName !== 'upload') {
-          this.$message.error('没有可锁定的商品');
-        } else if (this.activeName === 'upload') {
+        if (this.row.length === 0 && this.activeName !== "upload") {
+          this.$message.error("没有可锁定的商品")
+        } else if (this.activeName === "upload") {
           this.lockStockTaskCreate()
         } else {
           this.upStockLock()
@@ -541,7 +541,7 @@ export default {
       }
       this.$refs.stock.validate(valid => {
         if (valid) {
-          this.activeName === 'upload' ? this.lockStockTaskCreate() : this.addStockLock()
+          this.activeName === "upload" ? this.lockStockTaskCreate() : this.addStockLock()
         }
       })
     },
@@ -549,47 +549,47 @@ export default {
       this.goods = this.goods.map(good => {
         errors.forEach((err) => {
           if (+good.productId === err.productId) {
-            const stocks = [];
+            const stocks = []
             good.stocks.forEach(stock => {
               if (stock.warehouseId === err.warehouseId) {
-                stocks.push({ ...stock, remark: err.remark });
+                stocks.push({ ...stock, remark: err.remark })
               } else {
-                stocks.push({ ...stock });
+                stocks.push({ ...stock })
               }
             })
-            good.stocks = stocks;
+            good.stocks = stocks
           }
         })
         return good
       })
     },
     queryStockByProduct(productId) {
-      const { partnerId } = this.queryForm;
+      const { partnerId } = this.queryForm
       if (!productId) return
       if (!partnerId) {
-        this.$message.info('请先选择店铺')
+        this.$message.info("请先选择店铺")
         return
       }
-      this.isQueryLoading = true;
+      this.isQueryLoading = true
       queryStockByProduct({
         partnerId,
         productId,
       }).then(data => {
         this.handleChangeProductt(data.data)
       }).finally(() => {
-        this.isQueryLoading = false;
+        this.isQueryLoading = false
       })
     },
     handleChangeProductt(product) {
       if (!product) {
-        this.$message.error('未找到相关数据')
+        this.$message.error("未找到相关数据")
         return
       }
       this.goods = this.goods.map(good => {
         if (+good.productId === product.productId) {
-          good.productName = product.productName;
-          good.outerStock = product.outerStock;
-          good.stocks = product.stocks;
+          good.productName = product.productName
+          good.outerStock = product.outerStock
+          good.stocks = product.stocks
         }
         return good
       })
@@ -598,15 +598,15 @@ export default {
       this.queryStockByProduct(productId)
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
-      this.fileList = [];
-      this.goods = [];
-      this.activeName = 'manual';
-      this.drawer = false;
+      this.$refs.upload && this.$refs.upload.clearFiles()
+      this.fileList = []
+      this.goods = []
+      this.activeName = "manual"
+      this.drawer = false
     },
     handleTabClick(tab) {
-      this.activeName = tab.name;
-      this.$refs.stock.clearValidate();
+      this.activeName = tab.name
+      this.$refs.stock.clearValidate()
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
@@ -614,58 +614,58 @@ export default {
         groupType: this.groupType,
         taskType: this.queryForm.taskType,
         taskSubType: this.queryForm.lockStockType === 1 ? 2021 : 2022
-      };
+      }
       if (this.groupType === 1) {
         if (this.queryForm.lockStockType) {
-          params.lockStockType = this.queryForm.lockStockType;
+          params.lockStockType = this.queryForm.lockStockType
         } else {
-          return this.$message.warning('请先选择锁库存类型')
+          return this.$message.warning("请先选择锁库存类型")
         }
       }
       DownloadTaskTemplate(params)
         .then((data) => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.queryForm.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.queryForm.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
   },
 }

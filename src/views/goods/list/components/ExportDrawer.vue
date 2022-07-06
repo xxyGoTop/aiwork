@@ -94,29 +94,29 @@ import {
   // fileSuffix,
   acceptTypes,
   saveFile,
-} from '@/util';
+} from "@/util"
 import {
   UploadFile,
   TaskCreate,
   DownloadTaskTemplate
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 // taskType: 101 商品导出
 const defaultFormData = {
   taskType: 101,
   taskSubType: 1011,
-  partnerId: '',
-  productIds: '',
+  partnerId: "",
+  productIds: "",
   fields: [],
-  uploadFile: '',
-};
+  uploadFile: "",
+}
 
 export default {
   props: {
@@ -143,66 +143,66 @@ export default {
   data() {
     const validatePids = (_, value, callback) => {
       if (!/^(?:\d+[\n\r]\s*)*\d+\s*$/.test(value)) {
-        callback(new Error('ID格式不正确'))
+        callback(new Error("ID格式不正确"))
       } else if (value.trim().split(/[\n\r]\s*/).length > 50) {
-        callback(new Error('最多支持发布50品'))
-      } else callback();
-    };
+        callback(new Error("最多支持发布50品"))
+      } else callback()
+    }
     const validateFields = (_, value, callback) => {
       if (!value.length) {
-        callback(new Error('请选择导出字段'))
-      } else callback();
-    };
+        callback(new Error("请选择导出字段"))
+      } else callback()
+    }
     return {
       isUploadLoading: false,
-      activeName: 'manual',
+      activeName: "manual",
       formData: { ...defaultFormData },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'change' }
+          { required: true, message: "请选择店铺", trigger: "change" }
         ],
         taskSubType: [
-          { required: true, message: '请选择导出类型', trigger: 'change' }
+          { required: true, message: "请选择导出类型", trigger: "change" }
         ],
         productIds: [
-          { required: true, message: '请录入商品ID', trigger: 'blur' },
-          { validator: validatePids, trigger: 'blur' }
+          { required: true, message: "请录入商品ID", trigger: "blur" },
+          { validator: validatePids, trigger: "blur" }
         ],
         uploadFile: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
+          { required: true, message: "请上传文件", trigger: "blur" },
         ],
         fields: [
-          { required: true, message: '请选择导出字段', trigger: 'blur' },
-          { validator: validateFields, trigger: 'blur' }
+          { required: true, message: "请选择导出字段", trigger: "blur" },
+          { validator: validateFields, trigger: "blur" }
         ],
       },
       fileList: [],
-    };
+    }
   },
   watch: {
     pickShop() {
-      this.formData.partnerId = Number(this.pickShop);
+      this.formData.partnerId = Number(this.pickShop)
     },
     fileList: {
       deep: true,
       handler(val) {
-        this.formData.uploadFile = val.map(item => item.name).join(',');
+        this.formData.uploadFile = val.map(item => item.name).join(",")
       },
     },
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
     isPddShop() {
-      return this.groupType === 2;
+      return this.groupType === 2
     },
     isDouyinShop() {
-      return this.groupType === 3;
+      return this.groupType === 3
     },
     pddOrDouyin() {
       return this.isPddShop || this.isDouyinShop
@@ -210,74 +210,74 @@ export default {
     // 导出类型
     exportTypes() {
       const types = [
-        { label: '导出当前选择商品', value: 1011, },
-        { label: '导出筛选条件下所有商品', value: 1012, },
-        { label: '上传商品ID导出', value: 1013, },
-        { label: '导出动销品', value: 1015, },
-        { label: '导出白底图', value: 1016, },
-        { label: '导出商品图片', value: 1025, }
-      ];
+        { label: "导出当前选择商品", value: 1011, },
+        { label: "导出筛选条件下所有商品", value: 1012, },
+        { label: "上传商品ID导出", value: 1013, },
+        { label: "导出动销品", value: 1015, },
+        { label: "导出白底图", value: 1016, },
+        { label: "导出商品图片", value: 1025, }
+      ]
       if (this.isPddShop) {
-        types.push({ label: '导出拼多多建议价', value: 1017 });
-        types.push({ label: '热销商品ISBN', value: 1018, });
+        types.push({ label: "导出拼多多建议价", value: 1017 })
+        types.push({ label: "热销商品ISBN", value: 1018, })
       }
       if (this.isTmallShop) {
-        types.push({ label: '导出在售商品', value: 1019, });
+        types.push({ label: "导出在售商品", value: 1019, })
       } else {
-        types.push({ label: '导出在售商品', value: 1014, });
+        types.push({ label: "导出在售商品", value: 1014, })
       }
       if (this.pddOrDouyin) {
-        types.splice(4, 0, { label: '导出规格商品', value: 1020 })
+        types.splice(4, 0, { label: "导出规格商品", value: 1020 })
       }
-      return types;
+      return types
     },
     exportFields() {
       const options = [
-        { label: '当当ID', value: 'needProductId', },
-        { label: this.pddOrDouyin ? '外平台SPUID' : '外平台ID', value: 'needOuterCode', },
-        { label: this.pddOrDouyin ? '外平台SKUID' : 'SKUID字段', value: 'needOuterSkuId', },
-        { label: '商品名称', value: 'needProductName', },
-        { label: '是否预售', value: 'needOuterPresale', },
+        { label: "当当ID", value: "needProductId", },
+        { label: this.pddOrDouyin ? "外平台SPUID" : "外平台ID", value: "needOuterCode", },
+        { label: this.pddOrDouyin ? "外平台SKUID" : "SKUID字段", value: "needOuterSkuId", },
+        { label: "商品名称", value: "needProductName", },
+        { label: "是否预售", value: "needOuterPresale", },
         // { label: '商品库存', value: 'needStock', },
         // { label: '当当三仓库存', value: 'needDdStock', },
-        { label: '外卖场销量', value: 'needSaleQuantity', },
-        { label: '外卖场销售金额', value: 'needSaleAmount', },
-        { label: '商品定价', value: 'needPrice', },
-        { label: '商品当当价', value: 'needDdPrice', },
-        { label: '商品外平台价', value: 'needOuterPrice', },
-        { label: '商品状态', value: 'needSaleStatus', },
-        { label: '商品发布时间', value: 'needPublishDate', },
-        { label: '商品主站分类', value: 'needDdCategory', },
-        { label: '商品外平台分类', value: 'needOuterCategory', },
-      ];
+        { label: "外卖场销量", value: "needSaleQuantity", },
+        { label: "外卖场销售金额", value: "needSaleAmount", },
+        { label: "商品定价", value: "needPrice", },
+        { label: "商品当当价", value: "needDdPrice", },
+        { label: "商品外平台价", value: "needOuterPrice", },
+        { label: "商品状态", value: "needSaleStatus", },
+        { label: "商品发布时间", value: "needPublishDate", },
+        { label: "商品主站分类", value: "needDdCategory", },
+        { label: "商品外平台分类", value: "needOuterCategory", },
+      ]
       if (this.isTmallShop) {
         options.push(...[
-          { label: '天猫三仓可售', value: 'needOuterSaleStock', },
-          { label: '天猫三仓总量', value: 'needOuterTotalStock', },
-          { label: '天猫三仓占用', value: 'needOuterOccupied', },
-        ]);
+          { label: "天猫三仓可售", value: "needOuterSaleStock", },
+          { label: "天猫三仓总量", value: "needOuterTotalStock", },
+          { label: "天猫三仓占用", value: "needOuterOccupied", },
+        ])
       } else if (this.isPddShop) {
         options.push(...[
-          { label: '商品进价', value: 'needImportPrice' },
-          { label: '商品ISBN', value: 'needStandardId' },
-          { label: '当当SPUID', value: 'needDangDangSPUId' },
-          { label: '款式', value: 'needStyle' },
-          { label: '版本', value: 'needVersion' },
-        ]);
+          { label: "商品进价", value: "needImportPrice" },
+          { label: "商品ISBN", value: "needStandardId" },
+          { label: "当当SPUID", value: "needDangDangSPUId" },
+          { label: "款式", value: "needStyle" },
+          { label: "版本", value: "needVersion" },
+        ])
       } else if (this.isDouyinShop) {
         options.push(...[
-          { label: '当当SPUID', value: 'needDangDangSPUId' },
-          { label: '款式', value: 'needStyle' },
-          { label: '版本', value: 'needVersion' },
-        ]);
+          { label: "当当SPUID", value: "needDangDangSPUId" },
+          { label: "款式", value: "needStyle" },
+          { label: "版本", value: "needVersion" },
+        ])
       }
-      return options;
+      return options
     },
   },
   methods: {
     handleRemoveFile() {
-      this.fileList = [];
-      this.formData.uploadFile = '';
+      this.fileList = []
+      this.formData.uploadFile = ""
     },
     // 导出类型
     handleExportTypes(v) {
@@ -287,9 +287,9 @@ export default {
     },
     // 选择店铺
     handleShopChange() {
-      this.formData.taskSubType = 1011;
-      this.formData.fields = [];
-      this.$refs.form.clearValidate();
+      this.formData.taskSubType = 1011
+      this.formData.fields = []
+      this.$refs.form.clearValidate()
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
@@ -299,122 +299,122 @@ export default {
         taskSubType: this.formData.taskSubType,
       })
         .then((data) => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
-      this.formData = { ...defaultFormData };
-      this.formData.partnerId = Number(this.pickShop);
-      this.activeName = 'manual';
-      this.$emit('update:visible', false);
+      this.$refs.upload && this.$refs.upload.clearFiles()
+      this.formData = { ...defaultFormData }
+      this.formData.partnerId = Number(this.pickShop)
+      this.activeName = "manual"
+      this.$emit("update:visible", false)
     },
     handleTabClick() {
-      this.$refs.form.clearValidate();
+      this.$refs.form.clearValidate()
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       // if (/[\u4e00-\u9fa5]/.test(file.name)) {
       //   message = '文件名不能含有中文';
       // }
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.name = data;
-          fileItem.status = 'success';
-          this.$message.success('上传成功');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.name = data
+          fileItem.status = "success"
+          this.$message.success("上传成功")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     async handlePublish() {
-      if (this.isPublishing) return;
-      this.isPublishing = true;
+      if (this.isPublishing) return
+      this.isPublishing = true
       try {
-        await this.$refs.form.validate();
+        await this.$refs.form.validate()
         const {
           taskType,
           taskSubType,
           partnerId,
           uploadFile,
           ...condition
-        } = this.formData;
+        } = this.formData
 
         const data = {
           taskType,
           taskSubType,
           partnerId,
-        };
-        let queryCondition = {};
+        }
+        let queryCondition = {}
         if (taskSubType === 1011 || taskSubType === 1020) {
           if (this.selectedShopIds.length === 0) {
-            return this.$message.warning('请在列表页选择商品');
+            return this.$message.warning("请在列表页选择商品")
           }
-          queryCondition.ids = this.selectedShopIds;
+          queryCondition.ids = this.selectedShopIds
         }
         if (taskSubType === 1012) {
           Object.entries(this.queryParams).forEach(([key, value]) => {
-            queryCondition[key] = value;
-          });
+            queryCondition[key] = value
+          })
         }
         if (taskSubType === 1011 || taskSubType === 1012 || taskSubType === 1013 || taskSubType === 1020) {
           this.exportFields.forEach(field => {
             if (condition.fields.find(item => item === field.value)) {
-              queryCondition[field.value] = true;
+              queryCondition[field.value] = true
             } else {
-              queryCondition[field.value] = false;
+              queryCondition[field.value] = false
             }
-          });
+          })
         }
         if (taskSubType === 1013) {
-          if (this.activeName === 'manual') {
-            queryCondition.productIds = condition.productIds.split(/[\n\r]\s*/);
+          if (this.activeName === "manual") {
+            queryCondition.productIds = condition.productIds.split(/[\n\r]\s*/)
           } else {
-            data.uploadFile = uploadFile;
+            data.uploadFile = uploadFile
           }
         }
         if (taskSubType === 1016 || taskSubType === 1025) {
-          if (this.activeName === 'manual') {
-            queryCondition = condition.productIds.split(/[\n\r]\s*/);
+          if (this.activeName === "manual") {
+            queryCondition = condition.productIds.split(/[\n\r]\s*/)
           } else {
-            data.uploadFile = uploadFile;
+            data.uploadFile = uploadFile
           }
         }
-        data.queryCondition = JSON.stringify(queryCondition);
-        await TaskCreate(data);
-        this.$message.success('正在导出中，请前往下载中心查看导出状态');
-        this.handleClose();
+        data.queryCondition = JSON.stringify(queryCondition)
+        await TaskCreate(data)
+        this.$message.success("正在导出中，请前往下载中心查看导出状态")
+        this.handleClose()
       } catch (error) {
-        console.warn(error);
+        console.warn(error)
       } finally {
-        this.isPublishing = false;
+        this.isPublishing = false
       }
     },
   },

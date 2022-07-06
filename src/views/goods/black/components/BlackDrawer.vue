@@ -115,35 +115,35 @@ import {
   acceptTypes,
   excelReader,
   getNowFormatTime
-} from '@/util';
+} from "@/util"
 import {
   UploadFile,
   DownloadTaskTemplate,
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 import {
   EditBlackProduct,
   BlackTaskCreate,
-} from '@/api/goods/black';
+} from "@/api/goods/black"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 const defaultFormData = {
-  partnerId: '',
+  partnerId: "",
   taskType: 108,
   taskSubType: 1084,
-  operator: '',
-  productIds: '',
-  startTime: '',
-  endTime: '',
+  operator: "",
+  productIds: "",
+  startTime: "",
+  endTime: "",
   longTern: false,
   stock2Zero: false,
-  uploadFile: '',
-};
+  uploadFile: "",
+}
 
 export default {
   props: {
@@ -168,73 +168,73 @@ export default {
   data() {
     const validatePids = (_, value, callback) => {
       if (!/[\d,]/.test(value)) {
-        callback(new Error('ID格式不正确'))
-      } else if (value.split('\n').filter(item => item).length > 100) {
-        callback(new Error('最多支持发布100品'))
-      } else callback();
-    };
+        callback(new Error("ID格式不正确"))
+      } else if (value.split("\n").filter(item => item).length > 100) {
+        callback(new Error("最多支持发布100品"))
+      } else callback()
+    }
     return {
       formData: { ...defaultFormData },
-      activeName: 'manual',
+      activeName: "manual",
       isUploadLoading: false,
       uploadStatusMap: {
         pending: {
-          icon: 'el-icon-loading',
-          label: '上传中...',
+          icon: "el-icon-loading",
+          label: "上传中...",
         },
         success: {
-          icon: 'el-icon-circle-check',
-          label: '上传成功',
+          icon: "el-icon-circle-check",
+          label: "上传成功",
         },
         fail: {
-          icon: 'el-icon-warning-outline',
-          label: '上传失败',
+          icon: "el-icon-warning-outline",
+          label: "上传失败",
         },
       },
       fileList: [],
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         productIds: [
-          { required: true, message: '请录入商品ID', trigger: 'blur' },
-          { validator: validatePids, trigger: 'blur' }
+          { required: true, message: "请录入商品ID", trigger: "blur" },
+          { validator: validatePids, trigger: "blur" }
         ],
         uploadFile: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
+          { required: true, message: "请上传文件", trigger: "blur" },
         ],
         startTime: [
-          { required: true, message: '请选择开始时间', trigger: 'blur' }
+          { required: true, message: "请选择开始时间", trigger: "blur" }
         ],
         taskSubType: [
-          { required: true, message: '请选择类型', trigger: 'blur' }
+          { required: true, message: "请选择类型", trigger: "blur" }
         ]
       },
       isCurrent: false,
       isEndYear: false
-    };
+    }
   },
   watch: {
     visible(val) {
       if (val && !this.isAdd) {
-        this.formData.partnerId = this.payload.partnerId;
-        this.formData.taskSubType = this.payload.blackType + '';
-        this.formData.productIds = this.payload.productId + '';
-        this.formData.startTime = this.payload.blackBeginDate;
-        this.formData.endTime = this.payload.blackEndDate;
+        this.formData.partnerId = this.payload.partnerId
+        this.formData.taskSubType = this.payload.blackType + ""
+        this.formData.productIds = this.payload.productId + ""
+        this.formData.startTime = this.payload.blackBeginDate
+        this.formData.endTime = this.payload.blackEndDate
       }
     },
     pickShop() {
-      this.formData.partnerId = Number(this.pickShop);
+      this.formData.partnerId = Number(this.pickShop)
     },
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
     disabled() {
       return this.formData.endTime && this.isAdd ? true : false
@@ -243,19 +243,19 @@ export default {
     taskTypeOptions() {
       // 主要顺序：价格-库存-上架-商品
       const options = [
-        { value: 1083, label: '库存黑名单' },
-        { value: 1082, label: '上架黑名单' },
-        { value: 1081, label: '商品黑名单' },
-      ];
+        { value: 1083, label: "库存黑名单" },
+        { value: 1082, label: "上架黑名单" },
+        { value: 1081, label: "商品黑名单" },
+      ]
       if (this.groupType === 1) {
         return [
-          { value: 1084, label: '价格同步黑名单' },
+          { value: 1084, label: "价格同步黑名单" },
           ...options
         ]
       } else if (this.groupType === 2 || this.groupType === 3) {
         return [
-          { value: 1084, label: '价格同步黑名单' },
-          { value: 1087, label: '改价黑名单' },
+          { value: 1084, label: "价格同步黑名单" },
+          { value: 1087, label: "改价黑名单" },
           ...options
         ]
       }
@@ -263,20 +263,20 @@ export default {
     },
     subTypeMap() {
       const options = {
-        1081: '商品黑名单',
-        1082: '上架黑名单',
-        1083: '库存黑名单',
+        1081: "商品黑名单",
+        1082: "上架黑名单",
+        1083: "库存黑名单",
       }
       if (this.groupType === 1) {
         return {
           ...options,
-          1084: '价格同步黑名单'
+          1084: "价格同步黑名单"
         }
       } else if (this.groupType === 2 || this.groupType === 3) {
         return {
           ...options,
-          1084: '价格同步黑名单',
-          1087: '改价黑名单'
+          1084: "价格同步黑名单",
+          1087: "改价黑名单"
         }
       }
       return options
@@ -287,22 +287,22 @@ export default {
       if (this.isCurrent) this.formData.startTime = getNowFormatTime()
     },
     handleClickYear () {
-      var myDate = new Date();
+      var myDate = new Date()
       if (this.isEndYear) {
-        this.formData.endTime = myDate.getFullYear() + '-12-31 23:59:59'
+        this.formData.endTime = myDate.getFullYear() + "-12-31 23:59:59"
       }
     },
     // 删除文件
     handleRemoveFile() {
-      this.formData.uploadFile = '';
-      this.fileList = [];
+      this.formData.uploadFile = ""
+      this.fileList = []
     },
     // 任务类型
     handleTaskSubTypeChange() {
-      this.$refs.form.clearValidate();
+      this.$refs.form.clearValidate()
     },
     handlePartner() {
-      this.formData.taskSubType = this.subTypeMap[this.formData.taskSubType] ? this.formData.taskSubType : this.taskTypeOptions[0].value;
+      this.formData.taskSubType = this.subTypeMap[this.formData.taskSubType] ? this.formData.taskSubType : this.taskTypeOptions[0].value
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
@@ -312,58 +312,58 @@ export default {
         taskSubType: this.formData.taskSubType,
       })
         .then((data) => {
-          excelReader(data, filename, suffix);
+          excelReader(data, filename, suffix)
         })
         .catch(console.warn)
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
-      this.formData = { ...defaultFormData };
-      this.formData.partnerId = Number(this.pickShop);
-      this.activeName = 'manual';
-      this.$emit('update:visible', false);
+      this.$refs.upload && this.$refs.upload.clearFiles()
+      this.formData = { ...defaultFormData }
+      this.formData.partnerId = Number(this.pickShop)
+      this.activeName = "manual"
+      this.$emit("update:visible", false)
     },
     handleTabClick() {
-      this.$refs.form.clearValidate();
+      this.$refs.form.clearValidate()
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.formData.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.formData.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     // 新增
     handleAddBlackTask() {
@@ -373,36 +373,36 @@ export default {
         partnerId,
         uploadFile,
         ...condition
-      } = this.formData;
+      } = this.formData
 
       const data = {
         taskType,
         taskSubType,
         partnerId,
-      };
+      }
       const queryCondition = {
         longTern: condition.longTern,
         stock2Zero: condition.stock2Zero
-      };
-      data.startTime = condition.startTime;
-      if (!condition.longTern) data.endTime = condition.endTime;
-      if (this.activeName === 'manual') {
-        queryCondition.productIds = condition.productIds.split('\n').filter(item => item).join(',');
-      } else {
-        data.uploadFile = uploadFile;
       }
-      data.queryCondition = JSON.stringify(queryCondition);
+      data.startTime = condition.startTime
+      if (!condition.longTern) data.endTime = condition.endTime
+      if (this.activeName === "manual") {
+        queryCondition.productIds = condition.productIds.split("\n").filter(item => item).join(",")
+      } else {
+        data.uploadFile = uploadFile
+      }
+      data.queryCondition = JSON.stringify(queryCondition)
       BlackTaskCreate(data)
         .then(() => {
           if (data.partnerId === -2) {
-            this.$message.success('任务创建成功，请前往各店铺查看详情');
+            this.$message.success("任务创建成功，请前往各店铺查看详情")
           } else {
-            this.$message.success('创建任务成功');
+            this.$message.success("创建任务成功")
           }
-          this.handleClose();
-          this.$emit('success');
+          this.handleClose()
+          this.$emit("success")
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 编辑
     handleEditBlack() {
@@ -410,27 +410,27 @@ export default {
         partnerId: this.formData.partnerId,
         productId: this.formData.productIds,
         blackType: this.formData.taskSubType,
-      };
+      }
       if (this.formData.endTime && !this.formData.longTern) {
         data.updateDate = this.formData.endTime
       }
       if (this.formData.longTern) {
-        data.blackEndTime = this.payload.blackEndDate;
-        data.longTern = this.formData.longTern;
+        data.blackEndTime = this.payload.blackEndDate
+        data.longTern = this.formData.longTern
       }
       EditBlackProduct(data)
         .then(() => {
-          this.$message.success('编辑成功');
-          this.handleClose();
-          this.$emit('success');
+          this.$message.success("编辑成功")
+          this.handleClose()
+          this.$emit("success")
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (new Date(this.formData.startTime).getTime() > new Date(this.formData.endTime).getTime()) {
-            return this.$message.error('结束时间不能小于开始时间')
+            return this.$message.error("结束时间不能小于开始时间")
           }
           if (this.isAdd) {
             this.handleAddBlackTask()
@@ -438,7 +438,7 @@ export default {
             this.handleEditBlack()
           }
         }
-      });
+      })
     },
   },
 }

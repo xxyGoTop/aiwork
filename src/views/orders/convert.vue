@@ -40,17 +40,17 @@
 <script>
 import {
   orderConvert,
-} from '@/api/orders/convert';
+} from "@/api/orders/convert"
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 
 export default {
   data() {
     return {
       queryForm: {
-        partnerId: '',
-        orderIds: '',
+        partnerId: "",
+        orderIds: "",
       },
       shops: [],
       loading: false,
@@ -60,45 +60,45 @@ export default {
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
-          this.queryForm.partnerId = data && data.length ? data[0].partnerId : '';
+          this.shops = data || []
+          this.queryForm.partnerId = data && data.length ? data[0].partnerId : ""
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 订单转单
     orderConvertHandle() {
       if (!this.queryForm.orderIds) return
       if (!/^[\d,\s]*$/.test(this.queryForm.orderIds)) {
-        return this.$message.warning('请输入正确格式的订单号，多个用英文逗号隔开')
+        return this.$message.warning("请输入正确格式的订单号，多个用英文逗号隔开")
       }
-      const orderIds = this.queryForm.orderIds.split(',').filter(i => i);
+      const orderIds = this.queryForm.orderIds.split(",").filter(i => i)
       if (orderIds.length > 50) {
-        return this.$message.warning('最多支持50个订单重新转单')
+        return this.$message.warning("最多支持50个订单重新转单")
       }
       if (this.loading) return
-      this.loading = true;
+      this.loading = true
       const queryParams = {
         partnerId: this.queryForm.partnerId,
         orderIds: this.queryForm.orderIds
-      };
+      }
       orderConvert(queryParams)
         .then(({ data, code, message }) => {
           if (code == 200) {
-            this.$message.success(data);
+            this.$message.success(data)
           } else {
-            this.$message.error(message);
+            this.$message.error(message)
           }
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

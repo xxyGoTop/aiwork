@@ -68,10 +68,10 @@
 </template>
 
 <script>
-import WordsDrawer from './components/WordsDrawer.vue';
-import { QueryWordsList, QueryWords } from '@/api/words/list';
-import { hasValue } from '@/util';
-import ProductDrawer from './components/ProductDrawer.vue';
+import WordsDrawer from "./components/WordsDrawer.vue"
+import { QueryWordsList, QueryWords } from "@/api/words/list"
+import { hasValue } from "@/util"
+import ProductDrawer from "./components/ProductDrawer.vue"
 
 export default {
   components: { WordsDrawer, ProductDrawer },
@@ -81,28 +81,28 @@ export default {
       visible: false,
       productVisible: false,
       payload: {
-        type: 'add',
+        type: "add",
       },
-      highRisk: '',
-      lowRisk: '',
-      pid: '',
-      dtype: 'add',
+      highRisk: "",
+      lowRisk: "",
+      pid: "",
+      dtype: "add",
       groupId: 1,
       wordsList: [
         {
-          title: '低风险敏感词：(含有低风险敏感词商品，商品信息中的敏感信息将直接删除)',
+          title: "低风险敏感词：(含有低风险敏感词商品，商品信息中的敏感信息将直接删除)",
           riskList: [],
-          type: 'lowRisk'
+          type: "lowRisk"
         },
         {
-          title: '高风险敏感词：(含有高风险敏感词商品将直接下架)',
+          title: "高风险敏感词：(含有高风险敏感词商品将直接下架)",
           riskList: [],
-          type: 'highRisk'
+          type: "highRisk"
         },
         {
-          title: '特列品：(特列品ID添加后，这些品将不会扫描和替换敏感词)',
+          title: "特列品：(特列品ID添加后，这些品将不会扫描和替换敏感词)",
           riskList: [],
-          type: 'exception'
+          type: "exception"
         }
       ],
       tempRiskList: [],
@@ -111,13 +111,13 @@ export default {
   methods: {
     handleSearch() {
       if (this.loading) return
-      this.loading = true;
+      this.loading = true
       QueryWordsList()
         .then(({ data }) => {
-          this.wordsList[0].riskList = data.lowSensitiveList;
-          this.wordsList[1].riskList = data.highSensitiveList;
-          this.wordsList[2].riskList = data.productIds;
-          this.tempRiskList = data.productIds;
+          this.wordsList[0].riskList = data.lowSensitiveList
+          this.wordsList[1].riskList = data.highSensitiveList
+          this.wordsList[2].riskList = data.productIds
+          this.tempRiskList = data.productIds
         })
         .catch(() => console.warn)
         .finally(() => {
@@ -127,63 +127,63 @@ export default {
     getWords(ty, data) {
       QueryWords(data)
         .then(({ data }) => {
-          if (ty === 'lowRisk') {
-            this.wordsList[0].riskList = data;
-          } else if (ty === 'highRisk') {
-            this.wordsList[1].riskList = data;
+          if (ty === "lowRisk") {
+            this.wordsList[0].riskList = data
+          } else if (ty === "highRisk") {
+            this.wordsList[1].riskList = data
           } else {
-            this.wordsList[2].riskList = data;
+            this.wordsList[2].riskList = data
           }
         })
         .catch(() => console.warn)
     },
     handleSearchWords(ty) {
-      let data = Object.create(null);
-      if (ty === 'lowRisk') {
-        const lowRisk = this.lowRisk.split('').filter(item => hasValue(item)).join('');
-        data.content = lowRisk;
-        data.riskLevel = 0;
-      } else if (ty === 'highRisk') {
-        const highRisk = this.highRisk.split('').filter(item => hasValue(item)).join('');
-        data.content = highRisk;
-        data.riskLevel = 1;
+      let data = Object.create(null)
+      if (ty === "lowRisk") {
+        const lowRisk = this.lowRisk.split("").filter(item => hasValue(item)).join("")
+        data.content = lowRisk
+        data.riskLevel = 0
+      } else if (ty === "highRisk") {
+        const highRisk = this.highRisk.split("").filter(item => hasValue(item)).join("")
+        data.content = highRisk
+        data.riskLevel = 1
       }
       switch(ty) {
-        case 'lowRisk':
-          this.getWords(ty, data)
-          break;
-        case 'highRisk':
-          this.getWords(ty, data)
-          break;
-        case 'exception':
-          if (this.pid) {
-            this.wordsList[2].riskList = this.tempRiskList.filter(item => item === +this.pid);
-          } else {
-            this.wordsList[2].riskList = this.tempRiskList
-          }
-          break;
+      case "lowRisk":
+        this.getWords(ty, data)
+        break
+      case "highRisk":
+        this.getWords(ty, data)
+        break
+      case "exception":
+        if (this.pid) {
+          this.wordsList[2].riskList = this.tempRiskList.filter(item => item === +this.pid)
+        } else {
+          this.wordsList[2].riskList = this.tempRiskList
+        }
+        break
       }
     },
     // 敏感词
     handleAddWords() {
-      this.visible = true;
-      this.dtype = 'add';
+      this.visible = true
+      this.dtype = "add"
     },
     handleDelWords() {
-      this.visible = true;
-      this.dtype = 'del';
+      this.visible = true
+      this.dtype = "del"
     },
     // 特列品
     handleAddException() {
-      this.productVisible = true;
+      this.productVisible = true
       this.payload = {
-        type: 'add'
+        type: "add"
       }
     },
     handleDelException() {
-      this.productVisible = true;
+      this.productVisible = true
       this.payload = {
-        type: 'del'
+        type: "del"
       }
     },
   },

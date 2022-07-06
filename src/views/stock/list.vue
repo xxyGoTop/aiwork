@@ -183,15 +183,15 @@ import {
   releaseStockLock,
   batchQueryStockByProduct,
   exportStockLockData,
-} from '@/api/stock';
+} from "@/api/stock"
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   hasValue,
   saveFile,
-} from '@/util';
-import LockStockDrawer from './components/LockStockDrawer';
+} from "@/util"
+import LockStockDrawer from "./components/LockStockDrawer"
 
 export default {
   components: { LockStockDrawer },
@@ -208,41 +208,41 @@ export default {
       formData: {
         pageNum: 1,
         pageSize: 10,
-        creator: '',
-        partnerId: '',
-        productId: '',
-        warehouseId: '',
-        stockOrderBy: '',
-        orderBy: '',
-        lockStatus: '',
-        creationDateStart: '',
-        creationDateEnd: '',
+        creator: "",
+        partnerId: "",
+        productId: "",
+        warehouseId: "",
+        stockOrderBy: "",
+        orderBy: "",
+        lockStatus: "",
+        creationDateStart: "",
+        creationDateEnd: "",
       },
       lockForm: {
-        partnerId: '',
+        partnerId: "",
         stockDate: null,
       },
       creationDate: null,
       list: [],
       statusOptions: [
-        { label: '不限', value: '' },
-        { label: '天津', value: 30 },
-        { label: '无锡', value: 17 },
-        { label: '广州', value: 25 },
+        { label: "不限", value: "" },
+        { label: "天津", value: 30 },
+        { label: "无锡", value: 17 },
+        { label: "广州", value: 25 },
       ],
       presaleOptions: [
-        { label: '不限', value: '' },
-        { label: '待执行', value: 0 },
-        { label: '已解锁', value: 3 },
-        { label: '补锁中', value: 10 },
-        { label: '锁定成功', value: 1 },
-        { label: '锁定异常', value: 2 },
-        { label: '其他异常', value: 11 },
+        { label: "不限", value: "" },
+        { label: "待执行", value: 0 },
+        { label: "已解锁", value: 3 },
+        { label: "补锁中", value: 10 },
+        { label: "锁定成功", value: 1 },
+        { label: "锁定异常", value: 2 },
+        { label: "其他异常", value: 11 },
       ],
       saleStatusMap: [
-        { label: '待上架' },
-        { label: '已上架' },
-        { label: '被下架' },
+        { label: "待上架" },
+        { label: "已上架" },
+        { label: "被下架" },
       ],
       count: 0,
       selectOptions: [],
@@ -255,25 +255,25 @@ export default {
       stockLoading: false,
       edited: 0,
       lockType: {},
-    };
+    }
   },
   computed: {
     productId: function() {
-      return this.$route.query.productId || '';
+      return this.$route.query.productId || ""
     },
     partnerId: function() {
-      return +this.$route.query.partnerId || '';
+      return +this.$route.query.partnerId || ""
     },
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.formData.partnerId || '');
+    this.$store.commit("setPartnerId", this.formData.partnerId || "")
     next()
   },
   methods: {
@@ -281,138 +281,138 @@ export default {
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           // 初始设置和查询
           if (this.shops.length) {
-            this.formData.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : (this.partnerId || this.shops[0].partnerId);
+            this.formData.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : (this.partnerId || this.shops[0].partnerId)
             this.getList()
           } else {
-            this.$message.warning('尚无店铺');
+            this.$message.warning("尚无店铺")
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 销量排序查询
     handleSortSearch({ prop, order }) {
-      if (prop === 'creationDate') {
-        this.formData.orderBy = order === 'ascending' ? 0 : 1;
-        this.handleSearch();
-      } else if (prop === 'lockStartTime') {
-        this.formData.stockOrderBy = order === 'ascending' ? 0 : 1;
-        this.handleSearch();
+      if (prop === "creationDate") {
+        this.formData.orderBy = order === "ascending" ? 0 : 1
+        this.handleSearch()
+      } else if (prop === "lockStartTime") {
+        this.formData.stockOrderBy = order === "ascending" ? 0 : 1
+        this.handleSearch()
       }
     },
     getQueryParams() {
-      const params = Object.create(null);
-      const queryParams = this.formData;
-      queryParams.creationDateStart = this.creationDate ? this.creationDate[0] : '';
-      queryParams.creationDateEnd = this.creationDate ? this.creationDate[1] : '';
+      const params = Object.create(null)
+      const queryParams = this.formData
+      queryParams.creationDateStart = this.creationDate ? this.creationDate[0] : ""
+      queryParams.creationDateEnd = this.creationDate ? this.creationDate[1] : ""
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
-      return params;
+      return params
     },
     // 查询
     getList() {
-      if (this.isLoading) return;
-      this.isLoading = true;
-      this.handleCancelSelect();
-      const params = this.getQueryParams();
+      if (this.isLoading) return
+      this.isLoading = true
+      this.handleCancelSelect()
+      const params = this.getQueryParams()
       stockLockList(params)
         .then(({ data, total, }) => {
-          this.total = total || 0;
-          this.list = data || [];
+          this.total = total || 0
+          this.list = data || []
         })
         .catch(console.warn)
         .finally(() => {
-          this.isLoading = false;
-        });
+          this.isLoading = false
+        })
     },
     handleSearch() {
-      this.formData.pageNum = 1;
-      this.getList();
+      this.formData.pageNum = 1
+      this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.formData.productId = '';
-      this.creationDate = null;
-      this.formData.warehouseId = '';
-      this.formData.lockStatus = '';
+      this.$refs.queryForm.resetFields()
+      this.formData.productId = ""
+      this.creationDate = null
+      this.formData.warehouseId = ""
+      this.formData.lockStatus = ""
     },
     // 操作分页
     handleCurrentChange(page) {
-      this.formData.pageNum = page;
-      this.getList();
+      this.formData.pageNum = page
+      this.getList()
     },
     handleAddLock(row) {
-      const { partnerId, productId, lockStartTime, lockEndTime } = row;
+      const { partnerId, productId, lockStartTime, lockEndTime } = row
       this.lockForm = {
         partnerId,
         stockDate: [lockStartTime, lockEndTime],
       }
-      this.visible = true;
-      this.queryStockByProduct(partnerId, productId);
+      this.visible = true
+      this.queryStockByProduct(partnerId, productId)
     },
-    handleBatchLock(editStatus, row = '') {
-      let productRows = [];
-      let lockType = {};
+    handleBatchLock(editStatus, row = "") {
+      let productRows = []
+      let lockType = {}
       if (row) {
-        productRows = [{ ...row }];
-        this.selectOptions = [{ ...row }];
+        productRows = [{ ...row }]
+        this.selectOptions = [{ ...row }]
       } else if (editStatus === 1) {
-        productRows = this.selectOptions.filter(s => (s.lockStatus === 1));
+        productRows = this.selectOptions.filter(s => (s.lockStatus === 1))
       } else {
-        productRows = this.selectOptions.filter(s => (s.lockStatus === 2 || s.lockStatus === 11));
+        productRows = this.selectOptions.filter(s => (s.lockStatus === 2 || s.lockStatus === 11))
       }
       productRows.forEach(row => {
-        lockType[row.productId] = row.lockType;
-      });
-      const { partnerId } = productRows.length ? productRows[0] : {};
-      let productIds = productRows.map(o => o.productId);
-      productIds = [...new Set(productIds)].join(',');
-      this.lockType = lockType;
-      this.lockForm = { partnerId };
+        lockType[row.productId] = row.lockType
+      })
+      const { partnerId } = productRows.length ? productRows[0] : {}
+      let productIds = productRows.map(o => o.productId)
+      productIds = [...new Set(productIds)].join(",")
+      this.lockType = lockType
+      this.lockForm = { partnerId }
       // 批量编辑异常商品
-      if (!productIds && editStatus === 2) return this.$message.warning('请选择锁库存状态异常商品进行操作')
-      this.visible = true;
-      this.editStatus = editStatus;
-      this.edited = editStatus === 2 ? 1 : 0;
-      this.queryStockByProduct(partnerId, productIds);
+      if (!productIds && editStatus === 2) return this.$message.warning("请选择锁库存状态异常商品进行操作")
+      this.visible = true
+      this.editStatus = editStatus
+      this.edited = editStatus === 2 ? 1 : 0
+      this.queryStockByProduct(partnerId, productIds)
     },
     // 批量获取
     queryStockByProduct(partnerId, productIds) {
-      this.stockLoading = true;
+      this.stockLoading = true
       batchQueryStockByProduct({
         partnerId,
         productId: productIds,
       }).then(data => {
-        this.products = data.data;
+        this.products = data.data
       }).finally(() => {
-        this.stockLoading = false;
+        this.stockLoading = false
       })
     },
     // 释放库存
-    handleRemoveLock(row = '') {
-      const productRows = row ? [{ ...row }] : this.selectOptions;
-      this.$alert('确定释放当前选中的锁', '提示', {
-        type: 'info',
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+    handleRemoveLock(row = "") {
+      const productRows = row ? [{ ...row }] : this.selectOptions
+      this.$alert("确定释放当前选中的锁", "提示", {
+        type: "info",
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
         showCancelButton: true,
         callback: (action) => {
-          if (action === 'confirm') {
+          if (action === "confirm") {
             const productIds = productRows.map(o => ({
               partnerId: o.partnerId,
               productId: o.productId,
               warehouseId: o.warehouseId
-            }));
+            }))
             releaseStockLock(productIds)
               .then(() => {
-                this.getList();
+                this.getList()
               })
-              .catch(console.warn);
+              .catch(console.warn)
           }
         }
       })
@@ -420,18 +420,18 @@ export default {
     // 选择
     handleSelect(selection) {
       if (selection.length > 0) {
-        this.count = selection.length;
-        this.batchOperateVisible = true;
+        this.count = selection.length
+        this.batchOperateVisible = true
       } else {
-        this.count = 0;
+        this.count = 0
       }
-      this.selectOptions = selection;
+      this.selectOptions = selection
     },
     // 取消选择 
     handleCancelSelect() {
-      this.$refs.multipleTable.clearSelection();
-      this.count = 0;
-      this.batchOperateVisible = false;
+      this.$refs.multipleTable.clearSelection()
+      this.count = 0
+      this.batchOperateVisible = false
     },
     // 批量导出
     handleExport() {
@@ -439,18 +439,18 @@ export default {
         partnerId: o.partnerId,
         productId: o.productId,
         warehouseId: o.warehouseId,
-      }));
+      }))
       exportStockLockData(stockLockExports).then(data => {
-        saveFile(data, '批量锁库存结果', 'xlsx');
-        this.handleCancelSelect();
+        saveFile(data, "批量锁库存结果", "xlsx")
+        this.handleCancelSelect()
       })
     }
   },
   created() {
-    this.formData.productId = this.productId;
-    this.getShops();
+    this.formData.productId = this.productId
+    this.getShops()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

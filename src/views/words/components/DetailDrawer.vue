@@ -84,11 +84,11 @@
 </template>
 
 <script>
-import { TaskDetailQuery, TaskResult } from '@/api/words/task';
-import { format } from 'date-fns';
+import { TaskDetailQuery, TaskResult } from "@/api/words/task"
+import { format } from "date-fns"
 import {
   saveFile,
-} from '@/util';
+} from "@/util"
 
 // const taskResultMap = {
 //   '-1': '任务不存在',
@@ -119,10 +119,10 @@ export default {
   },
   computed: {
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
     groupType() {
-      return this.info.platform;
+      return this.info.platform
     },
   },
   watch: {
@@ -132,26 +132,26 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getTaskDetail() {
       if (this.loading) return
-      this.loading = true;
+      this.loading = true
       const queryParams = {
-       page: this.page,
-       pageSize: 10,
-       taskNum: this.info.taskNum || ''
-      };
-      const params = Object.create(null);
+        page: this.page,
+        pageSize: 10,
+        taskNum: this.info.taskNum || ""
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (value) {
-          params[key] = value;
+          params[key] = value
         }
       }
       TaskDetailQuery(params)
         .then(({ data, total }) => {
-          this.prdInfoList = data;
-          this.total = total;
+          this.prdInfoList = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
@@ -159,7 +159,7 @@ export default {
         })
     },
     handleDrawerClose() {
-      this.$emit('update:visible', false);
+      this.$emit("update:visible", false)
     },
     handleExport() {
       // 必须先执行导出操作后才可以下载
@@ -167,14 +167,14 @@ export default {
         taskNum: this.info.taskNum,
       })
         .then(data => {
-          saveFile(data, '敏感词任务详情', 'xlsx')
+          saveFile(data, "敏感词任务详情", "xlsx")
           // if (data === 3) {
           //   dlFile(`${this.exportLink}${this.info.id}`, `商品信息修改详情-${this.info.taskNum}`, 'xlsx');
           // } else {
           //   this.$message.warning(taskResultMap[data]);
           // }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
   },
 }

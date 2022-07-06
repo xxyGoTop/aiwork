@@ -117,16 +117,16 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   QueryTaskList,
   StopPriceTask,
   DelPriceTask,
-} from '@/api/goods/price';
-import BatchDrawer from './components/BatchDrawer';
-import DetailDrawer from './components/DetailDrawer';
-import { format } from 'date-fns';
-import { hasValue } from '@/util';
+} from "@/api/goods/price"
+import BatchDrawer from "./components/BatchDrawer"
+import DetailDrawer from "./components/DetailDrawer"
+import { format } from "date-fns"
+import { hasValue } from "@/util"
 
 export default {
   components: {
@@ -139,114 +139,114 @@ export default {
       detailVisible: false,
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         curPage: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         // taskType: 103
       },
       creationDate: [],
       // 任务状态
       statusList: [
-        { status: '', name: '不限' },
-        { status: 0, name: '初始化' },
-        { status: 1, name: '处理中' },
-        { status: 2, name: '解析进行中' },
-        { status: 3, name: '待处理' },
-        { status: 10, name: '部分成功' },
-        { status: 11, name: '全部成功' },
-        { status: 12, name: '解析完成' },
-        { status: 20, name: '部分失败' },
-        { status: 21, name: '全部失败' },
-        { status: 22, name: '解析失败' },
-        { status: 30, name: '系统异常' },
-        { status: 25, name: '已过期' },
+        { status: "", name: "不限" },
+        { status: 0, name: "初始化" },
+        { status: 1, name: "处理中" },
+        { status: 2, name: "解析进行中" },
+        { status: 3, name: "待处理" },
+        { status: 10, name: "部分成功" },
+        { status: 11, name: "全部成功" },
+        { status: 12, name: "解析完成" },
+        { status: 20, name: "部分失败" },
+        { status: 21, name: "全部失败" },
+        { status: 22, name: "解析失败" },
+        { status: 30, name: "系统异常" },
+        { status: 25, name: "已过期" },
         //商品改价任务才会使用
-        { status: 40, name: '恢复中' },
+        { status: 40, name: "恢复中" },
       ],
       createPerson: [],
       shops: [],
       total: 0,
       listInfo: [],
       loading: false,
-      currentShop: ''
+      currentShop: ""
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
           if (data?.length) {
-            this.shops = data.filter(item => (item.groupType === 1 || item.groupType === 2 || item.groupType === 3));
+            this.shops = data.filter(item => (item.groupType === 1 || item.groupType === 2 || item.groupType === 3))
             this.shops.push({
               groupType: 2,
               partnerId: -2,
-              partnerName: '拼多多_全平台'
+              partnerName: "拼多多_全平台"
             })
-            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId;
-            this.getList();
+            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId
+            this.getList()
           } else {
-            this.shops = [];
+            this.shops = []
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.curPage = 1;
+      this.queryForm.curPage = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     handleAddPrice() {
-      this.visible = true;
+      this.visible = true
       if (this.queryForm.partnerId) {
-        this.currentShop = `${this.queryForm.partnerId}`;
+        this.currentShop = `${this.queryForm.partnerId}`
       }
     },
     // 停止改价
@@ -257,7 +257,7 @@ export default {
       }
       StopPriceTask(data)
         .then(() => {
-          this.$message.success('停止改价成功');
+          this.$message.success("停止改价成功")
           this.getList()
         })
         .catch(console.warn)
@@ -270,19 +270,19 @@ export default {
       }
       DelPriceTask(data)
         .then(() => {
-          this.$message.success('改价任务删除成功');
+          this.$message.success("改价任务删除成功")
           this.getList()
         })
         .catch(console.warn)
     },
     // 查看结果
     handlePriceResult(row) {
-      this.detailVisible = true;
-      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId });
+      this.detailVisible = true
+      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId })
     },
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
 }
 </script>

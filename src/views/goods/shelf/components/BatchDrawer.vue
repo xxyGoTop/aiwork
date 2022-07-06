@@ -90,19 +90,19 @@ import {
   // fileSuffix,
   acceptTypes,
   saveFile,
-} from '@/util';
+} from "@/util"
 import {
   UploadFile,
   TaskCreate,
   DownloadTaskTemplate
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 /*上下架子任务类型
   1061: 上架，1062：下架，1063：定时上架，1064：定时下架
@@ -110,13 +110,13 @@ const fileTypes = [
 
 const defaultFormData = {
   taskType: 106,
-  partnerId: '',
-  productIdType: '',
-  startTime: '',
-  shelfType: '',
-  productIds: '',
-  uploadFile: '',
-};
+  partnerId: "",
+  productIdType: "",
+  startTime: "",
+  shelfType: "",
+  productIds: "",
+  uploadFile: "",
+}
 
 export default {
   props: {
@@ -133,127 +133,127 @@ export default {
   data() {
     const validatePids = (_, value, callback) => {
       if (!/^(?:\d+[\n\r]\s*)*\d+\s*$/.test(value)) {
-        callback(new Error('ID格式不正确'))
+        callback(new Error("ID格式不正确"))
       } else if (value.trim().split(/[\n\r]\s*/).length > 100) {
-        callback(new Error('最多支持发布100品'))
-      } else callback();
-    };
+        callback(new Error("最多支持发布100品"))
+      } else callback()
+    }
     return {
       isUploadLoading: false,
-      activeName: 'manual',
+      activeName: "manual",
       formData: { ...defaultFormData },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         shelfType: [
-          { required: true, message: '请选择上下架', trigger: 'blur' }
+          { required: true, message: "请选择上下架", trigger: "blur" }
         ],
         productIdType:  [
-          { required: true, message: '请选择商品ID类型', trigger: 'blur' }
+          { required: true, message: "请选择商品ID类型", trigger: "blur" }
         ],
         startTime:  [
-          { required: true, message: '请选择定时时间', trigger: 'blur' }
+          { required: true, message: "请选择定时时间", trigger: "blur" }
         ],
         productIds: [
-          { required: true, message: '请录入商品ID', trigger: 'blur' },
-          { validator: validatePids, trigger: 'blur' }
+          { required: true, message: "请录入商品ID", trigger: "blur" },
+          { validator: validatePids, trigger: "blur" }
         ],
         uploadFile: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
+          { required: true, message: "请上传文件", trigger: "blur" },
         ],
       },
       fileList: [],
-    };
+    }
   },
   watch: {
     pickShop() {
-      this.formData.partnerId = +this.pickShop;
+      this.formData.partnerId = +this.pickShop
     },
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
   },
   methods: {
     handleRemoveFile() {
-      this.fileList = [];
-      this.formData.uploadFile = '';
+      this.fileList = []
+      this.formData.uploadFile = ""
     },
     handleResetField() {
-      this.formData.productIdType = '';
-      this.formData.startTime = '';
-      this.formData.shelfType = '';
+      this.formData.productIdType = ""
+      this.formData.startTime = ""
+      this.formData.shelfType = ""
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
-      this.formData = { ...defaultFormData };
-      this.formData.partnerId = +this.pickShop;
-      this.activeName = 'manual';
-      this.$refs.form.clearValidate();
-      this.$emit('update:visible', false);
+      this.$refs.upload && this.$refs.upload.clearFiles()
+      this.formData = { ...defaultFormData }
+      this.formData.partnerId = +this.pickShop
+      this.activeName = "manual"
+      this.$refs.form.clearValidate()
+      this.$emit("update:visible", false)
     },
     handleTabClick() {
-      this.$refs.form.clearValidate();
+      this.$refs.form.clearValidate()
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
       DownloadTaskTemplate({
         groupType: this.groupType,
-        taskType: this.formData.productIdType === 2 ? '106_1' : this.formData.taskType,
+        taskType: this.formData.productIdType === 2 ? "106_1" : this.formData.taskType,
         // taskSubType: this.formData.taskSubType,
       })
         .then(data => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       // if (/[\u4e00-\u9fa5]/.test(file.name)) {
       //   message = '文件名不能含有中文';
       // }
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const fd = new FormData();
-      fd.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const fd = new FormData()
+      fd.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(fd)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.formData.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.formData.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     handlePublish() {
       this.$refs.form.validate(valid => {
@@ -266,56 +266,56 @@ export default {
             productIdType,
             startTime,
             ...condition
-          } = this.formData;
+          } = this.formData
           if (productIdType === 2) {
             if (new Date(startTime).getTime() < (Date.now() + 30 * 60 * 1000)) {
-              return this.$message.warning('创建定时上下架任务须晚于当前时间30分钟')
+              return this.$message.warning("创建定时上下架任务须晚于当前时间30分钟")
             }
           }
           const data = {
             taskType,
             partnerId,
-          };
+          }
           switch (shelfType) {
-            case 1:
-              data.taskSubType = 1061;
-              break;
-            case 2:
-              data.taskSubType = 1062;
-              break;
-            case 3:
-              data.taskSubType = 1063;
-              break;
-            case 4:
-              data.taskSubType = 1064;
-              break;
+          case 1:
+            data.taskSubType = 1061
+            break
+          case 2:
+            data.taskSubType = 1062
+            break
+          case 3:
+            data.taskSubType = 1063
+            break
+          case 4:
+            data.taskSubType = 1064
+            break
           }
-          const queryCondition = {};
+          const queryCondition = {}
           if (this.isTmallShop) {
-            if (productIdType === 2) data.startTime = startTime;
-            queryCondition.productIdType = productIdType;
+            if (productIdType === 2) data.startTime = startTime
+            queryCondition.productIdType = productIdType
           }
-          queryCondition.shelfType = shelfType;
-          if (this.activeName === 'manual') {
-            condition.productIds = condition.productIds.split(/[\n\r]\s*/).join(',');
-            Object.assign(queryCondition, condition);
+          queryCondition.shelfType = shelfType
+          if (this.activeName === "manual") {
+            condition.productIds = condition.productIds.split(/[\n\r]\s*/).join(",")
+            Object.assign(queryCondition, condition)
           } else {
-            data.uploadFile = uploadFile;
+            data.uploadFile = uploadFile
           }
-          data.queryCondition = JSON.stringify(queryCondition);
+          data.queryCondition = JSON.stringify(queryCondition)
           TaskCreate(data)
             .then(() => {
               if (data.partnerId === -2) {
-                this.$message.success('任务创建成功，请前往各店铺查看详情');
+                this.$message.success("任务创建成功，请前往各店铺查看详情")
               } else {
-                this.$message.success('创建任务成功');
+                this.$message.success("创建任务成功")
               }
-              this.handleClose();
-              this.$emit('success');
+              this.handleClose()
+              this.$emit("success")
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
   },
 }

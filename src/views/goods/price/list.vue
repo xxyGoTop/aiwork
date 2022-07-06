@@ -75,43 +75,43 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   UpdatePriceList,
-} from '@/api/goods/price';
-import { format } from 'date-fns';
-import { hasValue } from '@/util';
+} from "@/api/goods/price"
+import { format } from "date-fns"
+import { hasValue } from "@/util"
 
 export default {
   data() {
     return {
       queryForm: {
-        partnerId: '',
-        creationDateStart: '',
-        creationDateEnd: '',
+        partnerId: "",
+        creationDateStart: "",
+        creationDateEnd: "",
         pageSize: 10,
         pageIndex: 1,
-        operator: '',
-        productIds: '',
+        operator: "",
+        productIds: "",
       },
       creationDate: [],
       // 任务状态
       statusList: [
-        { status: '', name: '不限' },
-        { status: 0, name: '初始化' },
-        { status: 1, name: '处理中' },
-        { status: 2, name: '解析进行中' },
-        { status: 3, name: '待处理' },
-        { status: 10, name: '部分成功' },
-        { status: 11, name: '全部成功' },
-        { status: 12, name: '解析完成' },
-        { status: 20, name: '部分失败' },
-        { status: 21, name: '全部失败' },
-        { status: 22, name: '解析失败' },
-        { status: 30, name: '系统异常' },
-        { status: 25, name: '已过期' },
+        { status: "", name: "不限" },
+        { status: 0, name: "初始化" },
+        { status: 1, name: "处理中" },
+        { status: 2, name: "解析进行中" },
+        { status: 3, name: "待处理" },
+        { status: 10, name: "部分成功" },
+        { status: 11, name: "全部成功" },
+        { status: 12, name: "解析完成" },
+        { status: 20, name: "部分失败" },
+        { status: 21, name: "全部失败" },
+        { status: 22, name: "解析失败" },
+        { status: 30, name: "系统异常" },
+        { status: 25, name: "已过期" },
         //商品改价任务才会使用
-        { status: 40, name: '恢复中' },
+        { status: 40, name: "恢复中" },
       ],
       shops: [],
       total: 0,
@@ -120,77 +120,77 @@ export default {
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
           if (data?.length) {
-            this.shops = data.filter(item => (item.groupType === 1 || item.groupType === 2 || item.groupType === 3));
-            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId;
-            this.getList();
+            this.shops = data.filter(item => (item.groupType === 1 || item.groupType === 2 || item.groupType === 3))
+            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId
+            this.getList()
           } else {
-            this.shops = [];
+            this.shops = []
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.queryForm.productIds) {
         if (!/^[\d,]*$/.test(this.queryForm.productIds)) {
-          return this.$message.warning('输入id格式错误，多个用英文逗号分隔')
+          return this.$message.warning("输入id格式错误，多个用英文逗号分隔")
         }
-        const ids = this.queryForm.productIds.split(',').filter(i => i);
-        if (ids.length > 100) return this.$message.warning('最多支持100品查询')
+        const ids = this.queryForm.productIds.split(",").filter(i => i)
+        if (ids.length > 100) return this.$message.warning("最多支持100品查询")
       }
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         creationDateStart: this.creationDate[0],
         creationDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       UpdatePriceList(params)
         .then(({ data, total }) => {
-          this.listInfo = data || [];
-          this.total = total || 0;
+          this.listInfo = data || []
+          this.total = total || 0
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.pageIndex = 1;
+      this.queryForm.pageIndex = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
 }
 </script>

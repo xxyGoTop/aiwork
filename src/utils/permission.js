@@ -1,4 +1,4 @@
-import store from '@/store'
+import store from "@/store"
 
 /**
  * @param {Array} value
@@ -15,7 +15,7 @@ export default function checkPermission(value) {
     })
     return hasPermission
   } else {
-    console.error(`need roles! Like v-permission="['admin','editor']"`)
+    console.error("need roles! Like v-permission=\"['admin','editor']\"")
     return false
   }
 }

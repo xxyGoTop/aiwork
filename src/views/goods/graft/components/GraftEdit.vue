@@ -79,19 +79,19 @@ import {
   CreateGraftTask,
   EditGraftTask,
   GetGraftInfo,
-} from '@/api/goods/graft';
+} from "@/api/goods/graft"
 import {
   hasValue,
   filterSpace
-} from '@/util';
+} from "@/util"
 
 const graftRow = {
-  productId: '',
-  graftProductId: '',
-  outerSpuId: '',
-  outerSkuId: '',
-  productName: '',
-};
+  productId: "",
+  graftProductId: "",
+  outerSpuId: "",
+  outerSkuId: "",
+  productName: "",
+}
 
 export default {
   props: {
@@ -109,7 +109,7 @@ export default {
     },
     ty: {
       type: String,
-      default: 'add'
+      default: "add"
     },
     payload: {
       type: Object,
@@ -119,12 +119,12 @@ export default {
   data() {
     return {
       graftForm: {
-        partnerId: '',
+        partnerId: "",
       },
       graftData: [],
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
       },
       submitLoading: false,
@@ -133,16 +133,16 @@ export default {
   watch: {
     visible(val) {
       if (val) {
-        this.graftForm.partnerId = this.shopId;
-        this.graftData.push(this.ty === 'edit' ? this.payload : {...graftRow});
+        this.graftForm.partnerId = this.shopId
+        this.graftData.push(this.ty === "edit" ? this.payload : {...graftRow})
       }
     }
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false);
-      this.graftData = [];
-      this.$refs.graftForm.clearValidate();
+      this.$emit("update:visible", false)
+      this.graftData = []
+      this.$refs.graftForm.clearValidate()
     },
     // 增加行
     handleAddGift() {
@@ -168,11 +168,11 @@ export default {
       //     this.graftData[index - i].newNum = row.newNum - 1;
       //   }
       // }
-      this.graftData.splice(index, 1);
+      this.graftData.splice(index, 1)
     },
     // 获取商品信息
     handleGetInfo(row, index) {
-      const pid = filterSpace(row.productId);
+      const pid = filterSpace(row.productId)
       if (!hasValue(pid)) return
       GetGraftInfo({
         partnerId: this.graftForm.partnerId,
@@ -189,45 +189,45 @@ export default {
           // })
           // 由接口数据更新数据行
           if (data && data.length) {
-            this.graftData.splice(index, row.newNum ? row.newNum : 1 , ...data);
+            this.graftData.splice(index, row.newNum ? row.newNum : 1 , ...data)
           }
         })
         .catch(console.warn)
     },
     // 响应消息处理
     processResMsg(promise) {
-      console.log(promise);
+      console.log(promise)
       promise
         .then(({ data }) => {
           if (Object.keys(data).length) {
-            let errMsg = '';
+            let errMsg = ""
             for (const [key, value] of Object.entries(data)) {
               errMsg += `${key}：${value}\n`
             }
             return this.$message.error(errMsg)
           }
           this.$message({
-            message: `商品嫁接任务${ this.ty === 'add' ? '创建' : '更新' }成功`,
-            type: 'success',
+            message: `商品嫁接任务${ this.ty === "add" ? "创建" : "更新" }成功`,
+            type: "success",
             duration: 1500,
-          });
+          })
           setTimeout(() => {
-            this.handleClose();
-            this.$emit('refresh');
+            this.handleClose()
+            this.$emit("refresh")
           }, 1500)
         })
         .catch(console.warn)
         .finally(() => {
-          this.submitLoading = false;
+          this.submitLoading = false
         })
     },
     // 创建信息
     createGiftRequest() {
       const data = {
         partnerId: this.graftForm.partnerId,
-      };
-      const giftDetails = this.graftData.filter(item => (item.productId && item.graftProductId));
-      if (!giftDetails.length) return this.$message.warning('至少填写完整一条嫁接商品信息')
+      }
+      const giftDetails = this.graftData.filter(item => (item.productId && item.graftProductId))
+      if (!giftDetails.length) return this.$message.warning("至少填写完整一条嫁接商品信息")
       data.graftAddDetails = this.graftData.map(item => {
         return {
           oldProductId: item.productId,
@@ -236,8 +236,8 @@ export default {
         }
       })
       if (this.submitLoading) return
-      this.submitLoading = true;
-      this.ty === 'add' ? this.processResMsg(CreateGraftTask(data)) : this.processResMsg(EditGraftTask(data))
+      this.submitLoading = true
+      this.ty === "add" ? this.processResMsg(CreateGraftTask(data)) : this.processResMsg(EditGraftTask(data))
     },
     // 提交
     hanldleSubmitGift() {

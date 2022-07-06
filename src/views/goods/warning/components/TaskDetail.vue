@@ -113,11 +113,11 @@
 import {
   GetTaskDetailList,
   TaskResult,
-} from '@/api/goods/warning';
+} from "@/api/goods/warning"
 import {
   // dlFile,
   hasValue
-} from '@/util';
+} from "@/util"
 
 // const taskResultMap = {
 //   '-1': '任务不存在',
@@ -147,37 +147,37 @@ export default {
       total: 0,
       exportLink: process.env.VUE_APP_EXPORT_LINK,
       statusMap: {
-        0: '不限',
-        1: '近三天',
-        2: '近15天',
+        0: "不限",
+        1: "近三天",
+        2: "近15天",
       },
       taskStatusMap: {
-        34: '待开始',
-        33: '进行中',
-        25: '已过期',
-        31: '任务终止'
+        34: "待开始",
+        33: "进行中",
+        25: "已过期",
+        31: "任务终止"
       },
       queryModel: {
-        productId: '',
+        productId: "",
         ddPriceChangeType: 0,
         curPage: 1,
         pageSize: 10,
       },
       statusOptions: [
-        { label: '不限', value: 0 },
-        { label: '近三天', value: 1 },
-        { label: '近15天', value: 2 },
+        { label: "不限", value: 0 },
+        { label: "近三天", value: 1 },
+        { label: "近15天", value: 2 },
       ],
     }
   },
   computed: {
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
   },
   watch: {
     visible(val) {
-      val && this.getTaskDetail();
+      val && this.getTaskDetail()
     }
   },
   methods: {
@@ -185,32 +185,32 @@ export default {
     // 查询
     handleSearch() {
       if (this.queryModel.productId) {
-        if (!/^\d+$/.test(this.queryModel.productId)) return this.$message.warning('请输入数字')
+        if (!/^\d+$/.test(this.queryModel.productId)) return this.$message.warning("请输入数字")
       }
       this.getTaskDetail()
     },
     getTaskDetail() {
       const queryParams = {
-       ...this.queryModel,
-       taskId: this.info.id
-      };
-      const params = Object.create(null);
+        ...this.queryModel,
+        taskId: this.info.id
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       GetTaskDetailList(params)
         .then(({ data, total }) => {
-          this.prdInfoList = data;
-          this.total = total;
+          this.prdInfoList = data
+          this.total = total
         })
         .catch(console.warn)
     },
     handleDrawerClose() {
-      this.$emit('update:visible', false);
-      this.queryModel.ddPriceChangeType = 0;
-      this.queryModel.productId = '';
+      this.$emit("update:visible", false)
+      this.queryModel.ddPriceChangeType = 0
+      this.queryModel.productId = ""
     },
     handleExport() {
       // 必须先执行导出操作后才可以下载
@@ -224,14 +224,14 @@ export default {
         operator: this.info.operator,
       })
         .then(({ code }) => {
-          code === 200 && this.$message.success('任务创建成功，请前往下载中心查看');
+          code === 200 && this.$message.success("任务创建成功，请前往下载中心查看")
           // if (data === 3) {
           //   dlFile(`${this.exportLink}${this.info.id}`, `黑名单任务详情-${this.info.taskNum}`, 'xlsx');
           // } else {
           //   this.$message.warning(taskResultMap[data]);
           // }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
   },
 }

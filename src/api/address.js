@@ -1,43 +1,43 @@
 import {
   Addr,
-} from './index';
+} from "./index"
 
 export const getPartners = () => Addr({
-  url: '/addressMap/getPartner',
-});
+  url: "/addressMap/getPartner",
+})
 
 export const getAddressList = (data) => Addr({
-  url:'/addressMap/getByCondition',
-  method: 'POST',
+  url:"/addressMap/getByCondition",
+  method: "POST",
   data,
-});
+})
 
 export const getDangAddress = (data) => Addr({
-  url:'/addressMap/selectDangAddress',
+  url:"/addressMap/selectDangAddress",
   data,
-  method: 'POST'
-});
+  method: "POST"
+})
 
 export const getOuterAddress = (data) => Addr({
-  url:'/addressMap/selectOuterAddress',
+  url:"/addressMap/selectOuterAddress",
   data,
-  method: 'POST'
-});
+  method: "POST"
+})
 
 export const addOuterAddress = (data) => Addr({
-  url:'/addressMap/addAddressMap',
+  url:"/addressMap/addAddressMap",
   data,
-  method: 'POST',
-});
+  method: "POST",
+})
 
 export const updateDangAddress = (params) => Addr({
-  url:'/addressMap/updateDangAddress',
+  url:"/addressMap/updateDangAddress",
   params,
-  method: 'POST',
-});
+  method: "POST",
+})
 
 export const updateStatusById = (params) => Addr({
-  url:'/addressMap/updateStatusById',
+  url:"/addressMap/updateStatusById",
   params,
-  method: 'POST',
-});
+  method: "POST",
+})

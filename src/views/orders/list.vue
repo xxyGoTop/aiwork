@@ -194,43 +194,43 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
-import { format } from 'date-fns';
-import BatchOrderQuery from './components/BatchOrderQuery.vue';
-import AddressMap from './components/AddressMap.vue';
+} from "@/api/goods/list"
+import { format } from "date-fns"
+import BatchOrderQuery from "./components/BatchOrderQuery.vue"
+import AddressMap from "./components/AddressMap.vue"
 import {
   QueryOrdersList,
   GetBasicData,
   OrderExport,
   ResetOrderStatus
-} from '@/api/orders/list';
+} from "@/api/orders/list"
 import {
   isValid,
   saveFile,
-} from '@/util';
+} from "@/util"
 
 export default {
   components: { BatchOrderQuery, AddressMap },
   data() {
-    const { VUE_APP_ORDER_LINK } = process.env;
+    const { VUE_APP_ORDER_LINK } = process.env
     return {
       orderLink: VUE_APP_ORDER_LINK,
       visible: false,
       addressVisible: false,
-      addressPayload: '',
+      addressPayload: "",
       queryForm: {
-        partnerId: '',
-        orderNumType: '',
-        orderId: '',
-        creationDateBegin: '',
-        creationDateEnd: '',
+        partnerId: "",
+        orderNumType: "",
+        orderId: "",
+        creationDateBegin: "",
+        creationDateEnd: "",
         pageSize: 10,
         pageNum: 1,
-        flowStatus: '',
-        orderStatus: '',
-        sendStatus: '',
-        sort: '',
-        sortField: ''
+        flowStatus: "",
+        orderStatus: "",
+        sendStatus: "",
+        sort: "",
+        sortField: ""
       },
       // sort desc:降序 asc:升序
       // sortField  creationDate:订单创建时间 lastSendTime：最晚发货时间
@@ -239,90 +239,90 @@ export default {
       total: 0,
       orderList: [],
       loading: false,
-      currentShop: '',
+      currentShop: "",
       orderTypes: {
-        '': '全部',
-        1: '当当订单号',
-        0: '外平台订单号'
+        "": "全部",
+        1: "当当订单号",
+        0: "外平台订单号"
       },
       inflowState: [
-        { value: '', label: '不限' },
-        { value: 0, label: '待转单' },
-        { value: 1, label: '转单成功' },
-        { value: 2, label: '转单失败' },
-        { value: 3, label: '已取消' },
+        { value: "", label: "不限" },
+        { value: 0, label: "待转单" },
+        { value: 1, label: "转单成功" },
+        { value: 2, label: "转单失败" },
+        { value: 3, label: "已取消" },
       ],
       statusMap: [
-        { value: '', label: '不限' },
-        { value: 0, label: '未审核' },
-        { value: 100, label: '已审核' },
-        { value: 200, label: '已配货' },
-        { value: 300, label: '已发货' },
-        { value: 400, label: '已送达' },
-        { value: 1000, label: '交易成功' },
-        { value: 1100, label: '交易失败' },
-        { value: -100, label: '取消订单' },
+        { value: "", label: "不限" },
+        { value: 0, label: "未审核" },
+        { value: 100, label: "已审核" },
+        { value: 200, label: "已配货" },
+        { value: 300, label: "已发货" },
+        { value: 400, label: "已送达" },
+        { value: 1000, label: "交易成功" },
+        { value: 1100, label: "交易失败" },
+        { value: -100, label: "取消订单" },
       ],
       sendStatusOptions: [
-        { value: '', label: '不限' },
-        { value: 0, label: '待发货' },
-        { value: 1, label: '已发货' },
-        { value: 2, label: '即将逾期' },
-        { value: 3, label: '逾期发货' },
+        { value: "", label: "不限" },
+        { value: 0, label: "待发货" },
+        { value: 1, label: "已发货" },
+        { value: 2, label: "即将逾期" },
+        { value: 3, label: "逾期发货" },
       ],
       selection: [],
       // 基础数控
       baseData: {
-        stayConvertOrderCount: { title: '待转单数', value: '', unit: '单' },
-        lastTenMintuesOrderCount: { title: '每十分钟流入订单数量', value: '', unit: '单' },
-        todayConvertOrderCount: { title: '今日转单总数', value: '', unit: '单' },
-        todaySales: { title: '今日销售额', value: '', unit: '元' },
-        nearlyThirtyOrderCount: { title: '近30天转单总数', value: '', unit: '单' },
-        nearlyThirtySales: { title: '近30天销售额', value: '', unit: '元' },
-        nearlyOverdueOrderCount: { title: '即将逾期订单数', value: '', unit: '单', color: '#fc5757' },
-        alreadyOverdueOrderCount: { title: '已逾期订单数', value: '', unit: '单', color: '#fc5757' },
+        stayConvertOrderCount: { title: "待转单数", value: "", unit: "单" },
+        lastTenMintuesOrderCount: { title: "每十分钟流入订单数量", value: "", unit: "单" },
+        todayConvertOrderCount: { title: "今日转单总数", value: "", unit: "单" },
+        todaySales: { title: "今日销售额", value: "", unit: "元" },
+        nearlyThirtyOrderCount: { title: "近30天转单总数", value: "", unit: "单" },
+        nearlyThirtySales: { title: "近30天销售额", value: "", unit: "元" },
+        nearlyOverdueOrderCount: { title: "即将逾期订单数", value: "", unit: "单", color: "#fc5757" },
+        alreadyOverdueOrderCount: { title: "已逾期订单数", value: "", unit: "单", color: "#fc5757" },
       },
       // 店铺映射
       shopMap: {},
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     // 处理备注
     getRemark(remark) {
       if (remark) {
-        let productName = remark.split(',')[2];
-        const shopName = `店铺名称：${this.shopMap[this.queryForm.partnerId]}`;
-        if (productName.slice(5).length > 10) productName = '商品名称:' + productName.slice(5, 15) + '...';
-        return `${shopName}，${remark.split(',')[1]}，${productName}`
-      } else return ''
+        let productName = remark.split(",")[2]
+        const shopName = `店铺名称：${this.shopMap[this.queryForm.partnerId]}`
+        if (productName.slice(5).length > 10) productName = "商品名称:" + productName.slice(5, 15) + "..."
+        return `${shopName}，${remark.split(",")[1]}，${productName}`
+      } else return ""
     },
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
           // 去除天猫店铺
-          this.shops = data && data.filter(item => item.groupType !== 1) || [];
+          this.shops = data && data.filter(item => item.groupType !== 1) || []
           this.shops.map(item => {
-            this.shopMap[item.partnerId] = item.partnerName;
+            this.shopMap[item.partnerId] = item.partnerName
           })
-          const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-          this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId;
-          this.getList();
-          this.getBasicData();
+          const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+          this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId
+          this.getList()
+          this.getBasicData()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 基础数据
     getBasicData() {
@@ -330,7 +330,7 @@ export default {
         .then(({ data }) => {
           if (data) {
             for (const [key, v] of Object.entries(this.baseData)) {
-              v.value = data[key];
+              v.value = data[key]
             }
           }
         })
@@ -339,27 +339,27 @@ export default {
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         creationDateBegin: this.creationDate[0],
         creationDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (isValid(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryOrdersList(params)
         .then(({ data, total }) => {
-          this.orderList = data;
-          this.total = total;
+          this.orderList = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleEmitQuery(v) {
@@ -367,51 +367,51 @@ export default {
         orderIds,
         orderNumType,
         partnerId
-      } = v;
-      this.queryForm.partnerId = partnerId;
-      this.queryForm.orderNumType = orderNumType;
-      this.queryForm.orderId = orderIds;
-      this.handleSearch();
+      } = v
+      this.queryForm.partnerId = partnerId
+      this.queryForm.orderNumType = orderNumType
+      this.queryForm.orderId = orderIds
+      this.handleSearch()
     },
     handleSearch() {
-      this.queryForm.pageNum = 1;
+      this.queryForm.pageNum = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
-      this.queryForm.flowStatus = '';
-      this.queryForm.orderStatus = '';
-      this.queryForm.sendStatus = '';
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
+      this.queryForm.flowStatus = ""
+      this.queryForm.orderStatus = ""
+      this.queryForm.sendStatus = ""
     },
     // 排序查询
     handleSortChange(column) {
-      const { prop, order } = column;
-      this.queryForm.sort = order === 'ascending' ? 'asc' : 'desc';
-      this.queryForm.sortField = prop === 'lastSendTime' ? 'lastSendTime' : 'creationDate';
-      this.getList();
+      const { prop, order } = column
+      this.queryForm.sort = order === "ascending" ? "asc" : "desc"
+      this.queryForm.sortField = prop === "lastSendTime" ? "lastSendTime" : "creationDate"
+      this.getList()
     },
     // 选择
     handleSelectionChange(selection) {
-      this.selection = selection.map(item => item.id);
+      this.selection = selection.map(item => item.id)
     },
     // 导出
     handleOrderExport() {
       if (!this.selection.length) {
-        return this.$message.warning('请选择导出订单')
+        return this.$message.warning("请选择导出订单")
       }
-      OrderExport({ param: this.selection.join(',') })
+      OrderExport({ param: this.selection.join(",") })
         .then(data => {
-          this.$message.success('导出成功');
-          saveFile(data, '订单详情数据', 'xlsx');
+          this.$message.success("导出成功")
+          saveFile(data, "订单详情数据", "xlsx")
         })
         .catch(console.warn)
     },
     // 批量查询
     handleOrderBatchQuery() {
-      this.visible = true;
+      this.visible = true
       if (this.queryForm.partnerId) {
-        this.currentShop = `${this.queryForm.partnerId}`;
+        this.currentShop = `${this.queryForm.partnerId}`
       }
     },
     // 转单重试
@@ -422,19 +422,19 @@ export default {
       }
       ResetOrderStatus(data)
         .then(({ message }) => {
-          this.$message.success(message);
-          this.getList();
+          this.$message.success(message)
+          this.getList()
         })
         .catch(console.warn)
     },
     // 查看地址问题
     handleModifyAddress(row) {
-      this.addressVisible = true;
-      this.addressPayload = row.remark ? row.remark.slice(7) : '';
+      this.addressVisible = true
+      this.addressPayload = row.remark ? row.remark.slice(7) : ""
     },
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
 }
 </script>

@@ -94,29 +94,29 @@
 </template>
 
 <script>
-import * as Address from '@/api/address';
+import * as Address from "@/api/address"
 import {
   hasValue,
-} from '@/util.js';
+} from "@/util.js"
 
 const defaultMapForm = {
-  partnerId: '',
-  provinceName: '',
-  cityName: '',
-  areaName: '',
-  streetName: '',
-  dangProvinceName: '',
-  dangCityName: '',
-  dangAreaName: '',
-  dangStreetName: '',
-};
+  partnerId: "",
+  provinceName: "",
+  cityName: "",
+  areaName: "",
+  streetName: "",
+  dangProvinceName: "",
+  dangCityName: "",
+  dangAreaName: "",
+  dangStreetName: "",
+}
 
 const defaultDangAddress = {
-  dangProvinceName: '',
-  dangCityName: '',
-  dangAreaName: '',
-  dangStreetName: '',
-};
+  dangProvinceName: "",
+  dangCityName: "",
+  dangAreaName: "",
+  dangStreetName: "",
+}
 
 export default {
   props: {
@@ -126,22 +126,22 @@ export default {
     },
     partnerId: {
       type: [Number, String],
-      default: '',
+      default: "",
     },
     payload: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   watch: {
     visible(v) {
       if (v) {
-        this.mapForm.partnerId = this.partnerId;
-        const areas = this.payload.split('-');
-        this.mapForm.provinceName = areas[0] || '';
-        this.mapForm.cityName = areas[1] || '';
-        this.mapForm.areaName = areas[2] || '';
-        this.mapForm.streetName = areas[3] || '';
+        this.mapForm.partnerId = this.partnerId
+        const areas = this.payload.split("-")
+        this.mapForm.provinceName = areas[0] || ""
+        this.mapForm.cityName = areas[1] || ""
+        this.mapForm.areaName = areas[2] || ""
+        this.mapForm.streetName = areas[3] || ""
       }
     }
   },
@@ -152,13 +152,13 @@ export default {
       },
       mapFormRules: {
         dangProvinceName: [
-          { required: true, message: '请选择当当省', trigger: 'blur' },
+          { required: true, message: "请选择当当省", trigger: "blur" },
         ],
         dangCityName: [
-          { required: true, message: '请选择当当市', trigger: 'blur' },
+          { required: true, message: "请选择当当市", trigger: "blur" },
         ],
         dangAreaName: [
-          { required: true, message: '请选择当当区', trigger: 'blur' },
+          { required: true, message: "请选择当当区", trigger: "blur" },
         ],
       },
       dangAddress: { ...defaultDangAddress }, // 仅用于显示当当地址
@@ -171,89 +171,89 @@ export default {
   },
   methods: {
     getDangAddress(type) {
-      if (type === 'street') {
-        this.dangAddress.dangStreetName = this.mapForm.dangStreetName;
-        return;
+      if (type === "street") {
+        this.dangAddress.dangStreetName = this.mapForm.dangStreetName
+        return
       }
       const params = {
         partnerId: this.partnerId,
-      };
-      if (type === 'province') {
+      }
+      if (type === "province") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
-        });
-        this.dangAreas = [];
-        this.dangStreets = [];
-        this.mapForm.dangCityName = '';
-        this.mapForm.dangAreaName = '';
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangProvinceName = this.mapForm.dangProvinceName;
-        this.dangAddress.dangCityName = '';
-        this.dangAddress.dangAreaName = '';
-        this.dangAddress.dangStreetName = '';
-      } else if (type === 'city') {
+        })
+        this.dangAreas = []
+        this.dangStreets = []
+        this.mapForm.dangCityName = ""
+        this.mapForm.dangAreaName = ""
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangProvinceName = this.mapForm.dangProvinceName
+        this.dangAddress.dangCityName = ""
+        this.dangAddress.dangAreaName = ""
+        this.dangAddress.dangStreetName = ""
+      } else if (type === "city") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
           dangCityName: this.mapForm.dangCityName,
-        });
-        this.dangStreets = [];
-        this.mapForm.dangAreaName = '';
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangCityName = this.mapForm.dangCityName;
-        this.dangAddress.dangAreaName = '';
-        this.dangAddress.dangStreetName = '';
-      } else if (type === 'area') {
+        })
+        this.dangStreets = []
+        this.mapForm.dangAreaName = ""
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangCityName = this.mapForm.dangCityName
+        this.dangAddress.dangAreaName = ""
+        this.dangAddress.dangStreetName = ""
+      } else if (type === "area") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
           dangCityName: this.mapForm.dangCityName,
           dangAreaName: this.mapForm.dangAreaName,
-        });
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangAreaName = this.mapForm.dangAreaName;
-        this.dangAddress.dangStreetName = '';
+        })
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangAreaName = this.mapForm.dangAreaName
+        this.dangAddress.dangStreetName = ""
       }
       Address.getDangAddress(params)
         .then(({data}) => {
-          if (type === 'partner') {
-            this.dangProvinces = data;
-          } else if (type === 'province') {
-            this.dangCitys = data;
-          } else if (type === 'city') {
-            this.dangAreas = data;
-          } else if (type === 'area') {
-            this.dangStreets = data;
+          if (type === "partner") {
+            this.dangProvinces = data
+          } else if (type === "province") {
+            this.dangCitys = data
+          } else if (type === "city") {
+            this.dangAreas = data
+          } else if (type === "area") {
+            this.dangStreets = data
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleEditAddrMap() {
       this.$refs.mapForm.validate(valid => {
         if (valid) {
-          const params = {};
+          const params = {}
           for (const [key, value] of Object.entries(this.mapForm)) {
-            if (hasValue(value)) params[key] = value;
+            if (hasValue(value)) params[key] = value
           }
           Address.updateDangAddress(params)
             .then(({ data }) => {
               if (data === 1) {
-                this.$message.success('绑定成功');
-                this.$emit('update:visible', false);
+                this.$message.success("绑定成功")
+                this.$emit("update:visible", false)
               } else {
-                this.$message.warning(data);
+                this.$message.warning(data)
               }
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
     handleClose() {
-      this.$emit('update:visible', false);
-      this.mapForm = { ...defaultMapForm };
-      this.dangAddress = { ...defaultDangAddress };
-      this.dangProvinces = [];
-      this.dangCitys = [];
-      this.dangAreas = [];
-      this.dangStreets = [];
+      this.$emit("update:visible", false)
+      this.mapForm = { ...defaultMapForm }
+      this.dangAddress = { ...defaultDangAddress }
+      this.dangProvinces = []
+      this.dangCitys = []
+      this.dangAreas = []
+      this.dangStreets = []
     },
   }
 }

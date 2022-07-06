@@ -66,97 +66,97 @@ import {
   // StockPartners,
   queryStockRate,
   updateStockRate,
-} from '@/api/stock';
+} from "@/api/stock"
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   hasValue,
-} from '@/util';
+} from "@/util"
 
 export default {
   data() {
     return {
       partners: [],
       queryForm: {
-        partnerId: '',
-        shopId: '',
-        shopName: '',
+        partnerId: "",
+        shopId: "",
+        shopName: "",
         pageNum: 1,
         pageSize: 20,
       },
       visible: false,
-      currShopName: '',
+      currShopName: "",
       editForm: {
-        partnerId: '',
-        shopId: '',
-        stockRate: '',
+        partnerId: "",
+        shopId: "",
+        stockRate: "",
       },
       rules: {
         stockRate: [
-          { required: true, message: '请输入库存比例', trigger: 'blur' },
-          { type: 'integer', message: '库存比例必须为整数'},
-          { type: 'integer', min: 5, max: 90, message: '库存比例数值必须大于5小于90' },
+          { required: true, message: "请输入库存比例", trigger: "blur" },
+          { type: "integer", message: "库存比例必须为整数"},
+          { type: "integer", min: 5, max: 90, message: "库存比例数值必须大于5小于90" },
         ],
       },
       total: 0,
       tableData: [],
-    };
+    }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   methods: {
     getPartners() {
       GoodsShops()
         .then(({ data }) => {
-          this.partners = data || [];
+          this.partners = data || []
           if (this.partners.length) {
-            this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.partners[0].partnerId;
-            this.getList();
+            this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.partners[0].partnerId
+            this.getList()
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     getList(page) {
       if (page) {
-        this.queryForm.pageNum = page;
+        this.queryForm.pageNum = page
       }
-      const params = {};
+      const params = {}
       for (const [key, value] of Object.entries(this.queryForm)) {
-        if (hasValue(value)) params[key] = value;
+        if (hasValue(value)) params[key] = value
       }
       queryStockRate(params)
         .then(({ data, total }) => {
-          this.total = total;
-          this.tableData = data || [];
+          this.total = total
+          this.tableData = data || []
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleReset() {
       Object.assign(this.queryForm, {
-        shopId: '',
-        shopName: '',
-        pageNum: '',
-        pageSize: '',
-      });
+        shopId: "",
+        shopName: "",
+        pageNum: "",
+        pageSize: "",
+      })
     },
     handleShowEdit(row) {
-      this.currShopName = row.shopName;
+      this.currShopName = row.shopName
       this.editForm = {
         partnerId: this.queryForm.partnerId,
         shopId: row.shopId,
         stockRate: Number.parseFloat(row.stockRate.trim()),
-      };
-      this.visible = true;
+      }
+      this.visible = true
     },
     hansleClose() {
-      this.currShopName = '';
+      this.currShopName = ""
       this.editForm = {
-        partnerId: '',
-        shopId: '',
-        stockRate: '',
+        partnerId: "",
+        shopId: "",
+        stockRate: "",
       }
     },
     handleModify() {
@@ -164,17 +164,17 @@ export default {
         if (valid) {
           updateStockRate(this.editForm)
             .then(() => {
-              this.$message.success('更新成功，10分钟后生效');
-              this.visible = false;
-              this.getList();
+              this.$message.success("更新成功，10分钟后生效")
+              this.visible = false
+              this.getList()
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
   },
   created() {
-    this.getPartners();
+    this.getPartners()
   },
 }
 </script>

@@ -60,20 +60,20 @@ import {
   BatchAddProduct,
   BatchDelProduct,
   BatchTemplate
-} from '@/api/words/list';
-import { UploadFile } from '@/api/goods/task';
+} from "@/api/words/list"
+import { UploadFile } from "@/api/goods/task"
 import {
   acceptTypes,
   saveFile,
   hasValue,
-} from '@/util';
+} from "@/util"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 export default {
   props: {
@@ -88,157 +88,157 @@ export default {
   },
   data() {
     const validateLen = (_, value, callback) => {
-      if (hasValue(value) && value.indexOf('\n' || '\r') > -1) {
-        this.productIds = value.split(/[\n\r]\s*/).filter(item => item);
+      if (hasValue(value) && value.indexOf("\n" || "\r") > -1) {
+        this.productIds = value.split(/[\n\r]\s*/).filter(item => item)
         if (this.productIds.length > 100) {
-          this.productIds = [];
-          callback(new Error('每次最多只能输入100品'))
+          this.productIds = []
+          callback(new Error("每次最多只能输入100品"))
         } else callback()
       } else {
-        this.productIds = [value];
+        this.productIds = [value]
         callback()
       }
     }
     return {
       isUploadLoading: false,
-      activeName: 'manual',
+      activeName: "manual",
       fileList: [],
       productForm: {
-        productIds: '',
-        taskType: '',
-        taskSubType: '',
-        uploadFile: ''
+        productIds: "",
+        taskType: "",
+        taskSubType: "",
+        uploadFile: ""
       },
       productIds: [],
       rules: {
         productIds: [
-          { required: true, message: '请输入特例品ID', trigger: 'blur' },
-          { validator: validateLen, trigger: 'blur' }
+          { required: true, message: "请输入特例品ID", trigger: "blur" },
+          { validator: validateLen, trigger: "blur" }
         ],
       },
     }
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false);
-      this.fileList = [];
-      this.productForm.uploadFile = '';
+      this.$emit("update:visible", false)
+      this.fileList = []
+      this.productForm.uploadFile = ""
       this.productForm = {
-        productIds: '',
-        taskType: '',
-        taskSubType: '',
-        uploadFile: ''
-      };
-      this.productIds = [];
-      this.$refs.productForm.clearValidate();
-      this.activeName = 'manual';
-      this.$refs.upload && this.$refs.upload.clearFiles();
+        productIds: "",
+        taskType: "",
+        taskSubType: "",
+        uploadFile: ""
+      }
+      this.productIds = []
+      this.$refs.productForm.clearValidate()
+      this.activeName = "manual"
+      this.$refs.upload && this.$refs.upload.clearFiles()
     },
     // 添加
     addProductIds() {
       const data = {
         taskType: 109,
         taskSubType: 1093,
-      };
-      if (this.activeName === 'manual') {
+      }
+      if (this.activeName === "manual") {
         data.queryCondition = JSON.stringify({
-          productIds: this.productIds.length ? this.productIds.join(',') : ''
+          productIds: this.productIds.length ? this.productIds.join(",") : ""
         })
       } else {
-        data.uploadFile = this.productForm.uploadFile;
+        data.uploadFile = this.productForm.uploadFile
         data.queryCondition = JSON.stringify({
-          productIds: ''
+          productIds: ""
         })
       }
       BatchAddProduct(data)
         .then(() => {
-          this.$message.success('特例品添加任务创建成功');
-          this.handleClose();
-          this.$emit('refresh');
+          this.$message.success("特例品添加任务创建成功")
+          this.handleClose()
+          this.$emit("refresh")
         })
         .catch(console.warn)
     },
     // 删除
     delProductIds() {
-      const data = Object.create(null);
-      if (this.activeName === 'manual') {
+      const data = Object.create(null)
+      if (this.activeName === "manual") {
         data.productIds = this.productIds
       } else {
         data.uploadFile = this.productForm.uploadFile
       }
       BatchDelProduct(data)
         .then(() => {
-          this.$message.success('删除成功');
-          this.handleClose();
-          this.$emit('refresh');
+          this.$message.success("删除成功")
+          this.handleClose()
+          this.$emit("refresh")
         })
         .catch(console.warn)
     },
     // 获取任务模板
     getTaskTemplate() {
-      BatchTemplate({ downloadType: 'specialProduct' })
+      BatchTemplate({ downloadType: "specialProduct" })
         .then(data => {
-          saveFile(data, this.payload.type === 'add' ? '特例品批量新增模板' : '特例品批量删除模板', 'xlsx');
+          saveFile(data, this.payload.type === "add" ? "特例品批量新增模板" : "特例品批量删除模板", "xlsx")
         })
         .catch(console.warn)
     },
     handleTabClick() {
-      this.$refs.productForm.clearValidate();
+      this.$refs.productForm.clearValidate()
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       // if (/[\u4e00-\u9fa5]/.test(file.name)) {
       //   message = '文件名不能含有中文';
       // }
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const productForm = new FormData();
-      productForm.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const productForm = new FormData()
+      productForm.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(productForm)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.productForm.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.productForm.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     // 删除文件
     handleRemoveFile() {
-      this.productForm.uploadFile = '';
+      this.productForm.uploadFile = ""
     },
     // 提交
     handleSubmit() {
       this.$refs.productForm && this.$refs.productForm.validate(valid => {
         if (valid) {
-          if (!this.productForm.uploadFile && this.activeName === 'upload') {
-            return this.$message.warning('请上传文件')
+          if (!this.productForm.uploadFile && this.activeName === "upload") {
+            return this.$message.warning("请上传文件")
           }
-          if (this.payload.type === 'add') {
+          if (this.payload.type === "add") {
             this.addProductIds()
           } else {
             this.delProductIds()

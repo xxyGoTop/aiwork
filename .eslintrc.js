@@ -3,17 +3,20 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
-    'plugin:vue/essential',
-    'eslint:recommended'
+  "extends": [
+    "plugin:vue/essential",
+    "eslint:recommended"
   ],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: "babel-eslint"
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-irregular-whitespace': process.env.NODE_ENV === 'production' ? 'warn' :'off',
-    'vue/no-unused-vars': 'off'
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-irregular-whitespace": process.env.NODE_ENV === "production" ? "warn" :"off",
+    "vue/no-unused-vars": "off",
+    "semi": [2, "never"],
+    "quotes": [2, "double"],
+    "indent": ["error", 2],
   }
 }

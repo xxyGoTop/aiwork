@@ -83,15 +83,15 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   GetCateList,
-} from '@/api/goods/category';
-import UpdateCate from './components/UpdateCate';
+} from "@/api/goods/category"
+import UpdateCate from "./components/UpdateCate"
 import {
   isValid,
-} from '@/util';
-import { format } from 'date-fns';
+} from "@/util"
+import { format } from "date-fns"
 
 export default {
   components: {
@@ -102,8 +102,8 @@ export default {
       visible: false,
       editPayload: {},
       queryForm: {
-        partnerId: '',
-        productIds: '',
+        partnerId: "",
+        productIds: "",
         pageSize: 15,
         pageIndex: 1,
       },
@@ -111,88 +111,88 @@ export default {
       total: 0,
       listInfo: [],
       loading: false,
-      updateType: 'single',
+      updateType: "single",
       selection: [],
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
           if (data?.length) {
-            this.shops = data.filter(item => item.groupType === 1);
-            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId);
-            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId;
+            this.shops = data.filter(item => item.groupType === 1)
+            const matchPartner = this.shops.find(item => item.partnerId === this.$store.state.partnerId)
+            this.queryForm.partnerId = matchPartner ? matchPartner.partnerId : this.shops[0].partnerId
           } else {
-            this.shops = [];
+            this.shops = []
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (!this.queryForm.productIds) return
       if (!/^[\d\n\r\s]*$/.test(this.queryForm.productIds)) {
-        return this.$message.warning('多个ID之间请换行隔开')
+        return this.$message.warning("多个ID之间请换行隔开")
       }
-      const productIds = this.queryForm.productIds.split(/[\n\r]/).filter(i => i);
+      const productIds = this.queryForm.productIds.split(/[\n\r]/).filter(i => i)
       if (productIds.length > 100) {
-        return this.$message.warning('最多支持100个ID查询')
+        return this.$message.warning("最多支持100个ID查询")
       }
       if (this.loading) return
-      this.loading = true;
-      const params = Object.create(null);
+      this.loading = true
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(this.queryForm)) {
-        if (isValid(value)) params[key] = value;
+        if (isValid(value)) params[key] = value
       }
-      params.productIds = this.queryForm.productIds.split(/[\n\r]/).join(',');
+      params.productIds = this.queryForm.productIds.split(/[\n\r]/).join(",")
       GetCateList(params)
         .then(({ data, total }) => {
-          this.listInfo = data || [];
-          this.total = total || 0;
+          this.listInfo = data || []
+          this.total = total || 0
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.pageIndex = 1;
+      this.queryForm.pageIndex = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
+      this.$refs.queryForm.resetFields()
     },
     handleCurrentChange(page) {
-      this.queryForm.pageIndex = page;
+      this.queryForm.pageIndex = page
       this.getList()
     },
     // 信息修改
     handleUpdateInfo(ty, row) {
-      this.visible = true;
-      this.updateType = ty;
+      this.visible = true
+      this.updateType = ty
       this.editPayload = {
-        productIds: ty === 'single' ? [row].map(i => i.tmProductId).join(',') : this.selection.map(i => i.tmProductId).join(','),
+        productIds: ty === "single" ? [row].map(i => i.tmProductId).join(",") : this.selection.map(i => i.tmProductId).join(","),
         partnerId: this.queryForm.partnerId,
-        productInfo: ty === 'single' ? [row] : this.selection
+        productInfo: ty === "single" ? [row] : this.selection
       }
     },
   },
-   created() {
-    this.getShops();
+  created() {
+    this.getShops()
   },
 }
 </script>

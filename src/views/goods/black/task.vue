@@ -107,15 +107,15 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   GetBlackTaskList,
   TaskCancel,
   TaskDetach,
-} from '@/api/goods/black';
-import DetailDrawer from './components/DetailDrawer.vue';
-import BlackDrawer from './components/BlackDrawer.vue';
-import { format } from 'date-fns';
+} from "@/api/goods/black"
+import DetailDrawer from "./components/DetailDrawer.vue"
+import BlackDrawer from "./components/BlackDrawer.vue"
+import { format } from "date-fns"
 
 // 黑名单任务类型taskType 108
 export default {
@@ -126,118 +126,118 @@ export default {
       detailVisible: false,
       payload: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 20,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 108
       },
       creationDate: [],
       statusList: {
-        '': '不限',
-        1: '执行中',
-        2: '已完成',
-        3: '已过期',
+        "": "不限",
+        1: "执行中",
+        2: "已完成",
+        3: "已过期",
       },
       subTaskType: {
-        1081: '商品黑名单',
-        1082: '上架黑名单',
-        1083: '库存黑名单',
-        1084: '价格同步黑名单',
-        1087: '改价黑名单',
-        1086: '上架黑名单',
+        1081: "商品黑名单",
+        1082: "上架黑名单",
+        1083: "库存黑名单",
+        1084: "价格同步黑名单",
+        1087: "改价黑名单",
+        1086: "上架黑名单",
       },
       shops: [],
       total: 0,
       listInfo: [],
       loading: false,
-      currentShop: '',
+      currentShop: "",
       isAdd: true,
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           this.shops.push({
             groupType: 2,
             partnerId: -2,
-            partnerName: '拼多多_全平台'
+            partnerName: "拼多多_全平台"
           })
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          data.length && this.getList();
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          data.length && this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
-        if (value !== '' && value !== undefined) params[key] = value;
+        if (value !== "" && value !== undefined) params[key] = value
       }
       GetBlackTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // 查看结果
     handleViewResult(row) {
-      this.detailVisible = true;
+      this.detailVisible = true
       this.payload = {
         taskId: row.id,
         taskNum: row.taskNum,
         partnerId: this.queryForm.partnerId
-      };
+      }
     },
     // 新增黑名单
     handleAddBlack() {
-      this.visible = true;
-      this.currentShop = this.queryForm.partnerId;
+      this.visible = true
+      this.currentShop = this.queryForm.partnerId
     },
     // 取消任务
     handleCancelTask(row) {
       const params = {
         id: row.id,
-      };
+      }
       for (const [key, value] of Object.entries(this.subTaskType)) {
         if (row.subTaskType === value) {
           params.taskSubType = key
@@ -245,8 +245,8 @@ export default {
       }
       TaskCancel(params)
         .then(() => {
-          this.$message.success('任务取消成功');
-          this.getList();
+          this.$message.success("任务取消成功")
+          this.getList()
         })
         .catch(console.warn)
     },
@@ -254,7 +254,7 @@ export default {
     handleAllRemove(row) {
       const params = {
         id: row.id,
-      };
+      }
       for (const [key, value] of Object.entries(this.subTaskType)) {
         if (row.subTaskType === value) {
           params.taskSubType = key
@@ -262,14 +262,14 @@ export default {
       }
       TaskDetach(params)
         .then(() => {
-          this.$message.success('移除成功');
-          this.getList();
+          this.$message.success("移除成功")
+          this.getList()
         })
         .catch(console.warn)
     }
   },
   created() {
-    this.getShops();
+    this.getShops()
   },
 }
 </script>

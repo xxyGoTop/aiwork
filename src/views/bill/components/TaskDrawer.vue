@@ -51,11 +51,11 @@
 </template>
 
 <script>
-import { saveFile } from '@/util.js'
+import { saveFile } from "@/util.js"
 import {
   QueryTaskList,
   DownloadTaskResult,
-} from '@/api/bill.js'
+} from "@/api/bill.js"
 
 export default {
   props: {
@@ -82,11 +82,11 @@ export default {
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false)
+      this.$emit("update:visible", false)
     },
     getTaskList() {
       if (this.loading) return
-      this.loading = true;
+      this.loading = true
       const data = {
         ...this.taskForm
       }
@@ -100,26 +100,26 @@ export default {
         })
     },
     handleTaskChange(pageNum) {
-      this.taskForm.page = pageNum;
-      this.getTaskList();
+      this.taskForm.page = pageNum
+      this.getTaskList()
     },
     handleDownloadSourceFile(row) {
       DownloadTaskResult({ key: row.uploadFile })
         .then(data => {
           const fileName = row.fileName.slice(0, row.fileName.length - 5)
-          saveFile(data, fileName, 'xlsx');
-          this.$message.success('下载成功')
+          saveFile(data, fileName, "xlsx")
+          this.$message.success("下载成功")
         })
         .catch(console.warn)
     },
     handleDownloadFailFile(row) {
       DownloadTaskResult({ key: row.errorFile })
-      .then(data => {
-        const fileName = row.fileName.slice(0, row.fileName.length - 5)
-        saveFile(data, fileName + '失败数据', 'xlsx');
-        this.$message.success('下载成功')
-      })
-      .catch(console.warn)
+        .then(data => {
+          const fileName = row.fileName.slice(0, row.fileName.length - 5)
+          saveFile(data, fileName + "失败数据", "xlsx")
+          this.$message.success("下载成功")
+        })
+        .catch(console.warn)
     },
   },
 }

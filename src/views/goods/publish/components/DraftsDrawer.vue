@@ -106,7 +106,7 @@ import {
   ExportDraftsList,
   BatchDraftsDel,
   BatchPub,
-} from '@/api/goods/publish';
+} from "@/api/goods/publish"
 
 export default {
   props: {
@@ -123,10 +123,10 @@ export default {
   data() {
     return {
       queryForm: {
-        partnerId: '',
-        productId: '',
-        creationDateBegin: '',
-        creationDateEnd: '',
+        partnerId: "",
+        productId: "",
+        creationDateBegin: "",
+        creationDateEnd: "",
         pageSize: 10,
         pageNum: 1,
       },
@@ -140,89 +140,89 @@ export default {
   watch: {
     visible(val) {
       if (val) {
-        this.queryForm.partnerId = +this.pickShop;
-        this.handleSearch();
+        this.queryForm.partnerId = +this.pickShop
+        this.handleSearch()
       }
     }
   },
   methods: {
     // 关闭
     handleClose() {
-      this.$emit('update:visible', false);
-      this.handleReset();
-      this.$refs.draftsTable && this.$refs.draftsTable.clearSelection();
+      this.$emit("update:visible", false)
+      this.handleReset()
+      this.$refs.draftsTable && this.$refs.draftsTable.clearSelection()
     },
     // 选择
     handleSelectionChange(selection) {
-      this.selection = selection;
+      this.selection = selection
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         creationDateBegin: this.creationDate[0],
         creationDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (value) {
-          params[key] = value;
+          params[key] = value
         }
       }
       GetDraftsList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.pageNum = 1;
+      this.queryForm.pageNum = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // 发布
     handlePublish(ty, row) {
       const data = {
         partnerId: this.queryForm.partnerId,
-      };
-      if (ty === 'batch') {
-        data.ids = this.selection.map(i => i.id);
+      }
+      if (ty === "batch") {
+        data.ids = this.selection.map(i => i.id)
       } else {
-        data.ids = [row.id];
+        data.ids = [row.id]
       }
       BatchPub(data)
         .then(() => {
-          this.$message.success('创建发布任务成功');
-          this.$refs.draftsTable.clearSelection();
-          this.getList();
+          this.$message.success("创建发布任务成功")
+          this.$refs.draftsTable.clearSelection()
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 删除
     handleRemove(ty, row) {
-      const data = Object.create(null);
-      if (ty === 'batch') {
-        data.partnerId = this.queryForm.partnerId;
-        data.ids = this.selection.map(i => i.id);
+      const data = Object.create(null)
+      if (ty === "batch") {
+        data.partnerId = this.queryForm.partnerId
+        data.ids = this.selection.map(i => i.id)
       } else {
-        data.partnerId = row.partnerId;
+        data.partnerId = row.partnerId
         data.ids = [row.id]
       }
       BatchDraftsDel(data)
         .then(() => {
-          this.$message.success('删除成功');
-          this.$refs.draftsTable.clearSelection();
-          this.getList();
+          this.$message.success("删除成功")
+          this.$refs.draftsTable.clearSelection()
+          this.getList()
         })
         .catch(console.warn)
     },
@@ -233,14 +233,14 @@ export default {
         taskType: 120,
         queryCondition: JSON.stringify({
           productId: this.queryForm.productId,
-          creationDateBegin: this.creationDate[0] || '',
-          creationDateEnd: this.creationDate[1] || '',
-          selectedIds: this.selection.map(i => i.id).join(',')
+          creationDateBegin: this.creationDate[0] || "",
+          creationDateEnd: this.creationDate[1] || "",
+          selectedIds: this.selection.map(i => i.id).join(",")
         })
       }
       ExportDraftsList(data)
         .then(() => {
-          this.$message.success('导出任务已生成，请前往下载中心查看');
+          this.$message.success("导出任务已生成，请前往下载中心查看")
         })
         .catch(console.warn)
     },

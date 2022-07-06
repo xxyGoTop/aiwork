@@ -56,94 +56,94 @@
   </div>
 </template>
 <script>
-  import { saveFile } from '@/util';
-  import {ProductSingleList, UploadProducts, SaveProductSingle, DownloadError} from '@/api/live';
+import { saveFile } from "@/util"
+import {ProductSingleList, UploadProducts, SaveProductSingle, DownloadError} from "@/api/live"
 
-  export default {
-    data: () => {
-      return {
-        list: [],
-        errorPath: '',
-      };
+export default {
+  data: () => {
+    return {
+      list: [],
+      errorPath: "",
+    }
+  },
+  computed: {
+    action: function() {
+      return this.$route.params.action
+    }
+  },
+  created() {
+    this.getProductList()
+  },
+  methods: {
+    getProductList() {
+      const {
+        liveId
+      } = this.$route.params
+      ProductSingleList(liveId, {}).then(data => {
+        this.list = data.data || []
+      })
     },
-    computed: {
-      action: function() {
-        return this.$route.params.action;
+    //异常下载
+    downloadError() {
+      if (!this.errorPath) {
+        this.$message.error("未获取到文件路径!")
+        return
       }
+      DownloadError({ "path": this.errorPath }).then(data => {
+        if (!data) return
+        // const fileName = "异常数据.xlsx";
+        saveFile(data, "异常数据", "xlsx")
+      })
     },
-    created() {
-      this.getProductList();
-    },
-    methods: {
-      getProductList() {
-        const {
-          liveId
-        } = this.$route.params;
-        ProductSingleList(liveId, {}).then(data => {
-          this.list = data.data || [];
-        });
-      },
-      //异常下载
-      downloadError() {
-        if (!this.errorPath) {
-          this.$message.error('未获取到文件路径!')
-          return
-        }
-        DownloadError({ "path": this.errorPath }).then(data => {
-          if (!data) return;
-          // const fileName = "异常数据.xlsx";
-          saveFile(data, '异常数据', 'xlsx');
-        });
-      },
-      handleTestSuccess(file) {
-        const formData = new FormData()
-        const {
-          liveId
-        } = this.$route.params;
-        formData.append('file', file.file)
-        formData.append("liveId", liveId)
-        UploadProducts(formData)
-          .then(data => {
-            if (data.code === 200) {
-              //如果包含错误文件
-              if (data.data.hasError) {
-                this.$message.error('上传存在异常数据');
-                this.errorPath= data.data.errorPath;
-              } else {
-                this.$message.success('上传检测表附件成功!');
-                this.list = data.data.productSingleInfoVoList;
-                this.errorPath = '';
-              }
+    handleTestSuccess(file) {
+      const formData = new FormData()
+      const {
+        liveId
+      } = this.$route.params
+      formData.append("file", file.file)
+      formData.append("liveId", liveId)
+      UploadProducts(formData)
+        .then(data => {
+          if (data.code === 200) {
+            //如果包含错误文件
+            if (data.data.hasError) {
+              this.$message.error("上传存在异常数据")
+              this.errorPath= data.data.errorPath
+            } else {
+              this.$message.success("上传检测表附件成功!")
+              this.list = data.data.productSingleInfoVoList
+              this.errorPath = ""
             }
-          });
-      },
-      deleteProduct(index, row) {
-        let giftProductList = this.list[index]["giftProductList"];
-        let gIndex = giftProductList.indexOf(row)
-        giftProductList.splice(gIndex, 1)
-        if (giftProductList.length === 0) {
-          this.list.splice(index, 1);
-        }
-      },
-      save() {
-        const {
-          liveId
-        } = this.$route.params;
-        SaveProductSingle(liveId, this.list).then(data => {
-          if (data.code === 200 && data.data !== 'SYSTEM_ERROR') {
-            this.$message.success('保存成功');
-            this.$router.back();
           }
-        });
-      },
-      deleteMain(index) {
-        this.list.splice(index, 1);
-      },
-      cancel() {
-        this.$router.back();
+        })
+    },
+    deleteProduct(index, row) {
+      let giftProductList = this.list[index]["giftProductList"]
+      let gIndex = giftProductList.indexOf(row)
+      giftProductList.splice(gIndex, 1)
+      if (giftProductList.length === 0) {
+        this.list.splice(index, 1)
       }
     },
-  };
+    save() {
+      const {
+        liveId
+      } = this.$route.params
+      SaveProductSingle(liveId, this.list).then(data => {
+        if (data.code === 200 && data.data !== "SYSTEM_ERROR") {
+          this.$message.success("保存成功")
+          this.$router.back()
+        }
+      })
+    },
+    deleteMain(index) {
+      this.list.splice(index, 1)
+    },
+    cancel() {
+      this.$router.back()
+    }
+  },
+}
 </script>
 
 <style lang="scss">

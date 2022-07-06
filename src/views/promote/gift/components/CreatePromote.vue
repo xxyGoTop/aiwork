@@ -120,14 +120,14 @@
 import {
   GiftCreate,
   GiftInfoGet
-} from '@/api/promote/gift';
+} from "@/api/promote/gift"
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   hasValue,
   filterSpace
-} from '@/util';
+} from "@/util"
 
 export default {
   props: {
@@ -141,34 +141,34 @@ export default {
     },
   },
   data() {
-    const _this = this;
+    const _this = this
     const validateProductIds = (_, value, callback) => {
       if (!value.match(/^[\d\n\r\s]*$/)) {
-        callback(new Error('主品ID输入格式错误'))
+        callback(new Error("主品ID输入格式错误"))
       } else {
-        const ids = value.trim().split(/[\n\r]/).filter(item => item);
+        const ids = value.trim().split(/[\n\r]/).filter(item => item)
         console.log(value.trim().split(/[\n\r]/), ids)
         if (ids.length > 20) {
-          callback(new Error('最多可添加20个主品'))
+          callback(new Error("最多可添加20个主品"))
         } else {
           callback()
         }
       }
-    };
+    }
     return {
       giftForm: {
-        partnerId: '',
-        taskName: '',
-        startTime: '',
-        mainProducts: '',
-        endTime: '',
-        threshold: '',
+        partnerId: "",
+        taskName: "",
+        startTime: "",
+        mainProducts: "",
+        endTime: "",
+        threshold: "",
         discountType: 1,
         taskType: 116,
       },
       shops: [],
       giftData: [
-        { giftProductId: '', giftProductName: '', giftCount:'' }
+        { giftProductId: "", giftProductName: "", giftCount:"" }
       ],
       pickerStartOptions: {
         disabledDate(date) {
@@ -182,26 +182,26 @@ export default {
       },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         taskName: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: "请输入活动名称", trigger: "blur" }
         ],
         startTime: [
-          { required: true, message: '请选择开始时间', trigger: 'blur' }
+          { required: true, message: "请选择开始时间", trigger: "blur" }
         ],
         mainProducts: [
-          { required: true, message: '请输入主商品ID', trigger: 'blur' },
-          { validator: validateProductIds, trigger: 'blur' }
+          { required: true, message: "请输入主商品ID", trigger: "blur" },
+          { validator: validateProductIds, trigger: "blur" }
         ],
         endTime: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' }
+          { required: true, message: "请选择结束时间", trigger: "blur" }
         ],
         discountType:  [
-          { required: true, message: '请选择优惠条件', trigger: 'change' }
+          { required: true, message: "请选择优惠条件", trigger: "change" }
         ],
         threshold:  [
-          { required: true, message: '请输入优惠门槛', trigger: 'blur' }
+          { required: true, message: "请输入优惠门槛", trigger: "blur" }
         ],
       },
     }
@@ -213,43 +213,43 @@ export default {
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false);
-      this.giftData = [{ giftProductId: '', giftProductName: '', giftCount:'' }];
-      this.$refs.giftForm.resetFields();
-      this.$refs.giftForm.clearValidate();
+      this.$emit("update:visible", false)
+      this.giftData = [{ giftProductId: "", giftProductName: "", giftCount:"" }]
+      this.$refs.giftForm.resetFields()
+      this.$refs.giftForm.clearValidate()
     },
     disabledDate(date) {
-      const end = new Date(this.giftForm.startTime).getTime();
+      const end = new Date(this.giftForm.startTime).getTime()
       return date.getTime() < end || !this.giftForm.startTime
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data && data.length ? data.filter(shop => shop.groupType === 1) : [];
-          this.giftForm.partnerId = this.payload.partnerId;
+          this.shops = data && data.length ? data.filter(shop => shop.groupType === 1) : []
+          this.giftForm.partnerId = this.payload.partnerId
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 增加赠品行
     handleAddGift() {
       this.giftData.push({
-        giftProductId: '',
-        giftProductName: '',
-        giftCount: ''
+        giftProductId: "",
+        giftProductName: "",
+        giftCount: ""
       })
     },
     // 删除赠品行
     handleRemoveRow(index) {
-      this.giftData.splice(index, 1);
+      this.giftData.splice(index, 1)
     },
     // 获取赠品信息
     handleGetGiftInfo(row) {
-      const pid = filterSpace(row.giftProductId);
+      const pid = filterSpace(row.giftProductId)
       if (!hasValue(pid)) return
       GiftInfoGet(this.giftForm.partnerId, row.giftProductId)
         .then(({ data }) => {
-          row.giftProductId = data.productId;
-          row.giftProductName = data.productName;
+          row.giftProductId = data.productId
+          row.giftProductName = data.productName
         })
         .catch(console.warn)
     },
@@ -282,17 +282,17 @@ export default {
     //   this.isUploadLoading = true;
     //   const formData = new FormData();
     //   formData.append('uploadFile', options.file);
-      // UploadFile(formData)
-      //   .then(({ data }) => {
-      //     options.onSuccess(data, options.file, [options.file]);
-      //     this.$message.success('上传成功');
-      //   })
-      //   .catch((error) => {
-      //     options.onError(error);
-      //   })
-      //   .finally(() => {
-      //     this.isUploadLoading = false;
-      //   });
+    // UploadFile(formData)
+    //   .then(({ data }) => {
+    //     options.onSuccess(data, options.file, [options.file]);
+    //     this.$message.success('上传成功');
+    //   })
+    //   .catch((error) => {
+    //     options.onError(error);
+    //   })
+    //   .finally(() => {
+    //     this.isUploadLoading = false;
+    //   });
     // },
     // 创建赠品信息
     createGiftRequest() {
@@ -305,42 +305,42 @@ export default {
         discountType,
         threshold,
         mainProducts
-      } = this.giftForm;
+      } = this.giftForm
       const data = {
         startTime,
         endTime,
         partnerId,
         taskType,
         taskName,
-      };
-      const queryCondition = Object.create(null);
-      queryCondition.discountType = discountType;
-      queryCondition.threshold = threshold;
+      }
+      const queryCondition = Object.create(null)
+      queryCondition.discountType = discountType
+      queryCondition.threshold = threshold
       if (mainProducts) {
-        const ids = mainProducts.trim().split(/[\n\r]/).filter(item => item);
-        queryCondition.mainProducts = ids.join(',');
+        const ids = mainProducts.trim().split(/[\n\r]/).filter(item => item)
+        queryCondition.mainProducts = ids.join(",")
       }
       if (this.giftData.length) {
-        const giftDetails = this.giftData.filter(item => (item.giftProductId && item.giftProductName && hasValue(item.giftCount)));
+        const giftDetails = this.giftData.filter(item => (item.giftProductId && item.giftProductName && hasValue(item.giftCount)))
         if (!giftDetails.length) {
-          return this.$message.warning('至少填写完整一条赠品信息')
+          return this.$message.warning("至少填写完整一条赠品信息")
         } else {
-          const isCount = giftDetails.every(item => item.giftCount.match(/^[\d]*$/));
+          const isCount = giftDetails.every(item => item.giftCount.match(/^[\d]*$/))
           if (!isCount) {
-            return this.$message.warning('存在某条赠品数量非数字，请重新填写')
+            return this.$message.warning("存在某条赠品数量非数字，请重新填写")
           }
         }
         // 赠品数量是否为空
         const isCountNull = this.giftData.some(item => (item.giftProductId && item.giftProductName && !hasValue(item.giftCount)))
-        if (isCountNull) return this.$message.warning('赠品数量不能为空')
-        queryCondition.giftDetails = giftDetails;
-      } else return this.$message.warning('至少填写完整一条赠品信息')
-      data.queryCondition = JSON.stringify(queryCondition);
+        if (isCountNull) return this.$message.warning("赠品数量不能为空")
+        queryCondition.giftDetails = giftDetails
+      } else return this.$message.warning("至少填写完整一条赠品信息")
+      data.queryCondition = JSON.stringify(queryCondition)
       GiftCreate(data)
         .then(() => {
-          this.$message.success('赠品促销任务创建成功');
-          this.handleClose();
-          this.$emit('refresh');
+          this.$message.success("赠品促销任务创建成功")
+          this.handleClose()
+          this.$emit("refresh")
         })
         .catch(console.warn)
     },
@@ -350,26 +350,26 @@ export default {
         if (valid) {
           if (this.giftForm.discountType === 1) {
             if (!this.giftForm.threshold.match(/^[\d]*$/)) {
-              return this.$message.warning('满件数需为不小于零的整数')
+              return this.$message.warning("满件数需为不小于零的整数")
             }
             if (!Number.isInteger(+this.giftForm.threshold)) {
-              return this.$message.error('满件数需为不小于零的整数')
+              return this.$message.error("满件数需为不小于零的整数")
             } else {
               if (+this.giftForm.threshold < 0) {
-                return this.$message.error('满件数需为不小于零的整数')
+                return this.$message.error("满件数需为不小于零的整数")
               }
             }
           } else {
             if (!this.giftForm.threshold.match(/^[\d.]*$/)) {
-              return this.$message.warning('满元数需为大于等于零的数字')
+              return this.$message.warning("满元数需为大于等于零的数字")
             }
             if (+this.giftForm.threshold < 0) {
-              return this.$message.error('满元数不能小于零')
+              return this.$message.error("满元数不能小于零")
             }
           }
-          const diffTime = new Date(this.giftForm.endTime).getTime() - new Date(this.giftForm.startTime).getTime();
+          const diffTime = new Date(this.giftForm.endTime).getTime() - new Date(this.giftForm.startTime).getTime()
           if (diffTime < 15 * 60 * 1000) {
-            return this.$message.error('开始时间和结束时间最小差值15分钟')
+            return this.$message.error("开始时间和结束时间最小差值15分钟")
           }
           this.createGiftRequest()
         }

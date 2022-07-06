@@ -23,13 +23,13 @@
 <script>
 import {
   hasValue,
-} from '@/util';
-import Options from './Options';
+} from "@/util"
+import Options from "./Options"
 
 export default {
   model: {
-    prop: 'value',
-    event: 'select',
+    prop: "value",
+    event: "select",
   },
   components: {
     Options,
@@ -41,7 +41,7 @@ export default {
     },
     value: {
       type: [String, Number, Boolean],
-      default: '',
+      default: "",
     },
     options: {
       type: Array,
@@ -49,11 +49,11 @@ export default {
     },
     labelKey: {
       type: String,
-      default: 'label',
+      default: "label",
     },
     valueKey: {
       type: String,
-      default: 'value',
+      default: "value",
     },
     leftOffset: {
       type: Number,
@@ -69,30 +69,30 @@ export default {
       visible: false,
       option: {},
       trigger: null,
-    };
+    }
   },
   watch: {
     value(val) {
-      if (val === '') {
-        this.option = this.options.find(item => item[this.valueKey] === val);
+      if (val === "") {
+        this.option = this.options.find(item => item[this.valueKey] === val)
       }
     }
   },
   computed: {
     ddsLabel() {
-      return hasValue(this.option[this.valueKey]) ? this.option[this.labelKey] : this.label;
+      return hasValue(this.option[this.valueKey]) ? this.option[this.labelKey] : this.label
     },
   },
   methods: {
     handleShow(ev) {
       if (ev.currentTarget) {
-        this.trigger = ev.currentTarget;
-        this.visible = !this.visible;
+        this.trigger = ev.currentTarget
+        this.visible = !this.visible
       }
     },
     handleSelect(value, option) {
-      this.option = option;
-      this.$emit('select', value, option);
+      this.option = option
+      this.$emit("select", value, option)
     },
   },
 }

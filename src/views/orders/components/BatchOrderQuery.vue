@@ -82,27 +82,27 @@ import {
   // fileSuffix,
   acceptTypes,
   saveFile,
-} from '@/util';
+} from "@/util"
 import {
   UploadFile,
   TaskCreate,
   DownloadTaskTemplate
-} from '@/api/goods/task';
+} from "@/api/goods/task"
 
 const fileTypes = [
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'xls',
-  'xlsx',
-];
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "xls",
+  "xlsx",
+]
 
 const defaultFormData = {
   taskType: 401,
-  partnerId: '',
-  orderNumType: '',
-  orderIds: '',
-  uploadFile: '',
-};
+  partnerId: "",
+  orderNumType: "",
+  orderIds: "",
+  uploadFile: "",
+}
 
 export default {
   props: {
@@ -119,75 +119,75 @@ export default {
   data() {
     const validatePids = (_, value, callback) => {
       if (!/^(?:[\d-]+[\n\r]\s*)*[\d-]+\s*$/.test(value)) {
-        callback(new Error('多个订单号请用换行隔开'))
+        callback(new Error("多个订单号请用换行隔开"))
       } else if (value.trim().split(/[\n\r]\s*/).length > 100) {
-        callback(new Error('最多支持100个订单号查询'))
-      } else callback();
-    };
+        callback(new Error("最多支持100个订单号查询"))
+      } else callback()
+    }
     return {
       isUploadLoading: false,
-      activeName: 'manual',
+      activeName: "manual",
       formData: { ...defaultFormData },
       orderTypes: {
-        1: '当当订单号',
-        0: '外平台订单号'
+        1: "当当订单号",
+        0: "外平台订单号"
       },
       rules: {
         partnerId: [
-          { required: true, message: '请选择店铺', trigger: 'blur' }
+          { required: true, message: "请选择店铺", trigger: "blur" }
         ],
         orderNumType: [
-          { required: true, message: '请选择查询ID类型', trigger: 'blur' }
+          { required: true, message: "请选择查询ID类型", trigger: "blur" }
         ],
         orderIds: [
-          { required: true, message: '请录入订单号', trigger: 'blur' },
-          { validator: validatePids, trigger: 'blur' }
+          { required: true, message: "请录入订单号", trigger: "blur" },
+          { validator: validatePids, trigger: "blur" }
         ],
         uploadFile: [
-          { required: true, message: '请上传文件', trigger: 'blur' },
+          { required: true, message: "请上传文件", trigger: "blur" },
         ],
       },
       fileList: [],
-    };
+    }
   },
   watch: {
     pickShop() {
-      this.formData.partnerId = Number(this.pickShop);
+      this.formData.partnerId = Number(this.pickShop)
     },
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     isTmallShop() {
-      return this.groupType === 1;
+      return this.groupType === 1
     },
   },
   methods: {
-     // 删除文件
+    // 删除文件
     handleRemoveFile() {
-      this.formData.uploadFile = '';
-      this.fileList = [];
+      this.formData.uploadFile = ""
+      this.fileList = []
     },
     handleClose() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
+      this.$refs.upload && this.$refs.upload.clearFiles()
       this.formData = { 
         ...defaultFormData,
         partnerId: Number(this.pickShop)
-      };
-      this.activeName = 'manual';
-      this.$refs.form && this.$refs.form.clearValidate();
-      this.$emit('update:visible', false);
+      }
+      this.activeName = "manual"
+      this.$refs.form && this.$refs.form.clearValidate()
+      this.$emit("update:visible", false)
     },
     handleOpen() {
-      this.$refs.upload && this.$refs.upload.clearFiles();
+      this.$refs.upload && this.$refs.upload.clearFiles()
       this.formData = { 
         ...defaultFormData,
         partnerId: Number(this.pickShop)
-      };
-      this.activeName = 'manual';
-      this.$refs.form && this.$refs.form.clearValidate();
+      }
+      this.activeName = "manual"
+      this.$refs.form && this.$refs.form.clearValidate()
     },
     // 获取任务模板
     getTaskTemplate(filename, suffix) {
@@ -196,56 +196,56 @@ export default {
         taskType: this.formData.taskType,
       })
         .then((data) => {
-          saveFile(data, filename, suffix);
+          saveFile(data, filename, suffix)
         })
         .catch(console.warn)
     },
     handleTabClick() {
-      this.formData.orderNumType = '';
-      this.formData.orderIds = '';
-      this.$refs.form.clearValidate();
+      this.formData.orderNumType = ""
+      this.formData.orderIds = ""
+      this.$refs.form.clearValidate()
     },
     uploadBefore(file) {
-      let message = '';
+      let message = ""
       // if (/[\u4e00-\u9fa5]/.test(file.name)) {
       //   message = '文件名不能含有中文';
       // }
       if (file.size > 10 * 1024 * 1024) {
-        message = '文件不能大于10M';
+        message = "文件不能大于10M"
       }
       if (!acceptTypes(file, ...fileTypes)) {
-        message = '只能上传 xls/xlsx 格式文件';
+        message = "只能上传 xls/xlsx 格式文件"
       }
       // 文件是否通过检测
       if (message) {
-        this.$message.warning(message);
-        return false;
+        this.$message.warning(message)
+        return false
       }
     },
     uploadRequest(options) {
-      this.isUploadLoading = true;
-      const formData = new FormData();
-      formData.append('uploadFile', options.file);
+      this.isUploadLoading = true
+      const formData = new FormData()
+      formData.append("uploadFile", options.file)
       const fileItem = {
         name: options.file.name,
-        status: 'pending',
-      };
-      this.fileList = [fileItem];
+        status: "pending",
+      }
+      this.fileList = [fileItem]
       UploadFile(formData)
         .then(({ data }) => {
-          options.onSuccess(data, options.file, [options.file]);
-          fileItem.status = 'success';
-          fileItem.name = data;
-          this.$message.success('上传成功');
-          this.formData.uploadFile = this.fileList.map(item => item.name).join(',');
+          options.onSuccess(data, options.file, [options.file])
+          fileItem.status = "success"
+          fileItem.name = data
+          this.$message.success("上传成功")
+          this.formData.uploadFile = this.fileList.map(item => item.name).join(",")
         })
         .catch((error) => {
-          options.onError(error);
-          fileItem.status = 'fail';
+          options.onError(error)
+          fileItem.status = "fail"
         })
         .finally(() => {
-          this.isUploadLoading = false;
-        });
+          this.isUploadLoading = false
+        })
     },
     handlePublish() {
       this.$refs.form.validate(valid => {
@@ -256,36 +256,36 @@ export default {
             orderNumType,
             uploadFile,
             ...condition
-          } = this.formData;
+          } = this.formData
 
           const data = {
             taskType,
             partnerId,
-          };
+          }
 
-          const queryCondition = {};
-          queryCondition.orderNumType = orderNumType;
-          if (this.activeName === 'upload') {
-            data.uploadFile = uploadFile;
+          const queryCondition = {}
+          queryCondition.orderNumType = orderNumType
+          if (this.activeName === "upload") {
+            data.uploadFile = uploadFile
           } else {
-            const orderIds = condition.orderIds.split(/[\n\r]\s*/).filter(id => id).join(',');
-            this.$emit('update:visible', false);
-            this.$emit('search', {
+            const orderIds = condition.orderIds.split(/[\n\r]\s*/).filter(id => id).join(",")
+            this.$emit("update:visible", false)
+            this.$emit("search", {
               partnerId,
               orderNumType,
               orderIds
-            });
-            return this.$message.success('手动订单录入查询结果请在列表页查看')
+            })
+            return this.$message.success("手动订单录入查询结果请在列表页查看")
           }
-          data.queryCondition = JSON.stringify(queryCondition);
+          data.queryCondition = JSON.stringify(queryCondition)
           TaskCreate(data)
             .then(() => {
-              this.$message.success('创建任务成功');
-              this.handleClose();
+              this.$message.success("创建任务成功")
+              this.handleClose()
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
   },
 }

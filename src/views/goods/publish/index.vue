@@ -164,17 +164,17 @@
 <script>
 import {
   GoodsShops,
-} from '@/api/goods/list';
+} from "@/api/goods/list"
 import {
   QueryTaskList,
   TaskStatusList,
-} from '@/api/goods/task';
-import BatchDrawer from './components/BatchDrawer';
-import DetailDrawer from './components/DetailDrawer';
-import DraftsDrawer from './components/DraftsDrawer';
-import { format } from 'date-fns';
-import SKUBatchDrawer from './components/SKUBatchDrawer.vue';
-import SKUDetailDrawer from './components/SKUDetailDrawer.vue';
+} from "@/api/goods/task"
+import BatchDrawer from "./components/BatchDrawer"
+import DetailDrawer from "./components/DetailDrawer"
+import DraftsDrawer from "./components/DraftsDrawer"
+import { format } from "date-fns"
+import SKUBatchDrawer from "./components/SKUBatchDrawer.vue"
+import SKUDetailDrawer from "./components/SKUDetailDrawer.vue"
 
 /*子任务类型
   1021：非重复品，1022：重复品，1023：spu发布，1024：sku发布
@@ -187,7 +187,7 @@ export default {
     DraftsDrawer,
     SKUBatchDrawer,
     SKUDetailDrawer
-},
+  },
   data() {
     return {
       visibleDrafts: false,
@@ -197,14 +197,14 @@ export default {
       detailVisibleSKU: false,
       detailInfo: {},
       queryForm: {
-        partnerId: '',
-        taskNum: '',
-        createDateBegin: '',
-        createDateEnd: '',
+        partnerId: "",
+        taskNum: "",
+        createDateBegin: "",
+        createDateEnd: "",
         pageSize: 10,
         page: 1,
-        operator: '',
-        status: '',
+        operator: "",
+        status: "",
         taskType: 102
       },
       creationDate: [],
@@ -221,120 +221,120 @@ export default {
     }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.queryForm.partnerId || '');
+    this.$store.commit("setPartnerId", this.queryForm.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.queryForm.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
   },
   methods: {
     // 草稿箱
     handleOpenDrafts() {
-      this.visibleDrafts = true;
+      this.visibleDrafts = true
     },
     formatDate(date) {
-      return format(date, 'yyyy-MM-dd HH:mm:ss')
+      return format(date, "yyyy-MM-dd HH:mm:ss")
     },
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           this.shops.push({
             groupType: -2,
             partnerId: -2,
-            partnerName: '拼多多_全平台'
+            partnerName: "拼多多_全平台"
           })
-          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
-          this.getList();
+          this.queryForm.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 任务状态
     getTaskStatus() {
       TaskStatusList({ taskType: 102 })
         .then(({ data }) => {
           this.statusList = [
-            { status: '', name: '不限' },
+            { status: "", name: "不限" },
             ...data,
-          ];
+          ]
         })
         .catch(console.warn)
     },
     // 查询
     getList() {
       if (this.loading) return
-      this.loading = true;
-      this.creationDate = this.creationDate || [];
+      this.loading = true
+      this.creationDate = this.creationDate || []
       const queryParams = {
         ...this.queryForm,
         createDateBegin: this.creationDate[0],
         createDateEnd: this.creationDate[1]
-      };
-      const params = Object.create(null);
+      }
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (value) {
-          params[key] = value;
+          params[key] = value
         }
       }
       QueryTaskList(params)
         .then(({ data, total }) => {
-          this.listInfo = data;
-          this.total = total;
+          this.listInfo = data
+          this.total = total
         })
         .catch(console.warn)
         .finally(() => {
-          this.loading = false;
+          this.loading = false
         })
     },
     handleSearch() {
-      this.queryForm.page = 1;
+      this.queryForm.page = 1
       this.getList()
     },
     handleReset() {
-      this.$refs.queryForm.resetFields();
-      this.creationDate = [];
+      this.$refs.queryForm.resetFields()
+      this.creationDate = []
     },
     // spu发布
     handleAddGoods(taskType) {
-      this.visible = true;
-      this.taskSubType = taskType;
+      this.visible = true
+      this.taskSubType = taskType
       if (taskType === 1023) {
-        this.pubShops = this.shops.filter(item => (item.groupType === 2 || item.groupType === 3));
+        this.pubShops = this.shops.filter(item => (item.groupType === 2 || item.groupType === 3))
       } else {
-        this.pubShops = this.shops;
+        this.pubShops = this.shops
       }
     },
     // 添加sku
     handleAddSKU() {
-      this.visibleSKU = true;
-      this.SKUShops = this.shops.filter(item => (item.groupType === 2 || item.groupType === 3));
+      this.visibleSKU = true
+      this.SKUShops = this.shops.filter(item => (item.groupType === 2 || item.groupType === 3))
     },
     handleCurrentChange(page) {
-      this.queryForm.page = page;
-      this.getList();
+      this.queryForm.page = page
+      this.getList()
     },
     // 查看发布结果
     handlePublishResult(row) {
-      let curStatus = '';
+      let curStatus = ""
       this.statusList.map(item => {
         if (item.name === row.status) {
           curStatus = item.status
         }
       })
-      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus });
+      this.detailInfo = Object.assign(row, { partnerId: this.queryForm.partnerId, state: curStatus })
       if (+row.subTaskType === 1024) {
-        this.detailVisibleSKU = true;
+        this.detailVisibleSKU = true
       } else {
-        this.detailVisible = true;
+        this.detailVisible = true
       }
     },
   },
   created() {
-    this.getShops();
-    this.getTaskStatus();
+    this.getShops()
+    this.getTaskStatus()
   },
 }
 </script>

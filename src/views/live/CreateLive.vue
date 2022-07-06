@@ -74,100 +74,100 @@
 </template>
 
 <script>
-  import {
-    CreateLiveBasic,
-    SaveLiveInfo,
-  } from '@/api/live';
-  import {
-    addMinutes,
-  } from 'date-fns';
+import {
+  CreateLiveBasic,
+  SaveLiveInfo,
+} from "@/api/live"
+import {
+  addMinutes,
+} from "date-fns"
 
-  export default {
-    data() {
-      const checkStartTime = (_, value, callback) => {
-        if (!value) {
-          return callback(new Error('请选择直播开始时间'));
-        }
-        const nowTime = addMinutes(new Date(), 30);
-        if (new Date(value) < nowTime) {
-          return callback(new Error('开始时间应大于当前时间半小时'));
-        }
-        const { endTime } = this.form;
-        if (endTime && new Date(value) >= new Date(endTime)) {
-          return callback(new Error('开始时间应大于结束时间'));
+export default {
+  data() {
+    const checkStartTime = (_, value, callback) => {
+      if (!value) {
+        return callback(new Error("请选择直播开始时间"))
+      }
+      const nowTime = addMinutes(new Date(), 30)
+      if (new Date(value) < nowTime) {
+        return callback(new Error("开始时间应大于当前时间半小时"))
+      }
+      const { endTime } = this.form
+      if (endTime && new Date(value) >= new Date(endTime)) {
+        return callback(new Error("开始时间应大于结束时间"))
+      } else {
+        this.$refs.form.clearValidate("endTime")
+      }
+      callback()
+    }
+    const checkEndTime = (_, value, callback) => {
+      if (!value) {
+        return callback(new Error("请选择直播结束时间"))
+      }
+      const { startTime } = this.form
+      if (startTime && new Date(startTime) >= new Date(value)) {
+        return callback(new Error("结束时间应小于开始时间"))
+      }       
+      callback()
+    }
+    return {
+      loading: false,
+      form: {
+        liveName: "",
+        platformId: "",
+        liveType: "",
+        consumableType: "",
+        packageType: "外卖场直播包装",
+        startTime: "",
+        endTime: "",
+      },
+      rules:{
+        liveName: [{required: true, message: "请输入直播名称", trigger: "change"}],
+        platformId: [{required: true, message: "请选择", trigger: "blur"}],
+        liveType: [{required: true, message: "请选择", trigger: "blur"}],
+        consumableType: [{ required: true, message: "请选择", trigger: "blur" }],
+        packageType: [{ required: true, message: "请选择", trigger: "blur" }],
+        startTime: [{ required: true, validator: checkStartTime, trigger: "change" }],
+        endTime: [{ required: true, validator: checkEndTime, trigger: "change" }],
+      },
+      platformList: [],
+      liveTypeList: [],
+      packageTypeList: [],
+      consumableTypeList: [],
+    }
+  },
+  created() {
+    this.getCreateLiveBasic()
+  },
+  methods: {
+    getCreateLiveBasic(){
+      CreateLiveBasic().then(data => {
+        this.platformList = data.data.platformList
+        this.liveTypeList = data.data.liveTypeList
+        this.packageTypeList = data.data.packageTypeList
+        this.consumableTypeList = data.data.consumableTypeList
+      })
+    },
+    submit() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.save()
         } else {
-          this.$refs.form.clearValidate('endTime');
+          return false
         }
-        callback();
-      };
-      const checkEndTime = (_, value, callback) => {
-        if (!value) {
-          return callback(new Error('请选择直播结束时间'));
+      })
+    },
+    save(){
+      SaveLiveInfo(this.form).then(data => {
+        if (data.code === 200 && data.data !== "SYSTEM_ERROR"){
+          const liveId = data.data
+          const platformId = this.form.platformId
+          this.$router.push(`/living/product/productAndStock/${liveId}/${platformId}`)
         }
-        const { startTime } = this.form;
-        if (startTime && new Date(startTime) >= new Date(value)) {
-          return callback(new Error('结束时间应小于开始时间'));
-        }       
-        callback();
-      };
-      return {
-        loading: false,
-        form: {
-          liveName: '',
-          platformId: '',
-          liveType: '',
-          consumableType: '',
-          packageType: '外卖场直播包装',
-          startTime: '',
-          endTime: '',
-        },
-        rules:{
-          liveName: [{required: true, message: '请输入直播名称', trigger: 'change'}],
-          platformId: [{required: true, message: '请选择', trigger: 'blur'}],
-          liveType: [{required: true, message: '请选择', trigger: 'blur'}],
-          consumableType: [{ required: true, message: '请选择', trigger: 'blur' }],
-          packageType: [{ required: true, message: '请选择', trigger: 'blur' }],
-          startTime: [{ required: true, validator: checkStartTime, trigger: 'change' }],
-          endTime: [{ required: true, validator: checkEndTime, trigger: 'change' }],
-        },
-        platformList: [],
-        liveTypeList: [],
-        packageTypeList: [],
-        consumableTypeList: [],
-      };
+      })
     },
-    created() {
-      this.getCreateLiveBasic();
-    },
-    methods: {
-      getCreateLiveBasic(){
-        CreateLiveBasic().then(data => {
-          this.platformList = data.data.platformList;
-          this.liveTypeList = data.data.liveTypeList;
-          this.packageTypeList = data.data.packageTypeList;
-          this.consumableTypeList = data.data.consumableTypeList;
-        })
-      },
-      submit() {
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.save();
-          } else {
-            return false;
-          }
-        });
-      },
-      save(){
-        SaveLiveInfo(this.form).then(data => {
-          if (data.code === 200 && data.data !== 'SYSTEM_ERROR'){
-            const liveId = data.data;
-            const platformId = this.form.platformId;
-            this.$router.push(`/living/product/productAndStock/${liveId}/${platformId}`);
-          }
-        })
-      },
-    },
-  };
+  },
+}
 </script>
 
 <style lang="scss">

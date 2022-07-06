@@ -236,14 +236,14 @@ import {
   GetPrice,
   GetStock,
   ProductUnbind,
-} from '@/api/goods/list';
-import DetailDrawer from './components/DetailDrawer';
-import ExportDrawer from './components/ExportDrawer';
+} from "@/api/goods/list"
+import DetailDrawer from "./components/DetailDrawer"
+import ExportDrawer from "./components/ExportDrawer"
 import {
   hasValue,
   // filterSpace,
   isValid,
-} from '@/util';
+} from "@/util"
 /**
 taskTypeMap: {
   101: '商品导出',
@@ -280,15 +280,15 @@ export default {
       formData: {
         pageNum: 1,
         pageSize: 10,
-        categoryDepth: '',
-        catpath: '',
-        isPresale: '',
-        outerCategory: '',
-        partnerId: '',
-        productId: '',
-        productName: '',
+        categoryDepth: "",
+        catpath: "",
+        isPresale: "",
+        outerCategory: "",
+        partnerId: "",
+        productId: "",
+        productName: "",
         saleQuantitySort: 1,
-        saleStatus: '',
+        saleStatus: "",
       },
       list: [],
       DDcatePath: [],
@@ -296,21 +296,21 @@ export default {
       catePath: [],
       catesOptions: [],
       cateProps: {
-        label: 'name',
-        value: 'catpath',
-        children: 'children',
+        label: "name",
+        value: "catpath",
+        children: "children",
         checkStrictly: true,
       },
       saleStatusMap: [
-        { label: '待上架', value: 0 },
-        { label: '已上架', value: 1 },
-        { label: '被下架', value: 2 },
-        { label: '上架失败', value: -1 },
+        { label: "待上架", value: 0 },
+        { label: "已上架", value: 1 },
+        { label: "被下架", value: 2 },
+        { label: "上架失败", value: -1 },
       ],
       presaleOptions: [
-        { label: '不限', value: '' },
-        { label: '非预售', value: 0 },
-        { label: '预售', value: 1 },
+        { label: "不限", value: "" },
+        { label: "非预售", value: 0 },
+        { label: "预售", value: 1 },
       ],
       count: 0,
       selectOptions: [],
@@ -322,20 +322,20 @@ export default {
       currentSelectOptions: [],
       offShelfLock: false,
       delLock: false,
-      keywords: ''
-    };
+      keywords: ""
+    }
   },
   beforeRouteLeave(_, from , next) {
-    this.$store.commit('setPartnerId', this.formData.partnerId || '');
+    this.$store.commit("setPartnerId", this.formData.partnerId || "")
     next()
   },
   computed: {
     groupType() {
-      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId);
-      return findedShop ? findedShop.groupType : '';
+      const findedShop = this.shops.find(shop => shop.partnerId === this.formData.partnerId)
+      return findedShop ? findedShop.groupType : ""
     },
     groupMap() {
-      return this.$store.state.groupMap;
+      return this.$store.state.groupMap
     },
     isTMShop() {
       return this.groupType === 1
@@ -343,15 +343,15 @@ export default {
     // 商品状态
     saleStatusOptions() {
       const options = [
-        { label: '不限', value: '' },
-        { label: '待上架', value: 0 },
-        { label: '已上架', value: 1 },
-        { label: '被下架', value: 2 }
-      ];
+        { label: "不限", value: "" },
+        { label: "待上架", value: 0 },
+        { label: "已上架", value: 1 },
+        { label: "被下架", value: 2 }
+      ]
       if (this.groupType === 1) {
         return [
           ...options,
-          { label: '上架失败', value: -1 },
+          { label: "上架失败", value: -1 },
         ]
       }
       return options
@@ -362,43 +362,43 @@ export default {
     getShops() {
       GoodsShops()
         .then(({ data }) => {
-          this.shops = data || [];
+          this.shops = data || []
           // 初始设置和查询
           if (this.shops.length) {
-            this.formData.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId;
+            this.formData.partnerId = this.$store.state.partnerId ? this.$store.state.partnerId : this.shops[0].partnerId
             // 商品信息跳转查询
-            const { productId, partnerId  } = this.$route.query;
-            if (productId) this.formData.productId = +productId;
-            if (partnerId) this.formData.partnerId = +partnerId;
-            this.handleGetOuterCate();
+            const { productId, partnerId  } = this.$route.query
+            if (productId) this.formData.productId = +productId
+            if (partnerId) this.formData.partnerId = +partnerId
+            this.handleGetOuterCate()
             this.getList()
           } else {
-            this.$message.warning('尚无店铺');
+            this.$message.warning("尚无店铺")
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 获取外站分类
     handleGetOuterCate() {
-      this.formData.categoryDepth = '';
-      this.formData.catpath = '';
-      this.formData.outerCategory = '';
-      this.DDcatePath = [];
-      this.catePath = [];
-      this.handleSearch();
+      this.formData.categoryDepth = ""
+      this.formData.catpath = ""
+      this.formData.outerCategory = ""
+      this.DDcatePath = []
+      this.catePath = []
+      this.handleSearch()
       OuterCate({ partnerId: this.formData.partnerId })
         .then(({ data }) => {
-          this.catesOptions = this.formatCate(data.category);
+          this.catesOptions = this.formatCate(data.category)
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 获取当当分类
     getDDCates() {
       DDCate()
         .then(({ data }) => {
-          this.DDcatesOptions = this.formatCate(data);
+          this.DDcatesOptions = this.formatCate(data)
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 分类最后一级处理
     formatCate(data) {
@@ -412,146 +412,146 @@ export default {
       return data
     },
     handleViewDetail(row) {
-      this.detailVisible = true;
+      this.detailVisible = true
       this.info = {
         ...row,
         groupType: this.groupType
-      };
+      }
     },
     // 销量排序查询
     handleSortSearch({ prop, order }) {
-      if (prop === 'saleQuantity') {
-        this.formData.saleQuantitySort = order ? order === 'ascending' ? 2 : 1 : '';
-        this.handleSearch();
+      if (prop === "saleQuantity") {
+        this.formData.saleQuantitySort = order ? order === "ascending" ? 2 : 1 : ""
+        this.handleSearch()
       }
     },
     getQueryParams() {
       if (this.catePath.length >= 1) {
-        const len = this.catePath.length;
-        this.formData.categoryDepth = len;
-        this.formData.outerCategory = this.catePath[len - 1];
+        const len = this.catePath.length
+        this.formData.categoryDepth = len
+        this.formData.outerCategory = this.catePath[len - 1]
       }
       if (this.DDcatePath.length >= 1) {
-        const len = this.DDcatePath.length;
-        this.formData.categoryDepth = len;
-        this.formData.catpath = this.DDcatePath[len - 1];
+        const len = this.DDcatePath.length
+        this.formData.categoryDepth = len
+        this.formData.catpath = this.DDcatePath[len - 1]
       }
-      const queryParams = { ...this.formData };
+      const queryParams = { ...this.formData }
       if (this.keywords) {
-        queryParams.productId = this.keywords.split('\n').filter(item => item).join(',')
+        queryParams.productId = this.keywords.split("\n").filter(item => item).join(",")
         queryParams.productId = queryParams.productId.replace(/\s*/g,"") // 去掉所有空格
       }
-      const params = Object.create(null);
+      const params = Object.create(null)
       for (const [key, value] of Object.entries(queryParams)) {
         if (hasValue(value)) {
-          params[key] = value;
+          params[key] = value
         }
       }
-      return params;
+      return params
     },
     // 查询
     getList() {
-      if (this.isLoading) return;
-      this.isLoading = true;
-      const params = this.getQueryParams();
+      if (this.isLoading) return
+      this.isLoading = true
+      const params = this.getQueryParams()
       GoodsSearch(params)
         .then(({ data, total, }) => {
-          this.total = total || 0;
-          this.list = data || [];
+          this.total = total || 0
+          this.list = data || []
           if (data && data.length) {
-            this.getPice(data);
-            this.getStock(data);
+            this.getPice(data)
+            this.getStock(data)
           }
         })
         .catch(console.warn)
         .finally(() => {
-          this.isLoading = false;
-          this.formData.catpath = '';
-          this.formData.outerCategory = '';
-          this.formData.categoryDepth = '';
-        });
+          this.isLoading = false
+          this.formData.catpath = ""
+          this.formData.outerCategory = ""
+          this.formData.categoryDepth = ""
+        })
     },
     // 获取参数
     getPiceAndStockParams(data) {
       const params = {
         partnerId: this.formData.partnerId,
-      };
-      params.ids = data.map(item => item.id);
+      }
+      params.ids = data.map(item => item.id)
       return params
     },
     // 处理价格和库存
     processPriceStock(data, k) {
       if (data && data.length) {
-        const idMap = Object.create(null);
+        const idMap = Object.create(null)
         data.forEach(e => {
-          idMap[e.id] = e;
+          idMap[e.id] = e
         })
         this.list.forEach(item => {
-          if (k === 'stock') {
+          if (k === "stock") {
             // 库存
             data.forEach(e => {
               if (item.productId === e.productId) {
-                item[k] = `${e['onSaleStock']}/${item[k]}`;
+                item[k] = `${e["onSaleStock"]}/${item[k]}`
               }
             })
           } else {
             // 价格
             if (this.isTMShop) {
-              item.price = idMap[item.id] ? `${idMap[item.id].price}/${isValid(idMap[item.id].ddPrice) ? idMap[item.id].ddPrice : '-'}` : `-/${isValid(idMap[item.id].ddPrice) ? idMap[item.id].ddPrice : '-'}`;
+              item.price = idMap[item.id] ? `${idMap[item.id].price}/${isValid(idMap[item.id].ddPrice) ? idMap[item.id].ddPrice : "-"}` : `-/${isValid(idMap[item.id].ddPrice) ? idMap[item.id].ddPrice : "-"}`
             } else {
-              item.price = idMap[item.id] ? `${idMap[item.id].price}/${isValid(item.price) ? item.price : '-'}` : `-/${isValid(item.price) ? item.price : '-'}`;
+              item.price = idMap[item.id] ? `${idMap[item.id].price}/${isValid(item.price) ? item.price : "-"}` : `-/${isValid(item.price) ? item.price : "-"}`
             }
           }
         })
       } else if (data && data.length === 0) {
         this.list.forEach(item => {
-          if (k === 'stock') {
-            item[k] = `-/${item[k]}`;
+          if (k === "stock") {
+            item[k] = `-/${item[k]}`
           } else {
             // 价格
-            item[k] = `-/${isValid(item[k]) ? item[k] : '-'}`;
+            item[k] = `-/${isValid(item[k]) ? item[k] : "-"}`
           }
         })
       }
     },
     // 价格查询
     getPice(data) {
-      const d = this.getPiceAndStockParams(data);
+      const d = this.getPiceAndStockParams(data)
       GetPrice(d)
         .then(({ data }) => {
-          this.processPriceStock(data, 'price')
+          this.processPriceStock(data, "price")
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 库存查询
     getStock(data) {
-      const d = this.getPiceAndStockParams(data);
+      const d = this.getPiceAndStockParams(data)
       GetStock(d)
         .then(({ data }) => {
-          this.processPriceStock(data, 'stock')
+          this.processPriceStock(data, "stock")
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleSearch() {
       if (this.keywords.trim().split(/[\n\r]\s*/).length > 100) {
-        this.$message.warning('最多可支持100个商品id搜索')
+        this.$message.warning("最多可支持100个商品id搜索")
         return
       }
-      this.formData.pageNum = 1;
-      this.getList();
+      this.formData.pageNum = 1
+      this.getList()
     },
     handleReset () {
-      this.keywords = '';
-      this.formData.categoryDepth = '';
-      this.formData.catpath = '';
-      this.formData.outerCategory = '';
-      this.DDcatePath = [];
-      this.catePath = [];
+      this.keywords = ""
+      this.formData.categoryDepth = ""
+      this.formData.catpath = ""
+      this.formData.outerCategory = ""
+      this.DDcatePath = []
+      this.catePath = []
     },
     // 操作分页
     handleCurrentChange(page) {
-      this.formData.pageNum = page;
-      this.getList();
+      this.formData.pageNum = page
+      this.getList()
     },
     // 上架
     handleOnShelf(row) {
@@ -561,106 +561,106 @@ export default {
         outerCode: row.outerCode
       })
         .then(() => {
-          this.$message.success('上架成功');
-          this.getList();
+          this.$message.success("上架成功")
+          this.getList()
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     // 下架
     handleOffShelf(row) {
       if (this.offShelfLock) {
-        return this.$message.warning('操作处理中，请勿重复操作')
+        return this.$message.warning("操作处理中，请勿重复操作")
       }
-      this.offShelfLock = true;
+      this.offShelfLock = true
       GoodsOffShelf({
         partnerId: row.partnerId,
         productId: row.productId,
         outerCode: row.outerCode
       })
         .then(() => {
-          this.$message.success('下架成功');
-          this.getList();
+          this.$message.success("下架成功")
+          this.getList()
         })
         .catch(console.warn)
         .finally(() => {
           this.offShelfLock = false
-        });
+        })
     },
     // 删除
     handleRemoveProd(row) {
       if (this.delLock) {
-        return this.$message.warning('操作处理中，请勿重复操作')
+        return this.$message.warning("操作处理中，请勿重复操作")
       }
-      this.delLock = true;
+      this.delLock = true
       GoodsDel({
         primaryId: row.id
       })
-       .then(() => {
-          this.getList();
+        .then(() => {
+          this.getList()
         })
         .catch(console.warn)
         .finally(() => {
-          this.delLock = false;
-        });
+          this.delLock = false
+        })
     },
     // 解绑
     handleUnBind(row) {
-      if (this.delUnbind) return this.$message.warning('操作处理中，请勿重复操作')
-      this.delUnbind = true;
+      if (this.delUnbind) return this.$message.warning("操作处理中，请勿重复操作")
+      this.delUnbind = true
       ProductUnbind({ id: row.id })
         .then(() => {
-          this.$message.success('解绑成功');
-          this.getList();
+          this.$message.success("解绑成功")
+          this.getList()
         })
         .catch(console.warn)
         .finally(() => {
           this.delUnbind = false
-        });
+        })
     },
     // 选择
     handleSelect(selection) {
       if (selection.length > 0) {
-        this.count = selection.length;
-        this.batchOperateVisible = true;
+        this.count = selection.length
+        this.batchOperateVisible = true
       } else {
-        this.count = 0;
+        this.count = 0
       }
-      this.selectOptions = selection;
+      this.selectOptions = selection
     },
     // 取消选择 
     handleCancelSelect() {
-      this.$refs.multipleTable.clearSelection();
-      this.count = 0;
-      this.batchOperateVisible = false;
-      this.tempSelectOptions = 0;
+      this.$refs.multipleTable.clearSelection()
+      this.count = 0
+      this.batchOperateVisible = false
+      this.tempSelectOptions = 0
     },
     // 批量删除
     handleBatchRemove() {
-      this.$alert('已上架商品不支持删除', '提示', {
-        type: 'info',
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$alert("已上架商品不支持删除", "提示", {
+        type: "info",
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
         showCancelButton: true,
         callback: (action) => {
-          if (action === 'confirm') {
+          if (action === "confirm") {
             const selectOptions = this.selectOptions.map((item) => {
               if (item.saleStatus === 0 || item.saleStatus === 2) {
                 return item
               } else if (item.saleStatus === 1) {
-                this.$refs.multipleTable.toggleRowSelection(item, false);
+                this.$refs.multipleTable.toggleRowSelection(item, false)
               }
-            });
-            const filterOptions = selectOptions.filter(item => item !== undefined);
-            this.count = filterOptions && filterOptions.length > 0 ? filterOptions.length : 0;
+            })
+            const filterOptions = selectOptions.filter(item => item !== undefined)
+            this.count = filterOptions && filterOptions.length > 0 ? filterOptions.length : 0
             if (filterOptions.length > 0) {
-              const ids = filterOptions.map(item => item.id);
-              const params = { primaryIds: ids };
+              const ids = filterOptions.map(item => item.id)
+              const params = { primaryIds: ids }
               BatchDelete(params)
                 .then(() => {
-                  this.$message.success('批量删除成功');
-                  this.count = 0;
-                  this.batchOperateVisible = false;
-                  this.handleSearch();
+                  this.$message.success("批量删除成功")
+                  this.count = 0
+                  this.batchOperateVisible = false
+                  this.handleSearch()
                 })
                 .catch(console.warn)
             } else {
@@ -672,20 +672,20 @@ export default {
     },
     // 更多
     handleMore() {
-      this.moreOperateVisible = !this.moreOperateVisible;
+      this.moreOperateVisible = !this.moreOperateVisible
     },
     // 批量导出
     handleExport() {
-      this.exportVisible = true;
-      this.queryParams = this.getQueryParams();
-      this.selectedShopIds = this.selectOptions.map(item => item.id);
+      this.exportVisible = true
+      this.queryParams = this.getQueryParams()
+      this.selectedShopIds = this.selectOptions.map(item => item.id)
     }
   },
   created() {
-    this.getShops();
-    this.getDDCates();
+    this.getShops()
+    this.getDDCates()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

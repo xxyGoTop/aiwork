@@ -243,51 +243,51 @@
 </template>
 
 <script>
-import * as Address from '@/api/address';
+import * as Address from "@/api/address"
 import {
   hasValue,
-} from '@/util.js';
+} from "@/util.js"
 
 const defaultFormModel = {
   curPage: 1,
   pageSize: 10,
-  partnerId: '',
-  provinceName: '',
-  cityName: '',
-  areaName: '',
-  status: '',
-};
+  partnerId: "",
+  provinceName: "",
+  cityName: "",
+  areaName: "",
+  status: "",
+}
 
 const defaultAddForm = {
-  partnerId: '',
-  provinceId: '',
-  provinceName: '',
-  cityId: '',
-  cityName: '',
-  areaId: '',
-  areaName: '',
-  streetId: '',
-  streetName: '',
-};
+  partnerId: "",
+  provinceId: "",
+  provinceName: "",
+  cityId: "",
+  cityName: "",
+  areaId: "",
+  areaName: "",
+  streetId: "",
+  streetName: "",
+}
 
 const defaultMapForm = {
-  partnerId: '',
-  provinceName: '',
-  cityName: '',
-  areaName: '',
-  streetName: '',
-  dangProvinceName: '',
-  dangCityName: '',
-  dangAreaName: '',
-  dangStreetName: '',
-};
+  partnerId: "",
+  provinceName: "",
+  cityName: "",
+  areaName: "",
+  streetName: "",
+  dangProvinceName: "",
+  dangCityName: "",
+  dangAreaName: "",
+  dangStreetName: "",
+}
 
 const defaultDangAddress = {
-  dangProvinceName: '',
-  dangCityName: '',
-  dangAreaName: '',
-  dangStreetName: '',
-};
+  dangProvinceName: "",
+  dangCityName: "",
+  dangAreaName: "",
+  dangStreetName: "",
+}
 
 export default {
   data() {
@@ -298,9 +298,9 @@ export default {
       citys: [],
       areas: [],
       statusMap: [
-        { label: '初始化', value: '0', type: '' },
-        { label: '有效', value: '1', type: 'success' },
-        { label: '失效', value: '2', type: 'info' },
+        { label: "初始化", value: "0", type: "" },
+        { label: "有效", value: "1", type: "success" },
+        { label: "失效", value: "2", type: "info" },
       ],
       formModel: { ...defaultFormModel },
       tableData: [],
@@ -308,36 +308,36 @@ export default {
       mapAddrVisible: false,
       addFormRules: {
         partnerId: [
-          { required: true, message: '请选择合作方', trigger: 'blur' },
+          { required: true, message: "请选择合作方", trigger: "blur" },
         ],
         provinceId: [
-          { required: true, message: '请输入第三方省Id', trigger: 'blur' },
+          { required: true, message: "请输入第三方省Id", trigger: "blur" },
         ],
         provinceName: [
-          { required: true, message: '请输入第三方省名称', trigger: 'blur' },
+          { required: true, message: "请输入第三方省名称", trigger: "blur" },
         ],
         cityId: [
-          { required: true, message: '请输入第三方市Id', trigger: 'blur' },
+          { required: true, message: "请输入第三方市Id", trigger: "blur" },
         ],
         cityName: [
-          { required: true, message: '请输入第三方市名称', trigger: 'blur' },
+          { required: true, message: "请输入第三方市名称", trigger: "blur" },
         ],
         areaId: [
-          { required: true, message: '请输入第三方区Id', trigger: 'blur' },
+          { required: true, message: "请输入第三方区Id", trigger: "blur" },
         ],
         areaName: [
-          { required: true, message: '请输入第三方区名称', trigger: 'blur' },
+          { required: true, message: "请输入第三方区名称", trigger: "blur" },
         ],
       },
       mapFormRules: {
         dangProvinceName: [
-          { required: true, message: '请选择当当省', trigger: 'blur' },
+          { required: true, message: "请选择当当省", trigger: "blur" },
         ],
         dangCityName: [
-          { required: true, message: '请选择当当市', trigger: 'blur' },
+          { required: true, message: "请选择当当市", trigger: "blur" },
         ],
         dangAreaName: [
-          { required: true, message: '请选择当当区', trigger: 'blur' },
+          { required: true, message: "请选择当当区", trigger: "blur" },
         ],
       },
       addForm: { ...defaultAddForm },
@@ -348,135 +348,135 @@ export default {
       dangAreas: [],
       dangStreets: [],
       currAddress: {}, // 当前地址信息
-    };
+    }
   },
   methods: {
     getPartners() {
       Address.getPartners()
         .then(({data}) => {
-          this.partners = data;
+          this.partners = data
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     getList(page) {
       if (page) {
-        this.formModel.curPage = page;
+        this.formModel.curPage = page
       }
-      const params = {};
+      const params = {}
       for (const [key, value] of Object.entries(this.formModel)) {
-        if (hasValue(value)) params[key] = value;
+        if (hasValue(value)) params[key] = value
       }
       Address.getAddressList(params)
         .then(({data}) => {
-          this.total = data.total;
-          this.tableData = data.result;
+          this.total = data.total
+          this.tableData = data.result
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleResetForm() {
-      this.formModel = { ...defaultFormModel };
-      this.provinces = [];
-      this.citys = [];
-      this.areas = [];
+      this.formModel = { ...defaultFormModel }
+      this.provinces = []
+      this.citys = []
+      this.areas = []
     },
     getOuterAddress(type) {
       const params = {
         partnerId: this.formModel.partnerId,
-      };
-      if (type === 'partner') {
-        this.provinces = [];
-        this.citys = [];
-        this.areas = [];
-        this.formModel.provinceName = '';
-        this.formModel.cityName = '';
-        this.formModel.areaName = '';
-        if (!this.formModel.partnerId) return;
-      } else if (type === 'province') {
-        this.citys = [];
-        this.areas = [];
-        this.formModel.cityName = '';
-        this.formModel.areaName = '';
-        if (!this.formModel.provinceName) return;
-        params.provinceName = this.formModel.provinceName;
-      } else if (type === 'city') {
-        this.areas = [];
-        this.formModel.areaName = '';
-        if (!this.formModel.cityName) return;
-        params.provinceName = this.formModel.provinceName;
-        params.cityName = this.formModel.cityName;
+      }
+      if (type === "partner") {
+        this.provinces = []
+        this.citys = []
+        this.areas = []
+        this.formModel.provinceName = ""
+        this.formModel.cityName = ""
+        this.formModel.areaName = ""
+        if (!this.formModel.partnerId) return
+      } else if (type === "province") {
+        this.citys = []
+        this.areas = []
+        this.formModel.cityName = ""
+        this.formModel.areaName = ""
+        if (!this.formModel.provinceName) return
+        params.provinceName = this.formModel.provinceName
+      } else if (type === "city") {
+        this.areas = []
+        this.formModel.areaName = ""
+        if (!this.formModel.cityName) return
+        params.provinceName = this.formModel.provinceName
+        params.cityName = this.formModel.cityName
       }
       Address.getOuterAddress(params)
         .then(({data}) => {
-          if (type === 'partner') {
-            this.provinces = data;
-          } else if (type === 'province') {
-            this.citys = data;
-          } else if (type === 'city') {
-            this.areas = data;
+          if (type === "partner") {
+            this.provinces = data
+          } else if (type === "province") {
+            this.citys = data
+          } else if (type === "city") {
+            this.areas = data
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     getDangAddress(type) {
-      if (type === 'street') {
-        this.dangAddress.dangStreetName = this.mapForm.dangStreetName;
-        return;
+      if (type === "street") {
+        this.dangAddress.dangStreetName = this.mapForm.dangStreetName
+        return
       }
-      if (!this.mapForm.partnerId) return;
+      if (!this.mapForm.partnerId) return
       const params = {
         partnerId: this.mapForm.partnerId,
-      };
-      if (type === 'province') {
+      }
+      if (type === "province") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
-        });
-        this.dangAreas = [];
-        this.dangStreets = [];
-        this.mapForm.dangCityName = '';
-        this.mapForm.dangAreaName = '';
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangProvinceName = this.mapForm.dangProvinceName;
-        this.dangAddress.dangCityName = '';
-        this.dangAddress.dangAreaName = '';
-        this.dangAddress.dangStreetName = '';
-      } else if (type === 'city') {
+        })
+        this.dangAreas = []
+        this.dangStreets = []
+        this.mapForm.dangCityName = ""
+        this.mapForm.dangAreaName = ""
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangProvinceName = this.mapForm.dangProvinceName
+        this.dangAddress.dangCityName = ""
+        this.dangAddress.dangAreaName = ""
+        this.dangAddress.dangStreetName = ""
+      } else if (type === "city") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
           dangCityName: this.mapForm.dangCityName,
-        });
-        this.dangStreets = [];
-        this.mapForm.dangAreaName = '';
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangCityName = this.mapForm.dangCityName;
-        this.dangAddress.dangAreaName = '';
-        this.dangAddress.dangStreetName = '';
-      } else if (type === 'area') {
+        })
+        this.dangStreets = []
+        this.mapForm.dangAreaName = ""
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangCityName = this.mapForm.dangCityName
+        this.dangAddress.dangAreaName = ""
+        this.dangAddress.dangStreetName = ""
+      } else if (type === "area") {
         Object.assign(params, {
           dangProvinceName: this.mapForm.dangProvinceName,
           dangCityName: this.mapForm.dangCityName,
           dangAreaName: this.mapForm.dangAreaName,
-        });
-        this.mapForm.dangStreetName = '';
-        this.dangAddress.dangAreaName = this.mapForm.dangAreaName;
-        this.dangAddress.dangStreetName = '';
+        })
+        this.mapForm.dangStreetName = ""
+        this.dangAddress.dangAreaName = this.mapForm.dangAreaName
+        this.dangAddress.dangStreetName = ""
       }
       Address.getDangAddress(params)
         .then(({data}) => {
-          if (type === 'partner') {
-            this.dangProvinces = data;
-          } else if (type === 'province') {
-            this.dangCitys = data;
-          } else if (type === 'city') {
-            this.dangAreas = data;
-          } else if (type === 'area') {
-            this.dangStreets = data;
+          if (type === "partner") {
+            this.dangProvinces = data
+          } else if (type === "province") {
+            this.dangCitys = data
+          } else if (type === "city") {
+            this.dangAreas = data
+          } else if (type === "area") {
+            this.dangStreets = data
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleMapAddr(row) {
-      this.mapAddrVisible = true;
-      this.currAddress = row;
+      this.mapAddrVisible = true
+      this.currAddress = row
       this.mapForm = {
         id: row.addressMapId,
         partnerId: row.partnerId,
@@ -484,93 +484,93 @@ export default {
         cityName: row.cityName,
         areaName: row.areaName,
         streetName: row.streetName,
-        dangProvinceName: '',
-        dangCityName: '',
-        dangAreaName: '',
-        dangStreetName: '',
-      };
+        dangProvinceName: "",
+        dangCityName: "",
+        dangAreaName: "",
+        dangStreetName: "",
+      }
       this.dangAddress = {
         dangProvinceName: row.dangProvinceName,
         dangCityName: row.dangCityName,
         dangAreaName: row.dangAreaName,
         dangStreetName: row.dangStreetName,
-      };
+      }
     },
     handleInvalid(row) {
       const params = {
         id: row.addressMapId,
         status: row.status,
         // partnerId: row.partnerId
-      };
+      }
       Address.updateStatusById(params)
         .then(({ data }) => {
           if (data === 1) {
-            this.$message.success('状态更新成功');
-            this.getList();
+            this.$message.success("状态更新成功")
+            this.getList()
           } else {
-            this.$message.warning(data);
+            this.$message.warning(data)
           }
         })
-        .catch(console.warn);
+        .catch(console.warn)
     },
     handleAddAddress() {
       this.$refs.addForm.validate(valid => {
         if (valid) {
-          const params = {};
+          const params = {}
           for (const [key, value] of Object.entries(this.addForm)) {
-            if (hasValue(value)) params[key] = value;
+            if (hasValue(value)) params[key] = value
           }
           Address.addOuterAddress(params)
             .then(({ data }) => {
               if (data === 1) {
-                this.$message.success('添加成功');
-                this.addAddrVisible = false;
-                this.getList(1);
+                this.$message.success("添加成功")
+                this.addAddrVisible = false
+                this.getList(1)
               } else {
-                this.$message.warning(data);
+                this.$message.warning(data)
               }
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
     handleEditAddrMap() {
       this.$refs.mapForm.validate(valid => {
         if (valid) {
-          const params = {};
+          const params = {}
           for (const [key, value] of Object.entries(this.mapForm)) {
-            if (hasValue(value)) params[key] = value;
+            if (hasValue(value)) params[key] = value
           }
           Address.updateDangAddress(params)
             .then(({ data }) => {
               if (data === 1) {
-                this.$message.success('绑定成功');
-                this.mapAddrVisible = false;
-                this.getList(1);
+                this.$message.success("绑定成功")
+                this.mapAddrVisible = false
+                this.getList(1)
               } else {
-                this.$message.warning(data);
+                this.$message.warning(data)
               }
             })
-            .catch(console.warn);
+            .catch(console.warn)
         }
-      });
+      })
     },
     handleCloseDrawer(type) {
-      if (type === 'add') {
-        this.addForm = { ...defaultAddForm };
-      } else if (type === 'map') {
-        this.mapForm = { ...defaultMapForm };
-        this.dangAddress = { ...defaultDangAddress };
-        this.dangProvinces = [];
-        this.dangCitys = [];
-        this.dangAreas = [];
-        this.dangStreets = [];
+      if (type === "add") {
+        this.addForm = { ...defaultAddForm }
+      } else if (type === "map") {
+        this.mapForm = { ...defaultMapForm }
+        this.dangAddress = { ...defaultDangAddress }
+        this.dangProvinces = []
+        this.dangCitys = []
+        this.dangAreas = []
+        this.dangStreets = []
       }
     },
   },
   created() {
-    this.getPartners();
-    this.getList();
+    this.getPartners()
+    this.getList()
   },
 }
 </script>
