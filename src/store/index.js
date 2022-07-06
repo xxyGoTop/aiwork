@@ -1,50 +1,40 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import * as APIS from "@/api";
-import { local } from "@/util.js";
+import Vue from "vue"
+import Vuex from "vuex"
+import getters from "./getters"
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
-const apis = Object.values(APIS);
+const modulesFiles = require.context("./modules", true, /\.js$/)
+
+// you do not need `import app from './modules/app'`
+// it will auto require all vuex module from modules file
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  // set './app.js' => 'app'
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, "$1")
+  const value = modulesFiles(modulePath)
+  modules[moduleName] = value.default
+  return modules
+}, {})
 
 export default new Vuex.Store({
+  modules,
+  getters,
   state: {
-    roles: local.get("roles", []),
-    users: local.get("users", []),
-    userInfo: local.get("userInfo", {}),
-    authToken: local.get("authToken", ""),
-    sensorColor: {
-      0: '#FF4200',
-      1: '#FFAE00',
-      2: '#12E37E',
-      3: '#0036FF',
-      4: '#00A8FF',
-      5: '#BA00FF',
-      6: '#00DEFF',
-      7: '#FF004E',
-    },
+    username: "",
+    // 侧边栏菜单
+    asideMenu: [],
+    partnerId: "",
   },
   mutations: {
-    updateRoles(state, roles) {
-      state.roles = roles;
-      local.set("roles", roles);
+    // 菜单
+    setAsideMenu(state, menu) {
+      state.asideMenu = menu
     },
-    updateUser(state, users) {
-      state.users = users;
-      local.set("users", users);
+    setUserName(state, name) {
+      state.username = name
     },
-    updateUserInfo(state, info) {
-      state.userInfo = info;
-      local.set("userInfo", info);
-    },
-    updateAccessToken(state, authToken) {
-      state.authToken = authToken;
-      apis.forEach((ins) => {
-        ins.defaults.headers.common.Authorization = authToken;
-      });
-      local.set("authToken", authToken);
+    setPartnerId(state, v) {
+      state.partnerId = v
     },
   },
-  actions: {},
-  modules: {},
-});
+})

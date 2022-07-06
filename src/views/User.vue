@@ -371,8 +371,8 @@
 </template>
 
 <script>
-import { cMd5 } from "@/util";
-import { mapState } from "vuex";
+import { cMd5 } from "@/util"
+import { mapState } from "vuex"
 import {
   getUserPage,
   postAddUser,
@@ -382,25 +382,25 @@ import {
   postAddUserGroup,
   postDeleteUserGroup,
   postUpdateUserGroup,
-} from "@/api/user";
+} from "@/api/user"
 
 export default {
   data() {
     const validateBlank = (_, value, callback) => {
       if (!value) {
-        callback(new Error("不能为空"));
+        callback(new Error("不能为空"))
       }
-      callback();
-    };
+      callback()
+    }
     const validateMobiles = (_, value, callback) => {
       if (!value) {
-        callback(new Error("请输入正确的手机号"));
+        callback(new Error("请输入正确的手机号"))
       }
       if (!/^1[3-9]\d{9}$/.test(value)) {
-        callback(new Error("请输入正确的手机号"));
+        callback(new Error("请输入正确的手机号"))
       }
-      callback();
-    };
+      callback()
+    }
     return {
       showpass: false,
       visible: false,
@@ -449,15 +449,15 @@ export default {
       userPage: 1,
       groupPage: 1,
       pageSize: 10,
-    };
+    }
   },
   computed: {
     ...mapState(["roles"]),
   },
   methods: {
     getUserPage(page = 1) {
-      this.userPage = page;
-      this.loading = true;
+      this.userPage = page
+      this.loading = true
       getUserPage(
         {
           pageNum: page,
@@ -468,184 +468,184 @@ export default {
         }
       )
         .then((data) => {
-          this.list = data.data.records || [];
-          this.userTotal = +data.data.total || 0;
+          this.list = data.data.records || []
+          this.userTotal = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     getAllUserPage() {
       getUserPage({
         pageSize: 3000,
       }).then((data) => {
-        this.allList = data.data.records || [];
-      });
+        this.allList = data.data.records || []
+      })
     },
     getUserGroup(page = 1) {
-      this.groupPage = page;
-      this.loading = true;
+      this.groupPage = page
+      this.loading = true
       getUserGroup({
         pageNum: page,
         pageSize: this.pageSize,
       })
         .then((data) => {
-          this.groupList = data.data.records || [];
-          this.groupTotal = +data.data.total || 0;
+          this.groupList = data.data.records || []
+          this.groupTotal = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     postAddUser() {
-      const { password } = this.fromUserData;
+      const { password } = this.fromUserData
       postAddUser({
         ...this.fromUserData,
         password: cMd5(password),
       }).then(() => {
-        this.visible = false;
-        this.$message.success("添加成功");
-        this.getUserPage();
-      });
+        this.visible = false
+        this.$message.success("添加成功")
+        this.getUserPage()
+      })
     },
     postUpdateUser() {
-      const { password } = this.fromUserData;
+      const { password } = this.fromUserData
       postUpdateUser({
         userId: this.userId,
         ...this.fromUserData,
         password: cMd5(password),
       }).then(() => {
-        this.visible = false;
-        this.$message.success("編輯成功");
-        this.getUserPage();
-      });
+        this.visible = false
+        this.$message.success("編輯成功")
+        this.getUserPage()
+      })
     },
     postDeleteUser() {
       postDeleteUser({
         userId: this.userId,
       }).then(() => {
-        this.$message.success("刪除成功");
-        this.getUserPage();
-        this.deleteVisible = false;
-      });
+        this.$message.success("刪除成功")
+        this.getUserPage()
+        this.deleteVisible = false
+      })
     },
     postAddUserGroup() {
       postAddUserGroup({
         ...this.fromGroupData,
       }).then(() => {
-        this.gVisible = false;
-        this.$message.success("添加成功");
-        this.getUserGroup();
-      });
+        this.gVisible = false
+        this.$message.success("添加成功")
+        this.getUserGroup()
+      })
     },
     postUpdateUserGroup() {
       postUpdateUserGroup({
         groupId: this.groupId,
         ...this.fromGroupData,
       }).then(() => {
-        this.gVisible = false;
-        this.$message.success("編輯成功");
-        this.getUserGroup();
-      });
+        this.gVisible = false
+        this.$message.success("編輯成功")
+        this.getUserGroup()
+      })
     },
     postDeleteUserGroup() {
       postDeleteUserGroup({
         groupId: this.groupId,
       }).then(() => {
-        this.$message.success("刪除成功");
-        this.getUserGroup();
-        this.deleteGroupVisible = false;
-      });
+        this.$message.success("刪除成功")
+        this.getUserGroup()
+        this.deleteGroupVisible = false
+      })
     },
     handleChangeTab(tab) {
-      this.tab = tab;
+      this.tab = tab
     },
     handleCheckAllChange(val) {
-      this.fromGroupData.userIds = val ? this.list.map((g) => g.id) : [];
-      this.isIndeterminate = false;
+      this.fromGroupData.userIds = val ? this.list.map((g) => g.id) : []
+      this.isIndeterminate = false
     },
     handleCheckedGroupsChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.fromGroupData.userIds.length;
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.fromGroupData.userIds.length
       this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.fromGroupData.userIds.length;
+        checkedCount > 0 && checkedCount < this.fromGroupData.userIds.length
     },
     handleReset() {
-      this.$refs.formInline.resetFields();
+      this.$refs.formInline.resetFields()
     },
     handleSubmitUser() {
       this.$refs.fromUserData.validate().then(() => {
-        !this.userId ? this.postAddUser() : this.postUpdateUser();
-      });
+        !this.userId ? this.postAddUser() : this.postUpdateUser()
+      })
     },
     handleAddUser() {
-      this.userId = null;
-      this.visible = true;
-      this.userTitle = "新增用户";
+      this.userId = null
+      this.visible = true
+      this.userTitle = "新增用户"
       this.fromUserData = {
         name: "",
         account: "",
         roleCode: "",
         tel: "",
         password: "",
-      };
+      }
     },
     handleEditUser({ id, name, account, roleCode, tel, password }) {
-      this.userId = id;
-      this.visible = true;
-      this.userTitle = "编辑用户";
+      this.userId = id
+      this.visible = true
+      this.userTitle = "编辑用户"
       this.fromUserData = {
         name,
         account,
         roleCode,
         tel,
         password,
-      };
+      }
     },
     handleSubmitGroup() {
-      !this.groupId ? this.postAddUserGroup() : this.postUpdateUserGroup();
+      !this.groupId ? this.postAddUserGroup() : this.postUpdateUserGroup()
     },
     handleAddGroup() {
-      this.gVisible = true;
-      this.groupId = null;
-      this.checkAll = false;
-      this.isIndeterminate = false;
-      this.groupTitle = "新增用户组";
-      this.fromGroupData.groupName = "";
-      this.fromGroupData.userIds = [];
+      this.gVisible = true
+      this.groupId = null
+      this.checkAll = false
+      this.isIndeterminate = false
+      this.groupTitle = "新增用户组"
+      this.fromGroupData.groupName = ""
+      this.fromGroupData.userIds = []
     },
     handleEditGrooup({ groupName, groupId, users }) {
-      this.checkAll = this.list.length === users.length;
-      this.isIndeterminate = this.list.length !== users.length;
-      this.gVisible = true;
-      this.groupId = groupId;
-      this.groupTitle = "编辑用户组";
+      this.checkAll = this.list.length === users.length
+      this.isIndeterminate = this.list.length !== users.length
+      this.gVisible = true
+      this.groupId = groupId
+      this.groupTitle = "编辑用户组"
       this.fromGroupData = {
         groupName,
         userIds: users.map((u) => u.id),
-      };
+      }
     },
     handleDeleteUser({ id }) {
-      this.userId = id;
-      this.deleteVisible = true;
+      this.userId = id
+      this.deleteVisible = true
     },
     handleDeleteGroup({ groupId }) {
-      this.groupId = groupId;
-      this.deleteGroupVisible = true;
+      this.groupId = groupId
+      this.deleteGroupVisible = true
     },
     handleIconClick() {
-      this.showpass = !this.showpass;
+      this.showpass = !this.showpass
     },
     toRouterLink(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
   created() {
-    this.getUserPage();
-    this.getAllUserPage();
-    this.getUserGroup();
+    this.getUserPage()
+    this.getAllUserPage()
+    this.getUserGroup()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

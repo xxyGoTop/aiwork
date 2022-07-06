@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { getUserLog } from "@/api/user";
+import { getUserLog } from "@/api/user"
 export default {
   data() {
     return {
@@ -87,41 +87,41 @@ export default {
         2: "PC用户退出",
         3: "APP用户退出",
       },
-    };
+    }
   },
   computed: {
     userId() {
-      return this.$route.params.userId;
+      return this.$route.params.userId
     },
     name() {
-      return this.$route.query.name;
+      return this.$route.query.name
     },
     roleName() {
-      return this.$route.query.role;
+      return this.$route.query.role
     },
   },
   methods: {
     getUserLog(page = 1) {
-      this.loading = true;
-      this.page = page;
+      this.loading = true
+      this.page = page
       getUserLog({
         userId: this.userId,
         pageNum: page,
         pageSize: this.pageSize,
       })
         .then((data) => {
-          this.list = data.data.records || [];
-          this.total = +data.data.total || 0;
+          this.list = data.data.records || []
+          this.total = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
   },
   created() {
-    this.getUserLog();
+    this.getUserLog()
   },
-};
+}
 </script>
 
 <style lang="css" scoped></style>

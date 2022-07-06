@@ -216,8 +216,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { getUserGroup } from "@/api/user";
+import { mapState } from "vuex"
+import { getUserGroup } from "@/api/user"
 import {
   getDevicePage,
   getDeviceRaw,
@@ -225,7 +225,7 @@ import {
   postDeviceAdd,
   postDeviceUpdate,
   postDeviceDelete,
-} from "@/api/device";
+} from "@/api/device"
 
 export default {
   data() {
@@ -253,66 +253,66 @@ export default {
       total: 10,
       page: 1,
       pageSize: 10,
-    };
+    }
   },
   computed: {
     ...mapState(["roles"]),
   },
   methods: {
     getDevicePage() {
-      this.loading = true;
+      this.loading = true
       getDevicePage({
         pageNum: this.page,
         pageSize: 20,
         ...this.formInline,
       })
         .then((data) => {
-          this.devices = data.data.records || [];
-          this.total = +data.data.total || 0;
+          this.devices = data.data.records || []
+          this.total = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     getDeviceRaw() {
       getDeviceRaw().then((data) => {
-        this.rawDevices = data.data.records;
-      });
+        this.rawDevices = data.data.records
+      })
     },
     getDeviceDetail(deviceCode) {
-      this.detailLoading = true;
+      this.detailLoading = true
       getDeviceDetail(deviceCode)
         .then((data) => {
-          this.detail = data.data;
-          this.fromData.deviceCode = data.data.deviceCode;
-          this.fromData.groupId = data.data.groupId;
+          this.detail = data.data
+          this.fromData.deviceCode = data.data.deviceCode
+          this.fromData.groupId = data.data.groupId
         })
         .finally(() => {
-          this.detailLoading = false;
-        });
+          this.detailLoading = false
+        })
     },
     getUserGroup() {
       getUserGroup().then((data) => {
-        this.groups = data.data.records;
-      });
+        this.groups = data.data.records
+      })
     },
     handleAdd() {
-      this.dTitle = "添加设备";
-      this.visible = true;
-      this.deviceCode = null;
-      this.fromData.deviceCode = null;
+      this.dTitle = "添加设备"
+      this.visible = true
+      this.deviceCode = null
+      this.fromData.deviceCode = null
     },
     handleEdit({ code, groupId }) {
-      this.dTitle = "编辑设备";
-      this.visible = true;
-      this.deviceCode = code;
-      this.fromData.deviceCode = code;
-      this.fromData.groupId = groupId;
-      this.getDeviceDetail({ deviceCode: code });
+      this.dTitle = "编辑设备"
+      this.visible = true
+      this.deviceCode = code
+      this.fromData.deviceCode = code
+      this.fromData.groupId = groupId
+      this.getDeviceDetail({ deviceCode: code })
     },
     handleDevice(page = 1) {
-      this.page = page;
-      this.getDevicePage();
+      this.page = page
+      this.getDevicePage()
     },
     handleAddOrUpdate() {
       if (!this.deviceCode) {
@@ -320,24 +320,24 @@ export default {
           ...this.fromData,
         })
           .then(() => {
-            this.visible = false;
-            this.$message.success("添加成功");
+            this.visible = false
+            this.$message.success("添加成功")
           })
           .finally(() => {
-            this.handleDevice();
-          });
-        return;
+            this.handleDevice()
+          })
+        return
       }
       postDeviceUpdate({
         ...this.fromData,
       })
         .then(() => {
-          this.visible = false;
-          this.$message.success("更新成功");
+          this.visible = false
+          this.$message.success("更新成功")
         })
         .finally(() => {
-          this.handleDevice();
-        });
+          this.handleDevice()
+        })
     },
     handleStopDevice({ deviceCode, status, groupId }) {
       postDeviceUpdate({
@@ -345,41 +345,41 @@ export default {
         groupId,
         status: status === 0 ? 1 : 0,
       }).then(() => {
-        this.$message.success("操作成功");
-      });
+        this.$message.success("操作成功")
+      })
     },
     handleDelete({ code }) {
-      this.deleteVisible = true;
-      this.deviceCode = code;
+      this.deleteVisible = true
+      this.deviceCode = code
     },
     postDelete() {
       postDeviceDelete({
         deviceCode: this.deviceCode,
       })
         .then(() => {
-          this.$message.success("删除成功");
+          this.$message.success("删除成功")
         })
         .finally(() => {
-          this.handleDevice();
-        });
+          this.handleDevice()
+        })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     handleDetail({ code }) {
-      this.detailVisible = true;
-      this.getDeviceDetail({ deviceCode: code });
+      this.detailVisible = true
+      this.getDeviceDetail({ deviceCode: code })
     },
     toRouterLink(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
   created() {
-    this.getDeviceRaw();
-    this.getUserGroup();
-    this.getDevicePage();
+    this.getDeviceRaw()
+    this.getUserGroup()
+    this.getDevicePage()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

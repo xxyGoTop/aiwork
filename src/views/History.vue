@@ -141,13 +141,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { downBlobFile } from "@/util";
+import { mapState } from "vuex"
+import { downBlobFile } from "@/util"
 import {
   getDeviceList,
   getDeviceHisroey,
   postDeveiceExport,
-} from "@/api/device";
+} from "@/api/device"
 export default {
   data() {
     return {
@@ -164,24 +164,24 @@ export default {
       total: 10,
       page: 1,
       pageSize: 10,
-    };
+    }
   },
   computed: {
     ...mapState(["roles"]),
   },
   methods: {
     getDeviceHisroey(page = 1) {
-      let formObj = {};
+      let formObj = {}
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
             [key]: this.formInline[key],
-          };
+          }
         }
-      });
-      this.page = 1;
-      this.loading = true;
+      })
+      this.page = 1
+      this.loading = true
       getDeviceHisroey(
         {
           pageNum: page,
@@ -192,54 +192,54 @@ export default {
         }
       )
         .then((data) => {
-          this.list = data.data.records || [];
-          this.total = +data.data.total || 0;
+          this.list = data.data.records || []
+          this.total = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     getDeviceList() {
       getDeviceList({
         pageNum: 1,
         pageSize: 20,
       }).then((data) => {
-        this.devices = data.data.records;
-      });
+        this.devices = data.data.records
+      })
     },
     postDeveiceExport() {
-      let formObj = {};
-      const { startDate, endDate } = this.formInline;
+      let formObj = {}
+      const { startDate, endDate } = this.formInline
       if (!startDate && !endDate) {
-        this.$message.error("请选择时间范围");
-        return;
+        this.$message.error("请选择时间范围")
+        return
       }
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
             [key]: this.formInline[key],
-          };
+          }
         }
-      });
+      })
       postDeveiceExport({
         ...formObj,
       }).then((data) => {
-        downBlobFile(data, "历史记录.xlsx");
-      });
+        downBlobFile(data, "历史记录.xlsx")
+      })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     toRouterLink(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
   created() {
-    this.getDeviceHisroey();
-    this.getDeviceList();
+    this.getDeviceHisroey()
+    this.getDeviceList()
   },
-};
+}
 </script>
 
 <style lang="css" scoped></style>

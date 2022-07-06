@@ -97,9 +97,9 @@
 </template>
 
 <script>
-import LineChart from "@/components/LineChart";
-import WindChart from "@/components/WindChart";
-import { getSensorData } from "@/api/sensor";
+import LineChart from "@/components/LineChart"
+import WindChart from "@/components/WindChart"
+import { getSensorData } from "@/api/sensor"
 export default {
   components: { LineChart, WindChart },
   data() {
@@ -194,14 +194,14 @@ export default {
       total: 10,
       page: 1,
       pageSize: 10,
-    };
+    }
   },
   computed: {
     deviceCode() {
-      return this.$route.params.code;
+      return this.$route.params.code
     },
     deviceName() {
-      return this.$route.query.name;
+      return this.$route.query.name
     },
   },
   methods: {
@@ -212,13 +212,13 @@ export default {
         pageNum: page,
         pageSize: this.pageSize,
       }).then((data) => {
-        this.chartWind = data.data.records || [];
-      });
+        this.chartWind = data.data.records || []
+      })
     },
     getSensorData(page = 1) {
-      this.page = 1;
-      this.loading = true;
-      this.getSensorWind(page);
+      this.page = 1
+      this.loading = true
+      this.getSensorWind(page)
       getSensorData({
         deviceCode: this.deviceCode,
         sensorType: this.sensor || "TEMP",
@@ -226,30 +226,30 @@ export default {
         pageSize: this.pageSize,
       })
         .then((data) => {
-          this.list = data.data.records || [];
-          this.total = +data.data.total || 0;
-          this.yData = data.data.records.map((x) => x.data);
+          this.list = data.data.records || []
+          this.total = +data.data.total || 0
+          this.yData = data.data.records.map((x) => x.data)
           this.xData = data.data.records.map((x) =>
             x.reportTime ? x.reportTime.split(" ")[1] : ""
-          );
+          )
           if (!this.sensor) {
-            this.sensor = "TEMP";
+            this.sensor = "TEMP"
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     handleChangeSensor(key) {
-      this.color = this.chartColor[key].color;
-      this.label = `(${this.chartColor[key].label}${this.chartColor[key].unit})`;
-      this.getSensorData();
+      this.color = this.chartColor[key].color
+      this.label = `(${this.chartColor[key].label}${this.chartColor[key].unit})`
+      this.getSensorData()
     },
   },
   mounted() {
-    this.getSensorData();
+    this.getSensorData()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

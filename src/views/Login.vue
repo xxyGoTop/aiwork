@@ -4,11 +4,11 @@
       <div class="login-left-logo"></div>
       <div class="login-left-form">
         <div class="login-left-form-title">
-          <span>拉萨河3#闸</span>
-          <span>智慧水利管理平台</span>
+          <span>乌鲁木齐ai</span>
+          <span>智能管理平台</span>
         </div>
         <div class="login-left-form-sub">
-          Intelligent water conservancy management of Lasa River
+          Intelligent ai conservancy management of Lasa River
         </div>
         <el-form
           :model="formData"
@@ -49,17 +49,17 @@
         </el-form>
       </div>
       <!-- © 2021 西藏智启权所有 -->
-      <div class="login-left-copyright">藏ICP备2021000258号</div>
+      <div class="login-left-copyright">乌ICP备2021000258号</div>
     </div>
     <div class="login-right"></div>
   </div>
 </template>
 
 <script>
-import * as Tone from "tone";
-import { cMd5 } from "@/util";
-import { mapState, mapMutations } from "vuex";
-import { postAuthLogin, getUserPage, getUserRole } from "@/api/user";
+import * as Tone from "tone"
+import { cMd5 } from "@/util"
+import { mapState, mapMutations } from "vuex"
+import { postAuthLogin, getUserPage, getUserRole } from "@/api/user"
 export default {
   data() {
     return {
@@ -69,7 +69,7 @@ export default {
         platformTypeEnum: "PC",
       },
       showpass: false,
-    };
+    }
   },
   computed: {
     ...mapState(["authToken"]),
@@ -82,30 +82,30 @@ export default {
       "updateUser",
     ]),
     async getUser() {
-      if (!this.authToken) return;
-      const role = await getUserRole();
-      const user = await getUserPage({ pageSize: 3000 });
-      this.updateRoles(role.data.records);
-      this.updateUser(user.data.records);
+      if (!this.authToken) return
+      const role = await getUserRole()
+      const user = await getUserPage({ pageSize: 3000 })
+      this.updateRoles(role.data.records)
+      this.updateUser(user.data.records)
     },
     async submitForm() {
-      const { password } = this.formData;
+      const { password } = this.formData
       postAuthLogin({
         ...this.formData,
         password: cMd5(password),
       }).then((data) => {
-        this.updateAccessToken(data.data.token);
-        this.updateUserInfo({ ...data.data });
-        this.getUser();
-        this.$router.replace(this.$route.query.redirect || "/");
-      });
-      await Tone.start();
+        this.updateAccessToken(data.data.token)
+        this.updateUserInfo({ ...data.data })
+        this.getUser()
+        this.$router.replace(this.$route.query.redirect || "/")
+      })
+      await Tone.start()
     },
     handleIconClick() {
-      this.showpass = !this.showpass;
+      this.showpass = !this.showpass
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
@@ -179,12 +179,6 @@ export default {
       font-size: 11px;
       margin: 8px 0px 43px;
     }
-  }
-  .login-right {
-    flex: 1;
-    height: 100%;
-    background: url(~@/assets/imgs/login_img_bg.png) center no-repeat;
-    background-size: 100%;
   }
 }
 </style>

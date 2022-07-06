@@ -185,9 +185,9 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { getCheckListPage, postCheckExport } from "@/api/record";
-import { downBlobFile } from "@/util";
+import { mapState } from "vuex"
+import { getCheckListPage, postCheckExport } from "@/api/record"
+import { downBlobFile } from "@/util"
 export default {
   data() {
     return {
@@ -206,15 +206,15 @@ export default {
       total: 10,
       page: 1,
       pageSize: 10,
-    };
+    }
   },
   computed: {
     ...mapState(["users"]),
   },
   methods: {
     getCheckListPage(page = 1) {
-      this.page = page;
-      this.loading = true;
+      this.page = page
+      this.loading = true
       getCheckListPage(
         {
           pageNum: page,
@@ -225,35 +225,35 @@ export default {
         }
       )
         .then((data) => {
-          this.list = data.data.records || [];
-          this.total = +data.data.total || 0;
+          this.list = data.data.records || []
+          this.total = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     postCheckExport() {
       postCheckExport({
         ...this.formInline,
       }).then((data) => {
-        downBlobFile(data, "打卡记录.xlsx");
-      });
+        downBlobFile(data, "打卡记录.xlsx")
+      })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     handleDetail(row) {
-      this.visible = true;
-      this.detail = row;
+      this.visible = true
+      this.detail = row
     },
     toRouterLink(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
   created() {
-    this.getCheckListPage();
+    this.getCheckListPage()
   },
-};
+}
 </script>
 
 <style lang="css" scoped></style>

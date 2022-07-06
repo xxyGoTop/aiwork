@@ -1,4 +1,4 @@
-import { Water as Fetch } from "./index";
+import { Water as Fetch } from "./index"
 
 export const getAlarmList = (params, data = {}) =>
   Fetch({
@@ -6,7 +6,7 @@ export const getAlarmList = (params, data = {}) =>
     method: "post",
     params,
     data,
-  });
+  })
 
 export const getAlarmRulePage = (params, data = {}) =>
   Fetch({
@@ -14,13 +14,13 @@ export const getAlarmRulePage = (params, data = {}) =>
     method: "post",
     params,
     data,
-  });
+  })
 
 export const getAlarmType = (params) =>
   Fetch({
     url: "/alarm/alarm/type",
     params,
-  });
+  })
 
 export const postAlarmExport = (data) =>
   Fetch({
@@ -28,25 +28,25 @@ export const postAlarmExport = (data) =>
     method: "post",
     responseType: "blob",
     data,
-  });
+  })
 
 export const postDeleteAlarm = (data = {}) =>
   Fetch({
     url: `/alarm/delete/${data.ruleId}`,
     method: "delete",
     data,
-  });
+  })
 
 export const postAddAlarm = (data = {}) =>
   Fetch({
     url: "/alarm/add/rule",
     method: "post",
     data,
-  });
+  })
 
 export const postEditAlarm = (data = {}) =>
   Fetch({
     url: "/alarm/update",
     method: "post",
     data,
-  });
+  })

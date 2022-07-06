@@ -1,4 +1,4 @@
-import { Water as Fetch } from "./index";
+import { Water as Fetch } from "./index"
 
 export const getCheckListPage = (params = {}, data) =>
   Fetch({
@@ -6,20 +6,20 @@ export const getCheckListPage = (params = {}, data) =>
     method: "post",
     params,
     data,
-  });
+  })
 
 export const getLocationPage = (data) =>
   Fetch({
     url: "/checkin/location/page",
     method: "post",
     data,
-  });
+  })
 
 export const getTrackRecord = (recordId) =>
   Fetch({
     url: `/checkin/track/${recordId}`,
     method: "get",
-  });
+  })
 
 export const postCheckExport = (data) =>
   Fetch({
@@ -27,4 +27,4 @@ export const postCheckExport = (data) =>
     method: "post",
     responseType: "blob",
     data,
-  });
+  })

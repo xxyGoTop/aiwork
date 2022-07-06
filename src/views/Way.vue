@@ -83,10 +83,10 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import { mapState } from "vuex";
-import { getLocationPage } from "@/api/record";
-import { mpStyle } from "@/assets/js/mpStyle";
+import dayjs from "dayjs"
+import { mapState } from "vuex"
+import { getLocationPage } from "@/api/record"
+import { mpStyle } from "@/assets/js/mpStyle"
 export default {
   data() {
     return {
@@ -102,54 +102,54 @@ export default {
       list: [],
       bmap: null,
       mapType: "BMAP_EARTH_MAP",
-    };
+    }
   },
   computed: {
     ...mapState(["users"]),
     recordId() {
-      return this.$route.params.id;
+      return this.$route.params.id
     },
     startT() {
-      return this.$route.query.start;
+      return this.$route.query.start
     },
     endT() {
-      return this.$route.query.end;
+      return this.$route.query.end
     },
     userId() {
-      return this.$route.query.userId;
+      return this.$route.query.userId
     },
     workStatusId() {
-      return this.$route.query.workStatus;
+      return this.$route.query.workStatus
     },
     workTypeId() {
-      return this.$route.query.workType;
+      return this.$route.query.workType
     },
   },
   methods: {
     getLocationPage() {
-      const { userId, startTime } = this.formInline;
+      const { userId, startTime } = this.formInline
       if (!userId || !startTime) {
-        this.$message.error("请先选择人员和时间段");
-        return;
+        this.$message.error("请先选择人员和时间段")
+        return
       }
-      this.loading = true;
+      this.loading = true
       getLocationPage({
         ...this.formInline,
       })
         .then((data) => {
-          this.list = data.data.filter((r) => r.longitude && r.latitude) || [];
+          this.list = data.data.filter((r) => r.longitude && r.latitude) || []
           if (this.list.length) {
-            this.readyMapPath();
+            this.readyMapPath()
           } else {
-            this.$message.error("未查到当前人员路线");
+            this.$message.error("未查到当前人员路线")
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     readyMapPath() {
       /* eslint-disable */

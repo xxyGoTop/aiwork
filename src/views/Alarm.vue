@@ -325,7 +325,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "vuex"
 import {
   getAlarmList,
   getAlarmRulePage,
@@ -333,41 +333,41 @@ import {
   postAlarmExport,
   postDeleteAlarm,
   postEditAlarm,
-} from "@/api/alarm";
-import { getDeviceList } from "@/api/device";
-import { downBlobFile } from "@/util";
+} from "@/api/alarm"
+import { getDeviceList } from "@/api/device"
+import { downBlobFile } from "@/util"
 
 export default {
   data() {
     const validateBlank = (_, value, callback) => {
       if (!value) {
-        callback(new Error("请选择设备"));
+        callback(new Error("请选择设备"))
       }
-      callback();
-    };
+      callback()
+    }
     const validateMobiles = (_, value, callback) => {
       if (!value) {
-        callback(new Error("请输入正确的手机号"));
+        callback(new Error("请输入正确的手机号"))
       }
       const isMoble = value
         .split(",")
         .filter((v) => v)
-        .every((v) => /^1[3-9]\d{9}$/.test(v));
+        .every((v) => /^1[3-9]\d{9}$/.test(v))
       if (!isMoble) {
-        callback(new Error("请输入正确的手机号"));
+        callback(new Error("请输入正确的手机号"))
       }
-      callback();
-    };
+      callback()
+    }
     const validateShold = (_, value, callback) => {
-      const reg = /^([1-9][\d]*|0)(\.[\d]+)?$/;
+      const reg = /^([1-9][\d]*|0)(\.[\d]+)?$/
       if (!value) {
-        callback(new Error("请输入正确的数值"));
+        callback(new Error("请输入正确的数值"))
       }
       if (!reg.test(value)) {
-        callback(new Error("请输入正确的数值"));
+        callback(new Error("请输入正确的数值"))
       }
-      callback();
-    };
+      callback()
+    }
     return {
       deleteVisible: false,
       visible: false,
@@ -441,7 +441,7 @@ export default {
       alarmTotal: 10,
       alarmPage: 1,
       alarmPageSize: 10,
-    };
+    }
   },
   computed: {
     ...mapState(["roles"]),
@@ -452,30 +452,30 @@ export default {
         pageNum: 1,
         pageSize: 20,
       }).then((data) => {
-        this.devices = data.data.records;
-      });
+        this.devices = data.data.records
+      })
     },
     getAlarmRulePage(page = 1) {
-      this.page = page;
+      this.page = page
       getAlarmRulePage({
         pageNum: page,
         pageSize: this.pageSize,
       }).then((data) => {
-        this.list = data.data.records || [];
-        this.total = +data.data.total || 0;
-      });
+        this.list = data.data.records || []
+        this.total = +data.data.total || 0
+      })
     },
     getAlarmList(page = 1) {
-      this.loading = true;
-      let formObj = {};
+      this.loading = true
+      let formObj = {}
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
             [key]: this.formInline[key],
-          };
+          }
         }
-      });
+      })
       getAlarmList(
         {
           pageNum: page,
@@ -486,78 +486,78 @@ export default {
         }
       )
         .then((data) => {
-          this.alarmList = data.data.records || [];
-          this.alarmTotal = +data.data.total || 0;
+          this.alarmList = data.data.records || []
+          this.alarmTotal = +data.data.total || 0
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     postAlarmExport() {
-      let formObj = {};
+      let formObj = {}
       Object.keys(this.formInline).forEach((key) => {
         if (this.formInline[key]) {
           formObj = {
             ...formObj,
             [key]: this.formInline[key],
-          };
+          }
         }
-      });
+      })
       postAlarmExport({
         ...formObj,
       }).then((data) => {
-        downBlobFile(data, "报警记录.xlsx");
-      });
+        downBlobFile(data, "报警记录.xlsx")
+      })
     },
     postAddAlarm() {
-      let formObj = {};
+      let formObj = {}
       Object.keys(this.fromRuleData).forEach((key) => {
         if (this.fromRuleData[key]) {
           formObj = {
             ...formObj,
             [key]: this.fromRuleData[key],
-          };
+          }
         }
-      });
+      })
       postAddAlarm({
         ...formObj,
       }).then(() => {
-        this.$message.success("添加成功");
-        this.visible = false;
-        this.getAlarmRulePage();
-      });
+        this.$message.success("添加成功")
+        this.visible = false
+        this.getAlarmRulePage()
+      })
     },
     postEditAlarm() {
-      let formObj = {};
+      let formObj = {}
       Object.keys(this.fromRuleData).forEach((key) => {
         if (this.fromRuleData[key]) {
           formObj = {
             ...formObj,
             [key]: this.fromRuleData[key],
-          };
+          }
         }
-      });
+      })
       postEditAlarm({
         ...formObj,
       }).then(() => {
-        this.$message.success("更新成功");
-        this.visible = false;
-        this.getAlarmRulePage();
-      });
+        this.$message.success("更新成功")
+        this.visible = false
+        this.getAlarmRulePage()
+      })
     },
     handleAlarm(page = 1) {
-      this.alarmPage = page;
-      this.getAlarmList(page);
+      this.alarmPage = page
+      this.getAlarmList(page)
     },
     handleSubmit() {
-      const { ruleId } = this.fromRuleData;
+      const { ruleId } = this.fromRuleData
       this.$refs.fromRuleData.validate().then(() => {
-        ruleId ? this.postEditAlarm() : this.postAddAlarm();
-      });
+        ruleId ? this.postEditAlarm() : this.postAddAlarm()
+      })
     },
     handleAdd() {
-      this.dTitle = "添加规则";
-      this.visible = true;
+      this.dTitle = "添加规则"
+      this.visible = true
       this.fromRuleData = {
         ruleId: "",
         alarmName: "",
@@ -566,7 +566,7 @@ export default {
         mobiles: "",
         platformThreshold: "",
         smsThreshold: "",
-      };
+      }
     },
     handleEdit({
       ruleId,
@@ -577,8 +577,8 @@ export default {
       platformThreshold,
       smsThreshold,
     }) {
-      this.dTitle = "编辑规则";
-      this.visible = true;
+      this.dTitle = "编辑规则"
+      this.visible = true
       this.fromRuleData = {
         ruleId,
         alarmName,
@@ -587,40 +587,40 @@ export default {
         mobiles,
         platformThreshold,
         smsThreshold,
-      };
+      }
     },
     handleDelete({ ruleId }) {
-      this.deleteVisible = true;
-      this.ruleId = ruleId;
+      this.deleteVisible = true
+      this.ruleId = ruleId
     },
     postDelete() {
       postDeleteAlarm({
         ruleId: this.ruleId,
       }).then(() => {
-        this.$message.success("删除成功");
-        this.deleteVisible = false;
-        this.getAlarmRulePage();
-      });
+        this.$message.success("删除成功")
+        this.deleteVisible = false
+        this.getAlarmRulePage()
+      })
     },
     handleReset() {
-      this.$refs.form.resetFields();
+      this.$refs.form.resetFields()
     },
     handleChangeTab(tab) {
-      this.tab = tab;
+      this.tab = tab
     },
     toRouterLink(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
   created() {
     this.sensorsType.forEach((s) => {
-      this.sensorsMap[s.value] = s.key;
-    });
-    this.getAlarmRulePage();
-    this.getAlarmList();
-    this.getDeviceList();
+      this.sensorsMap[s.value] = s.key
+    })
+    this.getAlarmRulePage()
+    this.getAlarmList()
+    this.getDeviceList()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
