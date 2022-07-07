@@ -9,8 +9,17 @@ VueRouter.prototype.push = function (location) {
 }
 Vue.use(VueRouter)
 
+// 主站外页面
+export const constantRoutes = [
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import("@/views/Login.vue"),
+  },
+]
+
 // 主站内页面
-const FrameRoutes = [
+export const asyncRoutes = [
   {
     path: "/",
     name: "Home",
@@ -21,20 +30,14 @@ const FrameRoutes = [
   },
 ]
 
-// 主站外页面
-const FrameOutRoutes = [
-  {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/Login.vue"),
-  },
-]
-
-const router = new VueRouter({
+const createRouter = () => new Router({
+  scrollBehavior: () => ({ y: 0 }),
   mode: "history",
   base: process.env.VUE_APP_BASE_URL,
-  routes: [...FrameOutRoutes, ...FrameRoutes],
+  routes: constantRoutes
 })
+
+const router = createRouter()
 
 router.beforeEach((to, _, next) => {
   const token = local.get("authToken")

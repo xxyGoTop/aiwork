@@ -9,8 +9,7 @@ import "@/api/preset"
 
 import "normalize.css"
 import "element-ui/lib/theme-chalk/index.css"
-import "@/assets/css/common.scss"
-import "@/assets/css/cover.scss"
+import '@/styles/index.scss'
 
 Vue.use(ElementUI)
 
