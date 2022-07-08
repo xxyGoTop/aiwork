@@ -1,5 +1,7 @@
 <template>
-  <layout />
+  <div id="app">
+    <layout />
+  </div>
 </template>
 
 <script>
@@ -16,12 +18,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-</style>
-
-<style>
-@font-face {
-  font-family: HYGangYiTi;
-  src: url("./assets/css/HYGangYiTi-85W.ttf");
 }
 </style>

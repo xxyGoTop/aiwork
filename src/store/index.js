@@ -19,22 +19,4 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 export default new Vuex.Store({
   modules,
   getters,
-  state: {
-    username: "",
-    // 侧边栏菜单
-    asideMenu: [],
-    partnerId: "",
-  },
-  mutations: {
-    // 菜单
-    setAsideMenu(state, menu) {
-      state.asideMenu = menu
-    },
-    setUserName(state, name) {
-      state.username = name
-    },
-    setPartnerId(state, v) {
-      state.partnerId = v
-    },
-  },
 })

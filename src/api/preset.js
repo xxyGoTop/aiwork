@@ -1,5 +1,5 @@
 import { Message } from "element-ui"
-import { toLogin } from "@/util.js"
+import { toLogin } from "@/utils"
 import store from "@/store"
 import * as Api from "./index.js"
 

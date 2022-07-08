@@ -1,13 +1,12 @@
 import Vue from "vue"
-import VueRouter from "vue-router"
+import Router from "vue-router"
 import Home from "@/views/Home.vue"
-import { local } from "@/util.js"
 
-const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function (location) {
+const originalPush = Router.prototype.push
+Router.prototype.push = function (location) {
   return originalPush.call(this, location).catch((err) => err)
 }
-Vue.use(VueRouter)
+Vue.use(Router)
 
 // 主站外页面
 export const constantRoutes = [
@@ -25,8 +24,36 @@ export const asyncRoutes = [
     name: "Home",
     component: Home,
     meta: {
-      auth: true,
+      title: "首页",
+      icon: "el-icon-s-home"
     },
+  },
+  {
+    path: "/device",
+    name: "Device",
+    meta: {
+      title: "设备管理",
+      icon: "el-icon-receiving"
+    },
+    redirect: "/device/list",
+    children: [
+      {
+        path: "list",
+        name: "DeviceList",
+        meta: {
+          title: "设备列表",
+        },
+        component: () => import("@/views/Home.vue"),
+      },
+      {
+        path: "setting",
+        name: "DeviceSetting",
+        meta: {
+          title: "设备设置",
+        },
+        component: () => import("@/views/Home.vue"),
+      },
+    ]
   },
 ]
 
@@ -38,27 +65,5 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
-
-router.beforeEach((to, _, next) => {
-  const token = local.get("authToken")
-  if (to.matched.some((r) => r.meta.auth)) {
-    if (token && token !== "undefined") {
-      next()
-    } else {
-      // 没有登录的时候跳转到登录界面
-      // 携带上登陆成功之后需要跳转的页面完整路径
-      next({
-        name: "Login",
-        query: {
-          redirect: to.fullPath,
-        },
-      })
-    }
-  } else if (to.path === "/login" && token) {
-    next("/")
-  } else {
-    next()
-  }
-})
 
 export default router

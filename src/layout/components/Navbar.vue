@@ -1,8 +1,8 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <Hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <Breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">

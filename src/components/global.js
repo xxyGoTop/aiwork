@@ -6,7 +6,7 @@ import {
 
 const requireComponent = require.context("./global", false, /[A-Z]\w+\.vue$/)
 
-const requireDirComponent = require.context("./global", true, /^\.\/\w+\/Index\.vue$/)
+const requireDirComponent = require.context("./global", true, /^\.\/\w+\/index\.vue$/)
 
 requireComponent.keys().forEach((fileName) => {
   const componentConfig = requireComponent(fileName)

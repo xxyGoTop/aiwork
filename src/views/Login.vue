@@ -56,10 +56,8 @@
 </template>
 
 <script>
-import * as Tone from "tone"
-import { cMd5 } from "@/util"
-import { mapState, mapMutations } from "vuex"
-import { postAuthLogin, getUserPage, getUserRole } from "@/api/user"
+import { cMd5 } from "@/utils"
+import { mapState } from "vuex"
 export default {
   data() {
     return {
@@ -75,31 +73,19 @@ export default {
     ...mapState(["authToken"]),
   },
   methods: {
-    ...mapMutations([
-      "updateAccessToken",
-      "updateUserInfo",
-      "updateRoles",
-      "updateUser",
-    ]),
-    async getUser() {
-      if (!this.authToken) return
-      const role = await getUserRole()
-      const user = await getUserPage({ pageSize: 3000 })
-      this.updateRoles(role.data.records)
-      this.updateUser(user.data.records)
-    },
     async submitForm() {
       const { password } = this.formData
-      postAuthLogin({
+      this.$store.dispatch("user/login", {
         ...this.formData,
         password: cMd5(password),
-      }).then((data) => {
-        this.updateAccessToken(data.data.token)
-        this.updateUserInfo({ ...data.data })
-        this.getUser()
-        this.$router.replace(this.$route.query.redirect || "/")
       })
-      await Tone.start()
+        .then(() => {
+          this.$router.push({ path: this.redirect || "", query: this.otherQuery })
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     },
     handleIconClick() {
       this.showpass = !this.showpass

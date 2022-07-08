@@ -23,7 +23,7 @@
 <script>
 import {
   hasValue,
-} from "@/util"
+} from "@/utils"
 import Options from "./Options"
 
 export default {

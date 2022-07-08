@@ -1,7 +1,7 @@
-/**
- * Created by PanJiaChen on 16/11/18.
- */
-
+import md5 from "js-md5"
+import {
+  MessageBox
+} from "element-ui"
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -355,3 +355,40 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, " ")
   }
 }
+
+export const IS_DEV = process.env.NODE_ENV === "development"
+
+// md5加密
+export const cMd5 = (val) => (val ? md5(val) : "")
+
+// 登录状态
+let showLoginMessage = false
+export const toLogin = (title) => {
+  if (showLoginMessage) return
+  showLoginMessage = true
+  MessageBox.alert(title, "提示", {
+    confirmButtonText: "",
+    showClose: false,
+  })
+    .then(() => {})
+    .catch(console.warn)
+    .finally(() => {
+      showLoginMessage = false
+    })
+}
+
+// 无效值 invalid value
+export const isInvalid = (val) => {
+  if (Array.isArray(val)) return val.length === 0
+  if (typeof val === "string") {
+    val = val.trim()
+    return val === "" || val === "undefined" || val === "null"
+  }
+  return val === undefined || val === null
+}
+
+// 有效值 valid value
+export const isValid = (val) => !isInvalid(val)
+
+// 有效值 valid value
+export const hasValue = (val) => !isInvalid(val)
