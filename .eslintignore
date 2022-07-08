@@ -4,6 +4,7 @@ docker-nginx/*
 
 dist/*
 build/*
+src/assets/js/iconfont.js
 
 /package-lock.json
 .DS_Store
