@@ -1,4 +1,4 @@
-import { Water as Fetch } from "./index"
+import { Face as Fetch } from "./index"
 
 export const getUserGroup = (params) =>
   Fetch({
@@ -33,15 +33,15 @@ export const postUpdateUserGroup = (data) =>
     data,
   })
 
-export const getUserPage = (params = {}, data = {}) =>
+export const getUserInfo = (params = {}, data = {}) =>
   Fetch({
-    url: "/user/page",
+    url: "/user/info",
     method: "post",
     params,
     data,
   })
 
-export const getUserLog = (params) =>
+export const getInfo = (params) =>
   Fetch({
     url: `/user-login-log/page/${params.userId}`,
     params,
@@ -68,14 +68,14 @@ export const postDeleteUser = (data) =>
     data,
   })
 
-export const postAuthLogin = (data) =>
+export const login = (data) =>
   Fetch({
     url: "/auth/login",
     method: "post",
     data,
   })
 
-export const postAuthLogout = (data) =>
+export const logout = (data) =>
   Fetch({
     url: "/auth/logout",
     method: "post",

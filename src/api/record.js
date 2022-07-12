@@ -1,4 +1,4 @@
-import { Water as Fetch } from "./index"
+import { Face as Fetch } from "./index"
 
 export const getCheckListPage = (params = {}, data) =>
   Fetch({

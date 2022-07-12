@@ -1,10 +1,10 @@
 import { Message } from "element-ui"
 import { toLogin } from "@/utils"
-import store from "@/store"
+import { getToken } from "@/utils/auth"
 import * as Api from "./index.js"
 
 Object.values(Api).forEach((ins) => {
-  ins.defaults.headers.common["Authorization"] = store.state.authToken
+  ins.defaults.headers.common["Authorization"] = getToken()
   ins.defaults.timeout = 5000000
   ins.defaults.validateStatus = (status) =>
     (status >= 200 && status < 300) || status === 304
